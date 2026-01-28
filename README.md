@@ -1,5 +1,5 @@
 <div align="center">
-  <a href="https://github.com/your-username/shibana-net">
+  <a href="https://github.com/NamTNDEV/shibana-net-fe">
     <img src="public/icon.png" alt="ShibaNa Net Logo" width="100" height="100">
   </a>
 
