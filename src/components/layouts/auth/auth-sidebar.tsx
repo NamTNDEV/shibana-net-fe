@@ -24,11 +24,11 @@ export default function AuthSidebar() {
           </div>
 
           {/* Title & subtitle */}
-          <div className="space-y-3 flex flex-col items-center w-full max-w-md px-4">
+          <div className="space-y-5 flex flex-col items-center w-full max-w-md px-4">
             <h1 className="text-3xl font-bold text-white">
-              ShibaNa Net
+              ShibaNa <span className="text-primary">Net</span>
             </h1>
-            <p className="text-xl text-gray-300 text-center mt-2">
+            <p className="text-xl text-gray-300 text-center">
               Kết nối, chia sẻ và khám phá cộng đồng ShibaNa một cách an toàn và
               thú vị.
             </p>
