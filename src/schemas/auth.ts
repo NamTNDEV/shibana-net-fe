@@ -2,7 +2,7 @@ import * as z from "zod"
 
 export const LoginSchema = z.object({
     email: z.email({ message: "Vui lòng nhập địa chỉ email hợp lệ" }),
-    password: z.string().min(1, { message: "Vui lòng nhập mật khẩu" }),
+    password: z.string().min(6, { message: "Vui lòng nhập mật khẩu có ít nhất 6 ký tự" }),
 })
 
 export const RegisterSchema = z.object({

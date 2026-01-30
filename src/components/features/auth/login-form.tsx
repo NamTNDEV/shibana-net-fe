@@ -5,7 +5,6 @@ import Link from "next/link"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import type * as z from "zod"
-
 import { LoginSchema } from "@/schemas/auth"
 import {
   Form,
@@ -27,13 +26,19 @@ import {
 import { Separator } from "@/components/ui/separator"
 import PasswordButton from "./password-button"
 import SocialLoginButton from "./social-login-button"
+import { useRouter } from "next/navigation"
+import { loginAction } from "@/actions/auth"
+import { toast } from "sonner"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { AlertCircleIcon } from "lucide-react"
 
-type LoginFormValues = z.infer<typeof LoginSchema>
+type LoginFormValuesType = z.infer<typeof LoginSchema>
 
 export function LoginForm() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
+  const router = useRouter()
 
-  const form = useForm<LoginFormValues>({
+  const form = useForm<LoginFormValuesType>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
       email: "",
@@ -41,12 +46,33 @@ export function LoginForm() {
     },
   })
 
-  const onSubmit = (values: LoginFormValues) => {
-    // TODO: Tích hợp API đăng nhập tại đây
-    console.log("Login with values", values)
-  }
-
   const isSubmitting = form.formState.isSubmitting
+
+  const onSubmit = async (values: LoginFormValuesType) => {
+    const response = await loginAction(values)
+    if (response.success) {
+      toast.success(response.message, {
+        position: "top-right",
+        richColors: true,
+        duration: 3000,
+      })
+      form.reset()
+      router.push("/")
+    } else {
+      if (response.code === 4000702) {
+        form.setError("root", {
+          message: response.message,
+        })
+      } else {
+        toast.error(response.message, {
+          position: "top-right",
+          richColors: true,
+          duration: 3000,
+        })
+      }
+      form.setValue("password", "")
+    }
+  }
 
   return (
     <Card className="w-full mx-auto border-none shadow-none bg-transparent p-0">
@@ -67,10 +93,19 @@ export function LoginForm() {
           <Separator className="shrink" />
         </div>
 
+        {form.formState.errors.root && (
+          <Alert variant="destructive" className="animate-in fade-in slide-in-from-top-2 border-destructive">
+            <AlertCircleIcon className="size-4" />
+            <AlertDescription>
+              {form.formState.errors.root.message}
+            </AlertDescription>
+          </Alert>
+        )}
+
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(onSubmit)}
             className="space-y-2"
+            onSubmit={form.handleSubmit(onSubmit)}
           >
             <FormField
               control={form.control}

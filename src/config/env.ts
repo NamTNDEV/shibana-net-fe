@@ -21,8 +21,6 @@ const mergedSchema = z.object({
 
 const isServer = typeof window === "undefined"
 
-console.log("Is server", isServer)
-
 const processEnvParsed = isServer
     ? mergedSchema.safeParse(processEnv)
     : clientSchema.safeParse(processEnv)
