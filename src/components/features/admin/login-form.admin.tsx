@@ -11,19 +11,36 @@ import { Card, CardTitle, CardHeader, CardDescription, CardContent } from "@/com
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircleIcon } from "lucide-react";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PasswordButton from "../auth/password-button";
 import { loginAction } from "@/actions/auth.action";
 import { toast } from "sonner";
 import { getSafeRedirectUrl } from "@/lib/utils";
-import { ROUTES } from "@/constants/routes";
 import { useRouter } from "next/navigation";
+import { use } from "react";
+import { ROUTES } from "@/constants/routes";
 
 type AdminLoginFormValuesType = z.infer<typeof LoginSchema>
 
-export function AdminLoginForm() {
+export function AdminLoginForm({
+  searchParams,
+}: {
+  searchParams: Promise<{ redirect?: string }>
+}) {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const router = useRouter()
+  const params = use(searchParams)
+  const redirectUrl = params.redirect || null
+
+  useEffect(() => {
+    if (redirectUrl) {
+      toast.info("Vui lòng đăng nhập để tiếp tục.", {
+        position: "top-right",
+        richColors: true,
+        duration: 3000,
+      })
+    }
+  }, [redirectUrl])
 
   const form = useForm<AdminLoginFormValuesType>({
     resolver: zodResolver(LoginSchema),
@@ -44,7 +61,7 @@ export function AdminLoginForm() {
         duration: 3000,
       })
       form.reset()
-      router.push(ROUTES.ADMIN.DASHBOARD)
+      router.push(getSafeRedirectUrl(redirectUrl, ROUTES.ADMIN.DASHBOARD))
     } else {
       if (response.code === 4000702) {
         form.setError("root", {

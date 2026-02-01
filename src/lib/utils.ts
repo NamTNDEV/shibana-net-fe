@@ -13,10 +13,10 @@ export const getErrorMessage = (code: ErrorDictionaryType) => {
 }
 
 
-export const getSafeRedirectUrl = (url: string | null) => {
-  if (!url) return ROUTES.HOME;
+export const getSafeRedirectUrl = (url: string | null, defaultUrl?: string) => {
+  if (!url) return defaultUrl || ROUTES.HOME;
   if (!url.startsWith("/")) {
-    return ROUTES.HOME;
+    return defaultUrl || ROUTES.HOME;
   }
   return decodeURIComponent(url);
 }

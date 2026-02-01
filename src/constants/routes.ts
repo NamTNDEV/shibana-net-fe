@@ -5,6 +5,7 @@ export const ROUTES = {
         REGISTER: "/register",
     },
     ADMIN: {
+        ROOT: "/manage",
         LOGIN: "/manage/login",
         DASHBOARD: "/manage/dashboard",
     },
@@ -14,12 +15,17 @@ export const PUBLIC_ROUTES = [
     ROUTES.HOME,
 ];
 
-export const PRIVATE_ROUTES = [
-    ROUTES.ADMIN.DASHBOARD,
-];
+export const PRIVATE_ROUTES = [];
 
 export const AUTH_ROUTES = [
     ROUTES.AUTH.LOGIN,
     ROUTES.AUTH.REGISTER,
+];
+
+export const ADMIN_PRIVATE_ROUTES = [
+    ROUTES.ADMIN.DASHBOARD,
+];
+
+export const ADMIN_AUTH_ROUTES = [
     ROUTES.ADMIN.LOGIN,
 ];
