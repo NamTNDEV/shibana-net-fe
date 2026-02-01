@@ -1,11 +1,20 @@
-import Link from "next/link";
+"use client";
 
-export default function NotFound() {
-    return (
-        <div>
-            <h2>Not Found</h2>
-            <p>Could not find requested resource</p>
-            <Link href="/">Return Home</Link>
-        </div>
-    )
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+
+export default function NotFoundPage() {
+  return (
+    <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4">
+      <p className="text-8xl font-extralight tabular-nums tracking-tighter text-muted-foreground/60">
+        404
+      </p>
+      <h1 className="mt-4 text-xl font-medium text-foreground">
+        Không tìm thấy trang
+      </h1>
+      <Button className="mt-8" size="lg">
+        <Link href="/">Về trang chủ</Link>
+      </Button>
+    </div>
+  );
 }
