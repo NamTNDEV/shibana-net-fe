@@ -1,10 +1,10 @@
 'use server'
 
+import { deleteCookies, setCookies } from "@/lib/cookies";
 import { HttpError } from "@/lib/http-errors";
 import { getErrorMessage } from "@/lib/utils";
-import { authService } from "@/services/auth";
-import { LoginRequestBodyType } from "@/types/auth";
-import { cookies } from "next/headers";
+import { authService } from "@/services/auth.service";
+import { LoginRequestBodyType } from "@/types/auth.type";
 
 type ActionResponseType = {
     success: boolean
@@ -16,17 +16,16 @@ export async function loginAction(body: LoginRequestBodyType): Promise<ActionRes
     try {
         const response = await authService.login(body);
 
-        const cookieStore = await cookies();
-        cookieStore.set("accessToken", response.accessToken, {
-            httpOnly: true,
-            maxAge: 60 * 60 * 24, // 1 day
-            path: "/",
+        await setCookies({
+            name: "accessToken", value: response.accessToken, options: {
+                maxAge: 60 * 60 * 24, // 1 day
+            }
         });
 
-        cookieStore.set("refreshToken", response.refreshToken, {
-            httpOnly: true,
-            maxAge: 60 * 60 * 24 * 30 * 7, // 7 days
-            path: "/",
+        await setCookies({
+            name: "refreshToken", value: response.refreshToken, options: {
+                maxAge: 60 * 60 * 24 * 30 * 7, // 7 days
+            }
         });
 
         return {

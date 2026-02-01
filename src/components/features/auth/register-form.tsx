@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import type * as z from "zod"
 
-import { RegisterSchema } from "@/schemas/auth"
+import { RegisterSchema } from "@/schemas/auth.schema"
 import {
     Form,
     FormControl,

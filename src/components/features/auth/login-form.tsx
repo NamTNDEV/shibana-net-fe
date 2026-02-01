@@ -1,11 +1,11 @@
 "use client"
 
-import { useState } from "react"
+import { use, useEffect, useState } from "react"
 import Link from "next/link"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import type * as z from "zod"
-import { LoginSchema } from "@/schemas/auth"
+import { LoginSchema } from "@/schemas/auth.schema"
 import {
   Form,
   FormControl,
@@ -26,17 +26,34 @@ import {
 import { Separator } from "@/components/ui/separator"
 import PasswordButton from "./password-button"
 import SocialLoginButton from "./social-login-button"
-import { useRouter } from "next/navigation"
-import { loginAction } from "@/actions/auth"
+import { useRouter, useSearchParams } from "next/navigation"
+import { loginAction } from "@/actions/auth.action"
 import { toast } from "sonner"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { AlertCircleIcon } from "lucide-react"
+import { getSafeRedirectUrl } from "@/lib/utils"
 
 type LoginFormValuesType = z.infer<typeof LoginSchema>
 
-export function LoginForm() {
+export function LoginForm({
+  searchParams,
+}: {
+  searchParams: Promise<{ redirect?: string }>
+}) {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const router = useRouter()
+  const params = use(searchParams)
+  const redirectUrl = params.redirect || null
+
+  useEffect(() => {
+    if (redirectUrl) {
+      toast.info("Vui lòng đăng nhập để tiếp tục.", {
+        position: "top-right",
+        richColors: true,
+        duration: 3000,
+      })
+    }
+  }, [redirectUrl])
 
   const form = useForm<LoginFormValuesType>({
     resolver: zodResolver(LoginSchema),
@@ -57,7 +74,7 @@ export function LoginForm() {
         duration: 3000,
       })
       form.reset()
-      router.push("/")
+      router.push(getSafeRedirectUrl(redirectUrl))
     } else {
       if (response.code === 4000702) {
         form.setError("root", {

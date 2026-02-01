@@ -1,6 +1,6 @@
 import envConfig from "@/config/env"
 import { HttpError } from "./http-errors";
-import { ResponseDataType } from "@/types/response";
+import { ResponseDataType } from "@/types/response.type";
 
 type HttpClientOptions = Omit<RequestInit, "method" | "body"> & {
     body?: any
