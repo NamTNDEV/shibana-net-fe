@@ -1,8 +1,6 @@
 import type { ReactNode } from "react";
 import AuthSidebar from "@/components/layouts/auth/auth-sidebar";
 
-export const dynamic = 'force-dynamic'
-
 export default function AuthLayout({
   children,
 }: Readonly<{

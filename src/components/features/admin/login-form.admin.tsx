@@ -1,61 +1,31 @@
-"use client"
+"use client";
 
-import { use, useEffect, useState } from "react"
-import Link from "next/link"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import type * as z from "zod"
-import { LoginSchema } from "@/schemas/auth.schema"
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
-import PasswordButton from "./password-button"
-import SocialLoginButton from "./social-login-button"
-import { useRouter } from "next/navigation"
-import { loginAction } from "@/actions/auth.action"
-import { toast } from "sonner"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { AlertCircleIcon } from "lucide-react"
-import { getSafeRedirectUrl } from "@/lib/utils"
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { AdminLoginIcon } from "@/assets";
+import { LoginSchema } from "@/schemas/auth.schema";
+import z from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Card, CardTitle, CardHeader, CardDescription, CardContent } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AlertCircleIcon } from "lucide-react";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { useState } from "react";
+import PasswordButton from "../auth/password-button";
+import { loginAction } from "@/actions/auth.action";
+import { toast } from "sonner";
+import { getSafeRedirectUrl } from "@/lib/utils";
+import { ROUTES } from "@/constants/routes";
+import { useRouter } from "next/navigation";
 
-type LoginFormValuesType = z.infer<typeof LoginSchema>
+type AdminLoginFormValuesType = z.infer<typeof LoginSchema>
 
-export function LoginForm({
-  searchParams,
-}: {
-  searchParams: Promise<{ redirect?: string }>
-}) {
+export function AdminLoginForm() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const router = useRouter()
-  const params = use(searchParams)
-  const redirectUrl = params.redirect || null
 
-  useEffect(() => {
-    if (redirectUrl) {
-      toast.info("Vui lòng đăng nhập để tiếp tục.", {
-        position: "top-right",
-        richColors: true,
-        duration: 3000,
-      })
-    }
-  }, [redirectUrl])
-
-  const form = useForm<LoginFormValuesType>({
+  const form = useForm<AdminLoginFormValuesType>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
       email: "",
@@ -65,7 +35,7 @@ export function LoginForm({
 
   const isSubmitting = form.formState.isSubmitting
 
-  const onSubmit = async (values: LoginFormValuesType) => {
+  const onSubmit = async (values: AdminLoginFormValuesType) => {
     const response = await loginAction(values)
     if (response.success) {
       toast.success(response.message, {
@@ -74,7 +44,7 @@ export function LoginForm({
         duration: 3000,
       })
       form.reset()
-      router.push(getSafeRedirectUrl(redirectUrl))
+      router.push(ROUTES.ADMIN.DASHBOARD)
     } else {
       if (response.code === 4000702) {
         form.setError("root", {
@@ -92,24 +62,18 @@ export function LoginForm({
   }
 
   return (
-    <Card className="w-full mx-auto border-none shadow-none bg-transparent p-0">
-      <CardHeader className="px-0">
-        <CardTitle className="text-2xl font-bold">Đăng nhập</CardTitle>
-        <CardDescription>Chào mừng bạn quay lại!</CardDescription>
+    <Card className="w-full max-w-[400px] rounded-xl border border-border bg-card px-6 py-8 shadow-lg">
+      <CardHeader className="flex flex-col items-center justify-center p-0">
+        <div
+          className="flex size-12 items-center justify-center rounded-lg bg-primary/10 text-primary"
+          aria-hidden
+        >
+          <AdminLoginIcon className="size-6" />
+        </div>
+        <CardTitle className="text-2xl font-bold p-0">Admin Portal</CardTitle>
       </CardHeader>
 
-      <CardContent className="px-0 space-y-6">
-
-        <SocialLoginButton isLoading={isSubmitting} />
-
-        <div className="flex items-center gap-3">
-          <Separator className="shrink" />
-          <span className="text-sm text-muted-foreground whitespace-nowrap">
-            hoặc email
-          </span>
-          <Separator className="shrink" />
-        </div>
-
+      <CardContent className="space-y-6 p-0">
         {form.formState.errors.root && (
           <Alert variant="destructive" className="animate-in fade-in slide-in-from-top-2 border-destructive">
             <AlertCircleIcon className="size-4" />
@@ -151,12 +115,6 @@ export function LoginForm({
                 <FormItem className="relative">
                   <div className="flex items-center justify-between mt-4">
                     <FormLabel className="text-sm">Mật khẩu</FormLabel>
-                    <Link
-                      href="/forgot-password"
-                      className="text-sm text-primary hover:underline"
-                    >
-                      Quên mật khẩu?
-                    </Link>
                   </div>
                   <FormControl>
                     <div className="relative">
@@ -188,15 +146,7 @@ export function LoginForm({
             </Button>
           </form>
         </Form>
-
-        <p className="text-center text-sm text-muted-foreground">
-          Chưa có tài khoản?{" "}
-          <Link href="/register" className="text-primary hover:underline">
-            Đăng ký
-          </Link>
-        </p>
       </CardContent>
     </Card>
-  )
+  );
 }
-

@@ -5,9 +5,6 @@ export default async function MainLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    // const user = await userService.getMe();
-    // console.log("User:: ", user);
-
     return (
         <div>
             <h1>MainLayout</h1>

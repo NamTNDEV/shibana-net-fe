@@ -5,6 +5,7 @@ export const ROUTES = {
         REGISTER: "/register",
     },
     ADMIN: {
+        LOGIN: "/manage/login",
         DASHBOARD: "/manage/dashboard",
     },
 } as const;
@@ -20,4 +21,5 @@ export const PRIVATE_ROUTES = [
 export const AUTH_ROUTES = [
     ROUTES.AUTH.LOGIN,
     ROUTES.AUTH.REGISTER,
+    ROUTES.ADMIN.LOGIN,
 ];
