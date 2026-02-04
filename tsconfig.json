@@ -34,7 +34,8 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
-    "**/*.mts"
+    "**/*.mts",
+    "src/components/counter.tsax"
   ],
   "exclude": [
     "node_modules"

@@ -1,7 +1,9 @@
 export default function MainRightSidebar() {
     return (
-        <aside className="hidden w-64 overflow-y-auto border-l md:block sticky top-14 h-full z-10 py-4">
-            Right Sidebar
+        <aside className="hidden overflow-y-auto md:block sticky top-14 z-10 w-1/4 max-w-[360px] h-full">
+            <div className="mt-4">
+                Right Sidebar
+            </div>
         </aside>
     )
 }
