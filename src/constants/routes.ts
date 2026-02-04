@@ -1,5 +1,6 @@
 export const ROUTES = {
     HOME: "/",
+    FORBIDDEN: "/forbidden",
     AUTH: {
         LOGIN: "/login",
         REGISTER: "/register",
@@ -13,6 +14,7 @@ export const ROUTES = {
 
 export const PUBLIC_ROUTES = [
     ROUTES.HOME,
+    ROUTES.FORBIDDEN,
 ];
 
 export const PRIVATE_ROUTES = [];

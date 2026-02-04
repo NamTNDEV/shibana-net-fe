@@ -1,5 +1,3 @@
-import { userService } from "@/services/user.service";
-
 export default async function MainLayout({
     children,
 }: Readonly<{
