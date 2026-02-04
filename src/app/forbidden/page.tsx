@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 
 export default function ForbiddenPage() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4">
+    <main className="flex min-h-screen flex-col items-center justify-center bg-background px-4">
       <div className="flex size-16 items-center justify-center rounded-full bg-muted/50 text-muted-foreground">
         <Lock className="size-8" strokeWidth={1.5} />
       </div>
@@ -21,6 +21,6 @@ export default function ForbiddenPage() {
           <Link href="/">Về trang chủ</Link>
         </Button>
       </div>
-    </div>
+    </main>
   );
 }
