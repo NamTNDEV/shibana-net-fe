@@ -12,7 +12,7 @@ export default function SocialLoginButton({ isLoading, className }: SocialLoginB
         <Button
             type="button"
             variant="outline"
-            className={cn("w-full h-12 rounded-xl hover:bg-secondary", className)}
+            className={cn("w-full h-12 rounded-xl hover:bg-background bg-white", className)}
             isLoading={isLoading}
             isShowSpinner={false}
         >

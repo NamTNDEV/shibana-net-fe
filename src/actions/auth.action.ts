@@ -1,10 +1,12 @@
 'use server'
 
-import { deleteCookies, setCookies } from "@/lib/cookies";
+import { ROUTES } from "@/constants/routes";
+import { deleteCookies, getCookies, setCookies } from "@/lib/cookies";
 import { HttpError } from "@/lib/http-errors";
 import { getErrorMessage } from "@/lib/utils";
 import { authService } from "@/services/auth.service";
 import { LoginRequestBodyType } from "@/types/auth.type";
+import { redirect } from "next/navigation";
 
 type ActionResponseType = {
     success: boolean
@@ -41,5 +43,26 @@ export async function loginAction(body: LoginRequestBodyType): Promise<ActionRes
             };
         }
         return { success: false, message: "Lỗi hệ thống, vui lòng thử lại sau." };
+    }
+}
+
+export async function logoutAction(): Promise<void> {
+    const accessToken = await getCookies("accessToken");
+
+    if (accessToken) {
+        try {
+            await authService.logout(accessToken);
+        } catch (error) {
+            if (error instanceof HttpError) {
+                console.error(error.payload.code);
+            } else {
+                console.error(error);
+            }
+        }
+        finally {
+            await deleteCookies("accessToken");
+            await deleteCookies("refreshToken");
+        }
+        redirect(ROUTES.AUTH.LOGIN);
     }
 }

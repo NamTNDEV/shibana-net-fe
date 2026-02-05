@@ -20,3 +20,7 @@ export const getSafeRedirectUrl = (url: string | null, defaultUrl?: string) => {
   }
   return decodeURIComponent(url);
 }
+
+export const getUrlWithParams = (url: string, params: Record<string, string>) => {
+  return url.replace(/:(\w+)/g, (match, p1) => params[p1] || match);
+}

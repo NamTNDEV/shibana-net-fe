@@ -1,10 +1,22 @@
+'use client'
+
 import Logo from '@/components/shared/logo'
+import { SearchInput } from '@/components/shared/search-input'
+import { HeaderAction } from './header-action'
 
 export default function MainHeader() {
     return (
-        <header className="bg-white shadow-sm sticky top-0 z-10 h-14">
-            <div className="mx-auto px-4 py-2 h-full flex items-center">
+        <header className="sticky top-0 z-50 flex h-14 w-full items-center justify-between bg-white px-4 shadow-sm sm:px-6">
+            <div className="w-[280px] shrink-0">
                 <Logo />
+            </div>
+
+            <div className="flex flex-1 justify-center px-4">
+                <SearchInput />
+            </div>
+
+            <div className="w-[280px] shrink-0">
+                <HeaderAction />
             </div>
         </header>
     )

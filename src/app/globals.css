@@ -47,34 +47,8 @@
 }
 
 :root {
-  /* --radius: 0.75rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0); */
-
   --radius: 0.75rem; /* Tăng bo góc lên 12px cho đúng vibe mascot */
-  --background: #ffffff;
+  --background: #f2f4f7;
   --foreground: #293340; /* Thay màu đen bằng Charcoal thương hiệu */
 
   --primary: #ffc15e; /* Vàng Shiba làm màu chủ đạo */
@@ -86,7 +60,7 @@
   --popover: #ffffff;
   --popover-foreground: #293340;
 
-  --secondary: #f3f4f6;
+  --secondary: #e2e5e9;
   --secondary-foreground: #293340;
 
   --muted: #f3f4f6;
@@ -96,7 +70,7 @@
   --accent-foreground: #293340;
 
   --border: #e5e7eb;
-  --input: #e5e7eb;
+  --input: #f0f2f5;
   --ring: #ffc15e;
 
   --destructive: oklch(0.577 0.245 27.325);
@@ -148,6 +122,23 @@
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
 } */
+
+/* --- 3. CUSTOM SCROLLBAR (Style Facebook) --- */
+::-webkit-scrollbar {
+  width: 12px;
+}
+::-webkit-scrollbar-track {
+  background: #fafafa;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #bcc0c4;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: #8d949e;
+}
 
 @layer base {
   * {

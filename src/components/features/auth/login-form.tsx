@@ -48,9 +48,9 @@ export function LoginForm({
   useEffect(() => {
     if (redirectUrl) {
       toast.info("Vui lòng đăng nhập để tiếp tục.", {
-        position: "top-right",
+        position: "bottom-right",
         richColors: true,
-        duration: 3000,
+        duration: 1000
       })
     }
   }, [redirectUrl])
@@ -69,9 +69,9 @@ export function LoginForm({
     const response = await loginAction(values)
     if (response.success) {
       toast.success(response.message, {
-        position: "top-right",
+        position: "bottom-right",
         richColors: true,
-        duration: 3000,
+        duration: 1000,
       })
       form.reset()
       router.push(getSafeRedirectUrl(redirectUrl))
@@ -82,9 +82,9 @@ export function LoginForm({
         })
       } else {
         toast.error(response.message, {
-          position: "top-right",
+          position: "bottom-right",
           richColors: true,
-          duration: 3000,
+          duration: 1000,
         })
       }
       form.setValue("password", "")

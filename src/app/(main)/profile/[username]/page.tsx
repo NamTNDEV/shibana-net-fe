@@ -2,5 +2,5 @@ export default async function ProfilePage(
     { params }: { params: Promise<{ username: string }> }
 ) {
     const { username } = await params;
-    return <div>ProfilePage:: Username: {username}</div>;
+    return <>ProfilePage:: Username: {username}</>;
 }

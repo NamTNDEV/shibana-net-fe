@@ -2,7 +2,7 @@
 
 import { useAuthStore } from "@/stores/auth.store";
 import { UserResponseDataType } from "@/types/user.type";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 
 type AuthProvidersPropsType = {
     children: React.ReactNode;
@@ -21,6 +21,14 @@ export default function AuthProvider({ children, initialUser }: AuthProvidersPro
         }
         isInitialized.current = true;
     }
+
+    useEffect(() => {
+        if (initialUser) {
+            setAuthUser(initialUser);
+        } else {
+            logout();
+        }
+    }, [initialUser, setAuthUser, logout]);
 
     return (
         <>{children}</>

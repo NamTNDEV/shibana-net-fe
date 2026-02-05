@@ -10,11 +10,15 @@ export const ROUTES = {
         LOGIN: "/manage/login",
         DASHBOARD: "/manage/dashboard",
     },
+    USER: {
+        PROFILE: "/@:userId",
+    },
 } as const;
 
 export const PUBLIC_ROUTES = [
     ROUTES.HOME,
     ROUTES.FORBIDDEN,
+    ROUTES.USER.PROFILE,
 ];
 
 export const PRIVATE_ROUTES = [];
