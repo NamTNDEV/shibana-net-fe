@@ -1,6 +1,11 @@
+import ProfileItem from "@/components/features/profile/profile-item";
+
 export default async function ProfilePage(
     { params }: { params: Promise<{ username: string }> }
 ) {
     const { username } = await params;
-    return <>ProfilePage:: Username: {username}</>;
+    return <div>
+        ProfilePage:: Username: {username}
+        <ProfileItem />
+    </div>;
 }
