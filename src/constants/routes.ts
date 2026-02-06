@@ -16,12 +16,13 @@ export const ROUTES = {
 } as const;
 
 export const PUBLIC_ROUTES = [
-    ROUTES.HOME,
     ROUTES.FORBIDDEN,
     ROUTES.USER.PROFILE,
 ];
 
-export const PRIVATE_ROUTES = [];
+export const PRIVATE_ROUTES = [
+    ROUTES.HOME,
+];
 
 export const AUTH_ROUTES = [
     ROUTES.AUTH.LOGIN,
