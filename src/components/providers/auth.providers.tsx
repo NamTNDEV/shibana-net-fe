@@ -2,7 +2,7 @@
 
 import { useAuthStore } from "@/stores/auth.store";
 import { UserResponseDataType } from "@/types/user.type";
-import { useEffect, useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
 
 type AuthProvidersPropsType = {
     children: React.ReactNode;
@@ -10,25 +10,14 @@ type AuthProvidersPropsType = {
 }
 
 export default function AuthProvider({ children, initialUser }: AuthProvidersPropsType) {
-    const { setAuthUser, logout } = useAuthStore();
+    const { setAuthUser } = useAuthStore();
     const isInitialized = useRef(false);
 
-    if (!isInitialized.current) {
-        if (initialUser) {
-            setAuthUser(initialUser);
-        } else {
-            logout();
-        }
+    useLayoutEffect(() => {
+        if (isInitialized.current) return;
+        setAuthUser(initialUser);
         isInitialized.current = true;
-    }
-
-    useEffect(() => {
-        if (initialUser) {
-            setAuthUser(initialUser);
-        } else {
-            logout();
-        }
-    }, [initialUser, setAuthUser, logout]);
+    }, [initialUser])
 
     return (
         <>{children}</>

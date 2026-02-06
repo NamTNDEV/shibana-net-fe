@@ -1,5 +1,3 @@
-'use client'
-
 import Logo from '@/components/shared/logo'
 import { SearchInput } from '@/components/shared/search-input'
 import { HeaderAction } from './header-action'

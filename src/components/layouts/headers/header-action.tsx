@@ -17,6 +17,7 @@ import { useAuthStore } from "@/stores/auth.store";
 import { ROUTES } from "@/constants/routes";
 import { getUrlWithParams } from "@/lib/utils";
 import { toast } from "sonner";
+import { Skeleton } from "@/components/ui/skeleton";
 
 function getInitials(firstName: string, lastName: string): string {
   const first = firstName?.trim().charAt(0) ?? "";
@@ -25,7 +26,7 @@ function getInitials(firstName: string, lastName: string): string {
 }
 
 export function HeaderAction() {
-  const { authUser: user, logout } = useAuthStore();
+  const { authUser: user, logout, isHydrated } = useAuthStore();
 
   const handleLogout = async () => {
     await logoutAction();
@@ -36,6 +37,16 @@ export function HeaderAction() {
       duration: 1000,
     });
   };
+
+  if (!isHydrated) {
+    return (
+      <div className="flex items-center justify-end gap-3">
+        <Skeleton className="size-10 rounded-full bg-secondary" />
+        <Skeleton className="size-10 rounded-full bg-secondary" />
+        <Skeleton className="size-10 rounded-full bg-secondary" />
+      </div>
+    );
+  }
 
   if (!user) {
     return (

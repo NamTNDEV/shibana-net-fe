@@ -4,16 +4,18 @@ import { devtools } from "zustand/middleware";
 
 export type AuthStoreType = {
     authUser: UserResponseDataType | null;
-    setAuthUser: (user: UserResponseDataType | null) => void;
+    isHydrated: boolean;
     logout: () => void;
+    setAuthUser: (user: UserResponseDataType | null) => void;
 }
 
 export const useAuthStore = create<AuthStoreType>()(
     devtools(
         (set) => ({
             authUser: null,
-            setAuthUser: (user: UserResponseDataType | null) => set({ authUser: user }, false, "setAuthUser"),
-            logout: () => set({ authUser: null }, false, "logout"),
+            isHydrated: false,
+            logout: () => set({ authUser: null, isHydrated: true }, false, "logout"),
+            setAuthUser: (user: UserResponseDataType | null) => set({ authUser: user, isHydrated: true }, false, "setAuthUser")
         }),
         { name: "AuthStore" }
     )

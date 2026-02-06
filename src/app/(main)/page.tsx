@@ -1,5 +1,4 @@
 export default function HomePage() {
-
     return (
         <>
             <div className="w-full h-[60px] bg-white">

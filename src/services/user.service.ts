@@ -8,7 +8,9 @@ import React from "react";
 export const userService = {
     getMe: React.cache(async (): Promise<UserResponseDataType | null> => {
         const accessToken = await getCookies("accessToken");
-        if (!accessToken) return null;
+        if (!accessToken) {
+            return null;
+        }
 
         try {
             const response = await httpClient.get<UserResponseDataType>(
