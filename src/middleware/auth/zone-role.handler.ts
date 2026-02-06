@@ -12,8 +12,8 @@ export const zoneRoleHandler = ({
     accessToken?: string;
 }) => {
     const onGoingPath = request.nextUrl.pathname;
-    const isAuthRoute = config.authRoutes.some(route => onGoingPath !== ROUTES.HOME && onGoingPath.startsWith(route));
-    const isPrivateRoute = config.privateRoutes.some(route => !isAuthRoute && onGoingPath.startsWith(route));
+    const isAuthRoute = config.authRoutes.some(route => onGoingPath.startsWith(route));
+    const isPrivateRoute = config.privateRoutes.some(route => onGoingPath.startsWith(route)) || onGoingPath === ROUTES.HOME;
     if (isAuthRoute && accessToken) {
         return NextResponse.redirect(new URL(config.redirectRoute, request.url));
     } else if (isPrivateRoute && !accessToken) {
