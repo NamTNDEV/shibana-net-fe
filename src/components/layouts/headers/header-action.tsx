@@ -13,11 +13,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useAuthStore } from "@/stores/auth.store";
 import { ROUTES } from "@/constants/routes";
 import { getUrlWithParams } from "@/lib/utils";
 import { toast } from "sonner";
-import { Skeleton } from "@/components/ui/skeleton";
+import { UserResponseDataType } from "@/types/user.type";
+
+type HeaderActionPropsType = {
+  user: UserResponseDataType | null;
+}
 
 function getInitials(firstName: string, lastName: string): string {
   const first = firstName?.trim().charAt(0) ?? "";
@@ -25,12 +28,9 @@ function getInitials(firstName: string, lastName: string): string {
   return (first + last).toUpperCase() || "?";
 }
 
-export function HeaderAction() {
-  const { authUser: user, logout, isHydrated } = useAuthStore();
-
+export default function HeaderAction({ user }: HeaderActionPropsType) {
   const handleLogout = async () => {
     await logoutAction();
-    logout();
     toast.success("Đăng xuất thành công.", {
       position: "bottom-right",
       richColors: true,
@@ -38,29 +38,9 @@ export function HeaderAction() {
     });
   };
 
-  if (!isHydrated) {
-    return (
-      <div className="flex items-center justify-end gap-3">
-        <Skeleton className="size-10 rounded-full bg-secondary" />
-        <Skeleton className="size-10 rounded-full bg-secondary" />
-        <Skeleton className="size-10 rounded-full bg-secondary" />
-      </div>
-    );
-  }
-
   if (!user) {
     return (
-      <div className="flex items-center justify-end gap-3">
-        <Link href="/login">
-          <Button variant="default" className="rounded-b-sm">
-            Đăng nhập
-          </Button>
-        </Link>
-
-        <Link href="/register" className="text-primary hover:underline">
-          Đăng ký
-        </Link>
-      </div>
+      <UnauthenticatedAction />
     );
   }
 
@@ -129,4 +109,20 @@ export function HeaderAction() {
       </DropdownMenu>
     </div>
   );
+}
+
+const UnauthenticatedAction = () => {
+  return (
+    <div className="flex items-center justify-end gap-3">
+      <Link href={ROUTES.AUTH.LOGIN}>
+        <Button variant="default" className="rounded-b-sm">
+          Đăng nhập
+        </Button>
+      </Link>
+
+      <Link href={ROUTES.AUTH.REGISTER} className="text-primary hover:underline">
+        Đăng ký
+      </Link>
+    </div>
+  )
 }
