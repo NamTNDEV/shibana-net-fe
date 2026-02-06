@@ -19,7 +19,7 @@ import { toast } from "sonner";
 import { UserResponseDataType } from "@/types/user.type";
 
 type HeaderActionPropsType = {
-  user: UserResponseDataType | null;
+  user?: UserResponseDataType | null;
 }
 
 function getInitials(firstName: string, lastName: string): string {

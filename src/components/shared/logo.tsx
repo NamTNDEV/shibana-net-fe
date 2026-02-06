@@ -1,3 +1,5 @@
+'use client'
+
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { LogoImage } from "@/assets";
@@ -19,25 +21,26 @@ export default function Logo({
 }: LogoProps) {
     return (
         isLink ?
-            (<Link href="/" className={cn("flex items-center gap-2 group", className)}>
-                <LogoImage className={iconSize} />
-
-                {showText && (
-                    <span className={cn("font-semibold tracking-tight select-none", fontSize)}>
-                        ShibaNa
-                        <span className="text-primary ml-0.5">Net</span>
-                    </span>
-                )}
-            </Link>) :
-            (<div className={cn("flex items-center gap-2 group", className)}>
-                <LogoImage className={iconSize} />
-
-                {showText && (
-                    <span className={cn("font-semibold tracking-tight select-none", fontSize)}>
-                        ShibaNa
-                        <span className="text-primary ml-0.5">Net</span>
-                    </span>
-                )}
-            </div>)
+            (
+                <Link href="/" className={cn("flex items-center gap-2 group", className)}>
+                    <LogoImage className={iconSize} />
+                    {showText && (<LogoText fontSize={fontSize} />)}
+                </Link>
+            ) :
+            (
+                <div className={cn("flex items-center gap-2 group", className)}>
+                    <LogoImage className={iconSize} />
+                    {showText && (<LogoText fontSize={fontSize} />)}
+                </div>
+            )
     )
-}
+};
+
+const LogoText = ({ fontSize }: { fontSize: string }) => {
+    return (
+        <span className={cn("font-semibold tracking-tight select-none", fontSize)}>
+            ShibaNa
+            <span className="text-primary ml-0.5">Net</span>
+        </span>
+    );
+};
