@@ -1,5 +1,4 @@
 import { API_ROUTES } from "@/constants/api-route";
-import { FETCH_TAGS } from "@/constants/tags";
 import { getCookies } from "@/lib/cookies";
 import { httpClient } from "@/lib/http-client";
 import { UserResponseDataType } from "@/types/user.type";
@@ -13,15 +12,7 @@ export const userService = {
         }
 
         try {
-            const response = await httpClient.get<UserResponseDataType>(
-                API_ROUTES.USERS.GET_ME,
-                {
-                    headers: { "Authorization": `Bearer ${accessToken}` },
-                    next: {
-                        tags: [FETCH_TAGS.USERS.GET_ME]
-                    }
-                }
-            );
+            const response = await httpClient.get<UserResponseDataType>(API_ROUTES.USERS.GET_ME, { cache: "no-store" });
             return response;
         } catch (error) {
             console.error("UserService - getMe failed:", error);

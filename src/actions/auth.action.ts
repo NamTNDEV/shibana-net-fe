@@ -1,7 +1,7 @@
 'use server'
 
 import { ROUTES } from "@/constants/routes";
-import { deleteCookies, getCookies, setCookies } from "@/lib/cookies";
+import { deleteCookies, setCookies } from "@/lib/cookies";
 import { HttpError } from "@/lib/http-errors";
 import { getErrorMessage } from "@/lib/utils";
 import { authService } from "@/services/auth.service";
@@ -47,22 +47,18 @@ export async function loginAction(body: LoginRequestBodyType): Promise<ActionRes
 }
 
 export async function logoutAction(): Promise<void> {
-    const accessToken = await getCookies("accessToken");
-
-    if (accessToken) {
-        try {
-            await authService.logout(accessToken);
-        } catch (error) {
-            if (error instanceof HttpError) {
-                console.error(error.payload.code);
-            } else {
-                console.error(error);
-            }
+    try {
+        await authService.logout();
+    } catch (error) {
+        if (error instanceof HttpError) {
+            console.error(error.payload.code);
+        } else {
+            console.error(error);
         }
-        finally {
-            await deleteCookies("accessToken");
-            await deleteCookies("refreshToken");
-        }
-        redirect(ROUTES.AUTH.LOGIN);
     }
+    finally {
+        await deleteCookies("accessToken");
+        await deleteCookies("refreshToken");
+    }
+    redirect(ROUTES.AUTH.LOGIN);
 }

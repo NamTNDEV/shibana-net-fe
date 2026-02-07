@@ -1,6 +1,7 @@
 import envConfig from "@/config/env"
 import { HttpError } from "./http-errors";
 import { ResponseDataType } from "@/types/response.type";
+import { getCookies } from "./cookies";
 
 type HttpClientOptions = Omit<RequestInit, "method" | "body"> & {
     body?: any
@@ -9,9 +10,17 @@ type HttpClientOptions = Omit<RequestInit, "method" | "body"> & {
 
 class Http {
     private baseUrl: string
+    private static instance: Http | null = null;
 
-    constructor() {
+    private constructor() {
         this.baseUrl = envConfig.NEXT_PUBLIC_API_BASE_URL;
+    }
+
+    static getInstance() {
+        if (!this.instance) {
+            this.instance = new Http();
+        }
+        return this.instance;
     }
 
     private async request<T>(
@@ -23,7 +32,16 @@ class Http {
         const headers = {
             "Content-Type": "application/json",
             ...options?.headers,
-        };
+        } as Record<string, string>;
+
+        const authHeader = headers["Authorization"];
+        if (!authHeader) {
+            const accessToken = await getCookies("accessToken");
+            if (accessToken) {
+                headers["Authorization"] = `Bearer ${accessToken}`;
+            }
+        }
+
         const baseUrl = options?.baseUrl || this.baseUrl;
         const fullUrl = url.startsWith("http") ? url : `${baseUrl}${url.startsWith("/") ? url : `/${url}`}`;
 
@@ -77,4 +95,4 @@ class Http {
     }
 }
 
-export const httpClient = new Http();
+export const httpClient = Http.getInstance();
