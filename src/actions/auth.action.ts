@@ -20,7 +20,7 @@ export async function loginAction(body: LoginRequestBodyType): Promise<ActionRes
 
         await setCookies({
             name: "accessToken", value: response.accessToken, options: {
-                maxAge: 60 * 60 * 24, // 1 day
+                maxAge: 10 * 60, // 10 minutes
             }
         });
 

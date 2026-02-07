@@ -2,6 +2,7 @@ import envConfig from "@/config/env"
 import { HttpError } from "./http-errors";
 import { ResponseDataType } from "@/types/response.type";
 import { getCookies } from "./cookies";
+import { handleRefreshToken } from "./auth";
 
 type HttpClientOptions = Omit<RequestInit, "method" | "body"> & {
     body?: any
@@ -34,8 +35,7 @@ class Http {
             ...options?.headers,
         } as Record<string, string>;
 
-        const authHeader = headers["Authorization"];
-        if (!authHeader) {
+        if (!headers["Authorization"]) {
             const accessToken = await getCookies("accessToken");
             if (accessToken) {
                 headers["Authorization"] = `Bearer ${accessToken}`;
@@ -49,28 +49,49 @@ class Http {
             body = JSON.stringify(body);
         }
 
-        const res = await fetch(fullUrl, {
+        let res = await fetch(fullUrl, {
             ...options,
             headers,
             body,
             method,
         });
 
+        // Refresh token
+        if (!res.ok && res.status === 401) {
+            console.log("Token hết hạn. Đang thử refresh...");
+
+            const newTokens = await handleRefreshToken();
+            if (newTokens && newTokens.accessToken) {
+                headers["Authorization"] = `Bearer ${newTokens.accessToken}`;
+                res = await fetch(
+                    fullUrl, {
+                    ...options,
+                    headers,
+                    body,
+                    method,
+                });
+            } else {
+                console.error("Hết cứu, mời Sếp về trang Login");
+            }
+        }
+
         let payload: ResponseDataType<any>;
+
         try {
             payload = await res.json();
         } catch (error) {
-            console.error("Error parsing JSON response:", error);
             payload = {
                 code: 5000000,
-                message: res.statusText || "Empty or Non-JSON response"
-            } as ResponseDataType<any>;
+                message: res.statusText || "Error parsing JSON",
+                data: null,
+            } as ResponseDataType<null>;
         }
 
         if (!res.ok) {
             console.error("Error:: ", payload);
             throw new HttpError({ status: res.status, payload });
         }
+
         return payload.data as T;
     }
 

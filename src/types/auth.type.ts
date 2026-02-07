@@ -4,8 +4,16 @@ import z from "zod";
 // Request
 export type LoginRequestBodyType = z.infer<typeof LoginSchema>
 
+export type RefreshTokenRequestBodyType = {
+    token: string
+}
 // Response
 export type LoginResponseDataType = {
+    accessToken: string
+    refreshToken: string
+}
+
+export type RefreshTokenResponseDataType = {
     accessToken: string
     refreshToken: string
 }

@@ -4,6 +4,7 @@ export const API_ROUTES = {
         REGISTER: "identity/auth/register",
         INTROSPECT: "identity/auth/introspect",
         LOGOUT: "identity/auth/logout",
+        REFRESH_TOKEN: "identity/auth/refresh-token",
     },
     USERS: {
         HELLO_WORLD: "identity/users/hello-world",
