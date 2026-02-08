@@ -1,7 +1,8 @@
 'use server'
 
 import { ROUTES } from "@/constants/routes";
-import { deleteCookies, setCookies } from "@/lib/cookies";
+import { TOKEN_TYPE } from "@/constants/token-type";
+import { deleteCookies, setCookies, setTokenToCookie } from "@/lib/cookies";
 import { HttpError } from "@/lib/http-errors";
 import { getErrorMessage } from "@/lib/utils";
 import { authService } from "@/services/auth.service";
@@ -18,17 +19,8 @@ export async function loginAction(body: LoginRequestBodyType): Promise<ActionRes
     try {
         const response = await authService.login(body);
 
-        await setCookies({
-            name: "accessToken", value: response.accessToken, options: {
-                maxAge: 10 * 60, // 10 minutes
-            }
-        });
-
-        await setCookies({
-            name: "refreshToken", value: response.refreshToken, options: {
-                maxAge: 60 * 60 * 24 * 30 * 7, // 7 days
-            }
-        });
+        await setTokenToCookie({ token: response.accessToken, tokenType: TOKEN_TYPE.ACCESS_TOKEN });
+        await setTokenToCookie({ token: response.refreshToken, tokenType: TOKEN_TYPE.REFRESH_TOKEN });
 
         return {
             success: true,
