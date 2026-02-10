@@ -1,9 +1,13 @@
 import envConfig from "@/config/env";
 import { API_ROUTES } from "@/constants/api-route";
 import { httpClient } from "@/lib/http-client";
-import { LoginRequestBodyType, LoginResponseDataType, RefreshTokenRequestBodyType, RefreshTokenResponseDataType } from "@/types/auth.type";
+import { LoginRequestBodyType, LoginResponseDataType, RefreshTokenRequestBodyType, RefreshTokenResponseDataType, RegisterRequestBodyType, RegisterResponseDataType } from "@/types/auth.type";
 
 export const authService = {
+    register: async (body: RegisterRequestBodyType) => {
+        const response = await httpClient.post<RegisterResponseDataType>(API_ROUTES.AUTH.REGISTER, { body });
+        return response;
+    },
     login: async (body: LoginRequestBodyType) => {
         const response = await httpClient.post<LoginResponseDataType>(API_ROUTES.AUTH.LOGIN, { body });
         return response;

@@ -7,9 +7,10 @@ export const LoginSchema = z.object({
 
 export const RegisterSchema = z.object({
     email: z.email({ message: "Vui lòng nhập địa chỉ email hợp lệ" }),
+    username: z.string().min(3, "Vui lòng nhập tên tài khoản"),
     firstName: z.string().min(1, "Vui lòng nhập tên"),
     lastName: z.string().min(1, "Vui lòng nhập họ"),
-    birthDate: z.string().optional(),
+    dob: z.string().optional(),
     password: z.string().min(6, "Vui lòng nhập mật khẩu có ít nhất 6 ký tự"),
     confirmPassword: z.string(),
 }).refine((data) => data.password === data.confirmPassword, {

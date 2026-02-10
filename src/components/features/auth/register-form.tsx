@@ -27,27 +27,53 @@ import {
 import { Separator } from "@/components/ui/separator"
 import PasswordButton from "./password-button"
 import SocialLoginButton from "./social-login-button"
+import { registerAction } from "@/actions/auth.action"
+import { toast } from "sonner"
+import { useRouter } from "next/navigation"
+import { ROUTES } from "@/constants/routes"
 
 type RegisterFormValues = z.infer<typeof RegisterSchema>
 
 export function RegisterForm() {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false)
+    const router = useRouter()
 
     const form = useForm<RegisterFormValues>({
         resolver: zodResolver(RegisterSchema),
         defaultValues: {
             email: "",
+            username: "",
+            password: "",
             firstName: "",
             lastName: "",
-            birthDate: "",
-            password: "",
+            dob: "",
             confirmPassword: "",
         },
     })
 
-    const onSubmit = (values: RegisterFormValues) => {
-        // TODO: Tích hợp API đăng ký tại đây
-        console.log("Register with values", values)
+    const onSubmit = async (values: RegisterFormValues) => {
+        const response = await registerAction(values);
+        if (response.success) {
+            toast.success(response.message, {
+                position: "bottom-right",
+                richColors: true,
+                duration: 1000,
+            })
+            form.reset()
+            router.push(ROUTES.HOME)
+        } else {
+            if (response.code === 4000702) {
+                form.setError("root", {
+                    message: response.message,
+                })
+            } else {
+                toast.error(response.message, {
+                    position: "bottom-right",
+                    richColors: true,
+                    duration: 1000,
+                })
+            }
+        }
     }
 
     const isSubmitting = form.formState.isSubmitting
@@ -87,6 +113,26 @@ export function RegisterForm() {
                                             type="email"
                                             autoComplete="email"
                                             placeholder="Nhập địa chỉ email của bạn"
+                                            className="rounded-xl h-12"
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage className="absolute left-3 -bottom-5 text-xs" />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="username"
+                            render={({ field }) => (
+                                <FormItem className="relative">
+                                    <FormLabel className="text-sm">Username</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            type="text"
+                                            autoComplete="username"
+                                            placeholder="Nhập username của bạn"
                                             className="rounded-xl h-12"
                                             {...field}
                                         />
@@ -140,13 +186,14 @@ export function RegisterForm() {
 
                         <FormField
                             control={form.control}
-                            name="birthDate"
+                            name="dob"
                             render={({ field }) => (
                                 <FormItem className="relative">
                                     <FormLabel className="text-sm">Ngày sinh</FormLabel>
                                     <FormControl>
                                         <Input
                                             type="date"
+                                            autoComplete="birthday"
                                             placeholder="dd/mm/yyyy"
                                             className="rounded-xl h-12"
                                             {...field}
@@ -209,7 +256,7 @@ export function RegisterForm() {
                             disabled={isSubmitting}
                             isLoading={isSubmitting}
                         >
-                            Đăng ký
+                            {isSubmitting ? "Đang đăng ký..." : "Đăng ký"}
                         </Button>
                     </form>
                 </Form>

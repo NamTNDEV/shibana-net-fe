@@ -6,13 +6,36 @@ import { deleteCookies, setAuthCookie } from "@/lib/cookies";
 import { HttpError } from "@/lib/http-errors";
 import { getErrorMessage } from "@/lib/utils";
 import { authService } from "@/services/auth.service";
-import { LoginRequestBodyType } from "@/types/auth.type";
+import { LoginRequestBodyType, RegisterRequestBodyType } from "@/types/auth.type";
 import { redirect } from "next/navigation";
 
 type ActionResponseType = {
     success: boolean
     message: string
     code?: number
+}
+
+export async function registerAction(body: RegisterRequestBodyType): Promise<ActionResponseType> {
+    try {
+        const response = await authService.register(body);
+
+        await setAuthCookie({ token: response.accessToken, tokenType: TOKEN_TYPE.ACCESS_TOKEN });
+        await setAuthCookie({ token: response.refreshToken, tokenType: TOKEN_TYPE.REFRESH_TOKEN });
+
+        return {
+            success: true,
+            message: "Đăng ký thành công",
+        };
+    } catch (error) {
+        if (error instanceof HttpError) {
+            return {
+                success: false,
+                message: getErrorMessage(error.payload.code),
+                code: error.payload.code
+            };
+        }
+        return { success: false, message: "Lỗi hệ thống, vui lòng thử lại sau." };
+    }
 }
 
 export async function loginAction(body: LoginRequestBodyType): Promise<ActionResponseType> {
