@@ -1,15 +1,19 @@
 import MainHeader from "@/components/layouts/headers/main-header";
 import MainLeftSidebar from "@/components/layouts/sidebars/main-left-sidebar";
 import MainRightSidebar from "@/components/layouts/sidebars/main-right-sidebar";
+import AuthHydrate from "@/components/providers/auth.hydrate";
+import { userService } from "@/services/user.service";
 
 export default async function MainLayout({
     children,
 }: Readonly<{
     children: React.ReactNode;
 }>) {
+    const user = await userService.safeGetMe();
     return (
         <div className="flex min-h-screen flex-col relative">
-            <MainHeader />
+            <AuthHydrate user={user} />
+            <MainHeader user={user} />
 
             <div className="flex bg-background">
                 <MainLeftSidebar />

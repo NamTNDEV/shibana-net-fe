@@ -11,3 +11,9 @@ export const API_ROUTES = {
         GET_ME: "identity/users/me",
     },
 } as const;
+
+export const NEXT_SERVER_ROUTES = {
+    USER: {
+        ME: "/api/users/me",
+    }
+}

@@ -1,8 +1,6 @@
 import { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "sonner";
-import AuthProvider from "@/components/providers/auth.providers";
-import { userService } from "@/services/user.service";
 
 export const metadata: Metadata = {
   title: {
@@ -20,14 +18,10 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const user = await userService.getMe();
-
   return (
     <html lang="vi">
       <body className="antialiased">
-        <AuthProvider initialUser={user}>
-          {children}
-        </AuthProvider>
+        {children}
         <Toaster />
       </body>
     </html>

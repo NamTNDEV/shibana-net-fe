@@ -2,7 +2,7 @@
 
 import { ROUTES } from "@/constants/routes";
 import { TOKEN_TYPE } from "@/constants/token-type";
-import { deleteCookies, setCookies, setTokenToCookie } from "@/lib/cookies";
+import { deleteCookies, setAuthCookie } from "@/lib/cookies";
 import { HttpError } from "@/lib/http-errors";
 import { getErrorMessage } from "@/lib/utils";
 import { authService } from "@/services/auth.service";
@@ -19,8 +19,8 @@ export async function loginAction(body: LoginRequestBodyType): Promise<ActionRes
     try {
         const response = await authService.login(body);
 
-        await setTokenToCookie({ token: response.accessToken, tokenType: TOKEN_TYPE.ACCESS_TOKEN });
-        await setTokenToCookie({ token: response.refreshToken, tokenType: TOKEN_TYPE.REFRESH_TOKEN });
+        await setAuthCookie({ token: response.accessToken, tokenType: TOKEN_TYPE.ACCESS_TOKEN });
+        await setAuthCookie({ token: response.refreshToken, tokenType: TOKEN_TYPE.REFRESH_TOKEN });
 
         return {
             success: true,

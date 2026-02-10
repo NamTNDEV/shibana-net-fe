@@ -20,7 +20,8 @@ export const PUBLIC_ROUTES = [
     ROUTES.USER.PROFILE,
 ];
 
-export const PRIVATE_ROUTES = [];
+export const PRIVATE_ROUTES = [
+];
 
 export const AUTH_ROUTES = [
     ROUTES.AUTH.LOGIN,

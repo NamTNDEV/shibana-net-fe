@@ -1,4 +1,4 @@
-import { ADMIN_AUTH_ROUTES, ADMIN_PRIVATE_ROUTES, AUTH_ROUTES, PRIVATE_ROUTES, ROUTES } from "@/constants/routes";
+import { ADMIN_AUTH_ROUTES, ADMIN_PRIVATE_ROUTES, AUTH_ROUTES, PRIVATE_ROUTES, PUBLIC_ROUTES, ROUTES } from "@/constants/routes";
 import { ZoneRoleConfigType } from "./zone-role.type";
 
 export const adminZoneRoleConfig: ZoneRoleConfigType = {
@@ -12,6 +12,7 @@ export const adminZoneRoleConfig: ZoneRoleConfigType = {
 export const userZoneRoleConfig: ZoneRoleConfigType = {
     authRoutes: AUTH_ROUTES,
     privateRoutes: PRIVATE_ROUTES,
+    publicRoutes: PUBLIC_ROUTES,
     loginRoute: ROUTES.AUTH.LOGIN,
     redirectRoute: ROUTES.HOME,
     isMatchingPath: (path: string) => path.startsWith(ROUTES.HOME),

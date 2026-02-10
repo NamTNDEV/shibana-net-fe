@@ -1,10 +1,13 @@
 import { SearchInput } from '@/components/shared/search-input'
-import { userService } from '@/services/user.service';
 import HeaderAction from './header-action';
 import Logo from '@/components/shared/logo';
+import { UserResponseDataType } from '@/types/user.type';
 
-export default async function MainHeader() {
-    const user = await userService.getMe();
+type MainHeaderPropsType = {
+    user: UserResponseDataType | null;
+}
+
+export default async function MainHeader({ user }: MainHeaderPropsType) {
     return (
         <div className="sticky top-0 z-50 flex h-14 w-full items-center justify-between bg-white px-4 shadow-sm sm:px-6">
             <div className="w-[280px] shrink-0">

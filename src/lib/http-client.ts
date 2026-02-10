@@ -2,7 +2,7 @@ import envConfig from "@/config/env"
 import { HttpError } from "./http-errors";
 import { ResponseDataType } from "@/types/response.type";
 import { getCookies } from "./cookies";
-import { handleRefreshToken } from "./auth";
+import { handleLogout, handleRefreshToken } from "./auth";
 
 type HttpClientOptions = Omit<RequestInit, "method" | "body"> & {
     body?: any
@@ -58,8 +58,6 @@ class Http {
 
         // Refresh token
         if (!res.ok && res.status === 401) {
-            console.log("Token hết hạn. Đang thử refresh...");
-
             const newTokens = await handleRefreshToken();
             if (newTokens && newTokens.accessToken) {
                 headers["Authorization"] = `Bearer ${newTokens.accessToken}`;
@@ -71,7 +69,8 @@ class Http {
                     method,
                 });
             } else {
-                console.error("Hết cứu, mời Sếp về trang Login");
+                // await handleLogout();
+                throw new HttpError({ status: 401, payload: { code: 401, message: "Token hết hạn" } });
             }
         }
 
@@ -81,14 +80,13 @@ class Http {
             payload = await res.json();
         } catch (error) {
             payload = {
-                code: 5000000,
+                code: 500,
                 message: res.statusText || "Error parsing JSON",
                 data: null,
             } as ResponseDataType<null>;
         }
 
         if (!res.ok) {
-            console.error("Error:: ", payload);
             throw new HttpError({ status: res.status, payload });
         }
 

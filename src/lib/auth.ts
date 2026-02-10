@@ -1,7 +1,7 @@
-
 import { authService } from "@/services/auth.service";
-import { RefreshTokenRequestBodyType, RefreshTokenResponseDataType } from "@/types/auth.type";
-import { getCookies } from "./cookies";
+import { RefreshTokenResponseDataType } from "@/types/auth.type";
+import { deleteCookies, getCookies, setAuthCookie } from "./cookies";
+import { TOKEN_TYPE } from "@/constants/token-type";
 
 let promiseCached: Promise<RefreshTokenResponseDataType | null> | null = null;
 
@@ -13,13 +13,14 @@ export const handleRefreshToken = async (): Promise<RefreshTokenResponseDataType
     promiseCached = (async () => {
         try {
             const refreshToken = await getCookies("refreshToken");
-            if (!refreshToken) {
-                return null;
-            }
+            if (!refreshToken) return null;
+
             const data = await authService.refreshToken({ token: refreshToken });
-            if (!data) {
-                return null;
-            }
+            if (!data) return null;
+
+            await setAuthCookie({ token: data.accessToken, tokenType: TOKEN_TYPE.ACCESS_TOKEN });
+            await setAuthCookie({ token: data.refreshToken, tokenType: TOKEN_TYPE.REFRESH_TOKEN });
+
             return data;
         } catch (error) {
             return null;
@@ -29,4 +30,9 @@ export const handleRefreshToken = async (): Promise<RefreshTokenResponseDataType
     })();
 
     return promiseCached;
+}
+
+export const handleLogout = async () => {
+    await deleteCookies(TOKEN_TYPE.ACCESS_TOKEN);
+    await deleteCookies(TOKEN_TYPE.REFRESH_TOKEN);
 }

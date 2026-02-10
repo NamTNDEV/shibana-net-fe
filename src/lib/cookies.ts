@@ -26,23 +26,27 @@ export const deleteCookies = async (name: string) => {
      */
 }
 
-export const setTokenToCookie = async ({ token, tokenType, options }: { token: string, tokenType: TokenType, options?: any }) => {
-    const { exp } = jwtDecode(token);
+export const setAuthCookie = async ({ token, tokenType, options }: { token: string, tokenType: TokenType, options?: any }) => {
+    try {
+        const { exp } = jwtDecode(token);
+        const expires = new Date((exp ?? 0) * 1000);
 
-    const expires = new Date((exp ?? 0) * 1000);
-    const defaultOptions = {
-        httpOnly: true,
-        sameSite: "lax" as const,
-        path: "/",
-    };
+        const defaultOptions = {
+            httpOnly: true,
+            sameSite: "lax" as const,
+            path: "/",
+        };
 
-    await setCookies({
-        name: tokenType,
-        value: token,
-        options: {
-            ...defaultOptions,
-            ...options,
-            expires,
-        }
-    })
+        await setCookies({
+            name: tokenType,
+            value: token,
+            options: {
+                ...defaultOptions,
+                ...options,
+                expires,
+            }
+        })
+    } catch (error) {
+        console.error("Lỗi decode token khi set cookie:", error);
+    }
 }
