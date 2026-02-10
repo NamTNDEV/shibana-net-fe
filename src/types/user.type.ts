@@ -3,6 +3,7 @@ import { RoleResponseDataType } from "./role.type"
 export type UserResponseDataType = {
     userId: string
     email: string
+    username: string
     roles: RoleResponseDataType[]
     firstName: string
     lastName: string

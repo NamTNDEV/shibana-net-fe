@@ -11,7 +11,7 @@ export const ROUTES = {
         DASHBOARD: "/manage/dashboard",
     },
     USER: {
-        PROFILE: "/@:userId",
+        PROFILE: "/@:username",
     },
 } as const;
 

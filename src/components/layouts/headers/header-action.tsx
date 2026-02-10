@@ -87,7 +87,7 @@ export default function HeaderAction({ user }: HeaderActionPropsType) {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-48">
           <DropdownMenuItem asChild>
-            <Link href={getUrlWithParams(ROUTES.USER.PROFILE, { userId: user.userId })}
+            <Link href={getUrlWithParams(ROUTES.USER.PROFILE, { username: user.username })}
               className="flex items-center gap-2 cursor-pointer focus:bg-accent/80"
             >
               <User className="size-4" />
