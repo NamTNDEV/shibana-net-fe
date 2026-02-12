@@ -8,12 +8,15 @@ export const API_ROUTES = {
     },
     USERS: {
         HELLO_WORLD: "identity/users/hello-world",
-        GET_ME: "identity/users/me",
+        MY_ACCOUNT: "identity/users/me/account",
     },
+    PROFILES: {
+        PROFILE_BY_USERNAME: "/social/profiles/:username",
+    }
 } as const;
 
 export const NEXT_SERVER_ROUTES = {
     USER: {
-        ME: "/api/users/me",
+        MY_ACCOUNT: "/api/users/me/account",
     }
 }

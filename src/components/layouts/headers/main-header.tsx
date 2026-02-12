@@ -1,10 +1,10 @@
 import { SearchInput } from '@/components/shared/search-input'
 import HeaderAction from './header-action';
 import Logo from '@/components/shared/logo';
-import { UserResponseDataType } from '@/types/user.type';
+import { MyAccountMetadataResponseDataType } from '@/types/user.type';
 
 type MainHeaderPropsType = {
-    user: UserResponseDataType | null;
+    user: MyAccountMetadataResponseDataType | null;
 }
 
 export default async function MainHeader({ user }: MainHeaderPropsType) {

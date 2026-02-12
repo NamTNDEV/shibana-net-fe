@@ -9,7 +9,7 @@ export default async function MainLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    const user = await userService.safeGetMe();
+    const user = await userService.safeGetMyAccountMetadata();
     return (
         <div className="flex min-h-screen flex-col relative">
             <AuthHydrate user={user} />

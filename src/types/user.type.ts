@@ -1,6 +1,6 @@
 import { RoleResponseDataType } from "./role.type"
 
-export type UserResponseDataType = {
+export type MyAccountMetadataResponseDataType = {
     userId: string
     email: string
     username: string
@@ -11,4 +11,6 @@ export type UserResponseDataType = {
     address: string
     phoneNumber: string | null
     avatar: string | null
+    bio: string | null
+    cover: string | null
 }
