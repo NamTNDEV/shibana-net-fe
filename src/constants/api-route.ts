@@ -11,7 +11,7 @@ export const API_ROUTES = {
         MY_ACCOUNT: "identity/users/me/account",
     },
     PROFILES: {
-        PROFILE_BY_USERNAME: "/social/profiles/:username",
+        PROFILE_BY_USERNAME: "social/profiles/:username",
     }
 } as const;
 

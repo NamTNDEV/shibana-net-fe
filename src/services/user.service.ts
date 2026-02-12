@@ -1,5 +1,6 @@
 import { API_ROUTES } from "@/constants/api-route";
 import { httpClient } from "@/lib/http-client";
+import { ProfileResponseDataType } from "@/types/profile.type";
 import { MyAccountMetadataResponseDataType } from "@/types/user.type";
 import React from "react";
 
@@ -16,8 +17,8 @@ export const userService = {
             return null;
         }
     }),
-    getProfileByUsername: React.cache(async (username: string): Promise<any> => {
-        const response = await httpClient.get<any>(API_ROUTES.PROFILES.PROFILE_BY_USERNAME.replace(":username", username), { cache: "no-store" });
+    getProfileByUsername: React.cache(async (username: string): Promise<ProfileResponseDataType> => {
+        const response = await httpClient.get<ProfileResponseDataType>(API_ROUTES.PROFILES.PROFILE_BY_USERNAME.replace(":username", username), { cache: "no-store" });
         return response;
     }),
 }   
