@@ -10,7 +10,7 @@ type MainHeaderPropsType = {
 export default async function MainHeader({ user }: MainHeaderPropsType) {
     return (
         <div className="sticky top-0 z-50 flex h-14 w-full items-center justify-between bg-white px-4 shadow-sm sm:px-6">
-            <div className="w-[280px] shrink-0">
+            <div className="w-[280px]">
                 <Logo />
             </div>
 
@@ -18,7 +18,7 @@ export default async function MainHeader({ user }: MainHeaderPropsType) {
                 {user && <SearchInput />}
             </div>
 
-            <div className="w-[280px] shrink-0">
+            <div className="w-[280px]">
                 <HeaderAction user={user} />
             </div>
         </div>

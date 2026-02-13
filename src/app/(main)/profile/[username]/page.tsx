@@ -9,7 +9,6 @@ export default async function ProfilePage(
     const { username } = await params;
     try {
         const profile = await userService.getProfileByUsername(username);
-        console.log("ProfilePage:: ", profile);
     } catch (error) {
         if (error instanceof HttpError && error.payload.code == 4040105) {
             return notFound();
@@ -17,8 +16,9 @@ export default async function ProfilePage(
             console.error("Error:: ", error);
         }
     }
-    return <div>
-        ProfilePage:: Username: {username}
-        <ProfileItem />
-    </div>;
+    return (
+        <>
+
+        </>
+    );
 }
