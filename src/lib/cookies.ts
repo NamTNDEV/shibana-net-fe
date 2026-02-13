@@ -10,7 +10,6 @@ export const getCookies = async (name: string) => {
 export const setCookies = async ({ name, value, options = {} }: { name: string, value: string, options?: any }) => {
     const cookieStore = await cookies();
     cookieStore.set(name, value, {
-        httpOnly: true,
         ...options,
     });
 }
@@ -27,14 +26,15 @@ export const deleteCookies = async (name: string) => {
 }
 
 export const setAuthCookie = async ({ token, tokenType, options }: { token: string, tokenType: TokenType, options?: any }) => {
+
     try {
         const { exp } = jwtDecode(token);
         const expires = new Date((exp ?? 0) * 1000);
 
         const defaultOptions = {
             httpOnly: true,
-            sameSite: "lax" as const,
             path: "/",
+            sameSite: "lax",
         };
 
         await setCookies({

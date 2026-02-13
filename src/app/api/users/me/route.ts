@@ -1,15 +1,23 @@
 import { HttpError } from "@/lib/http-errors";
 import { userService } from "@/services/user.service";
+import { MyAccountMetadataResponseDataType } from "@/types/user.type";
 import { NextResponse } from "next/server";
 
-export async function GET() {
+export type RouteHandlerResponseType<T> = {
+    success: boolean;
+    message: string;
+    code?: number;
+    data?: T;
+}
+
+export async function GET(): Promise<NextResponse<RouteHandlerResponseType<MyAccountMetadataResponseDataType | null>>> {
     try {
-        const data = await userService.getMe();
-        return NextResponse.json({ data: data ?? null }, { status: 200 });
+        const data = await userService.getMyAccountMetadata();
+        return NextResponse.json<RouteHandlerResponseType<MyAccountMetadataResponseDataType | null>>({ success: true, message: "Success", data: data ?? null }, { status: 200 });
     } catch (error) {
         if (error instanceof HttpError) {
-            return NextResponse.json({ code: error.payload.code, message: error.payload.message }, { status: error.status });
+            return NextResponse.json<RouteHandlerResponseType<null>>({ success: false, message: error.payload.message, code: error.payload.code }, { status: error.status });
         }
-        return NextResponse.json({ code: 500, message: "Internal server error" }, { status: 500 });
+        return NextResponse.json<RouteHandlerResponseType<null>>({ success: false, message: "Internal server error", code: 500 }, { status: 500 });
     }
 }

@@ -17,7 +17,7 @@ export const userService = {
             return null;
         }
     }),
-    getProfileByUsername: React.cache(async (username: string): Promise<ProfileResponseDataType> => {
+    getProfileByUsername: React.cache(async (username: string): Promise<ProfileResponseDataType | null> => {
         const response = await httpClient.get<ProfileResponseDataType>(API_ROUTES.PROFILES.PROFILE_BY_USERNAME.replace(":username", username), { cache: "no-store" });
         return response;
     }),

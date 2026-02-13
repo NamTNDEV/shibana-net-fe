@@ -23,10 +23,6 @@ export const zoneRoleHandler = async ({
     const isPrivateRoute = onGoingPath === ROUTES.HOME || config.privateRoutes.some(route => onGoingPath.startsWith(route));
     const isPublicRoute = !isAuthRoute && !isPrivateRoute;
 
-    if (isPublicRoute) {
-        return NextResponse.next();
-    }
-
     if (isAuthRoute) {
         if (accessToken) {
             return NextResponse.redirect(new URL(config.redirectRoute, request.url));
@@ -35,6 +31,9 @@ export const zoneRoleHandler = async ({
     }
 
     if (!refreshToken) {
+        if (isPublicRoute) {
+            return NextResponse.next();
+        }
         return redirectToLogin(request, config);
     }
 
@@ -73,8 +72,8 @@ export const zoneRoleHandler = async ({
             newTokensPair.accessToken,
             {
                 httpOnly: true,
-                sameSite: "lax" as const,
                 path: "/",
+                sameSite: "lax",
                 expires: new Date((atExp ?? 0) * 1000),
             }
         );
@@ -84,8 +83,8 @@ export const zoneRoleHandler = async ({
             newTokensPair.refreshToken,
             {
                 httpOnly: true,
-                sameSite: "lax" as const,
                 path: "/",
+                sameSite: "lax",
                 expires: new Date((rtExp ?? 0) * 1000),
             }
         );

@@ -2,7 +2,7 @@ import envConfig from "@/config/env"
 import { HttpError } from "./http-errors";
 import { ResponseDataType } from "@/types/response.type";
 import { getCookies } from "./cookies";
-import { handleLogout, handleRefreshToken } from "./auth";
+import { handleRefreshToken } from "./auth";
 
 type HttpClientOptions = Omit<RequestInit, "method" | "body"> & {
     body?: any
@@ -69,8 +69,7 @@ class Http {
                     method,
                 });
             } else {
-                // await handleLogout();
-                throw new HttpError({ status: 401, payload: { code: 401, message: "Token hết hạn" } });
+                throw new HttpError({ status: 401, payload: { code: 401, message: "Token không hợp lệ" } });
             }
         }
 

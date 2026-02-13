@@ -14,13 +14,10 @@ export const handleRefreshToken = async (): Promise<RefreshTokenResponseDataType
         try {
             const refreshToken = await getCookies("refreshToken");
             if (!refreshToken) return null;
-
             const data = await authService.refreshToken({ token: refreshToken });
             if (!data) return null;
-
             await setAuthCookie({ token: data.accessToken, tokenType: TOKEN_TYPE.ACCESS_TOKEN });
             await setAuthCookie({ token: data.refreshToken, tokenType: TOKEN_TYPE.REFRESH_TOKEN });
-
             return data;
         } catch (error) {
             return null;
@@ -30,9 +27,4 @@ export const handleRefreshToken = async (): Promise<RefreshTokenResponseDataType
     })();
 
     return promiseCached;
-}
-
-export const handleLogout = async () => {
-    await deleteCookies(TOKEN_TYPE.ACCESS_TOKEN);
-    await deleteCookies(TOKEN_TYPE.REFRESH_TOKEN);
 }

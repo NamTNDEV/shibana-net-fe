@@ -17,6 +17,6 @@ export const API_ROUTES = {
 
 export const NEXT_SERVER_ROUTES = {
     USER: {
-        MY_ACCOUNT: "/api/users/me/account",
+        MY_ACCOUNT: "/api/users/me",
     }
 }
