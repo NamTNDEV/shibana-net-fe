@@ -38,7 +38,7 @@ export default function Logo({
 
 const LogoText = ({ fontSize }: { fontSize: string }) => {
     return (
-        <span className={cn("font-semibold tracking-tight select-none", fontSize)}>
+        <span className={cn("font-semibold tracking-tight select-none hidden lg:block", fontSize)}>
             ShibaNa
             <span className="text-primary ml-0.5">Net</span>
         </span>

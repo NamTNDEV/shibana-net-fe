@@ -1,6 +1,5 @@
 import { ERROR_DICTIONARY, ErrorDictionaryType } from "@/constants/error-dictionary";
 import { ROUTES } from "@/constants/routes";
-import { authService } from "@/services/auth.service";
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -25,3 +24,11 @@ export const getSafeRedirectUrl = (url: string | null, defaultUrl?: string) => {
 export const getUrlWithParams = (url: string, params: Record<string, string>) => {
   return url.replace(/:(\w+)/g, (match, p1) => params[p1] || match);
 }
+
+export const getUsernameFromHandle = (handle: string) => {
+  return handle.replace("@", "");
+}
+
+export const getInitialName = (firstName: string, lastName: string): string => {
+  return `${firstName?.trim().charAt(0)}${lastName?.trim().charAt(0)}`.toUpperCase() || "?";
+};

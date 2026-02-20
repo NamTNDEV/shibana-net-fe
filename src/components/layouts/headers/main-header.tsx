@@ -10,11 +10,13 @@ type MainHeaderPropsType = {
 export default async function MainHeader({ user }: MainHeaderPropsType) {
     return (
         <div className="sticky top-0 z-50 flex h-14 w-full items-center justify-between bg-white px-4 shadow-sm sm:px-6">
-            <div className="w-[280px]">
+            <div className="flex items-center gap-2 lg:w-[280px]">
                 <Logo />
+                <div className="block lg:hidden size-10 bg-red-500">
+                </div>
             </div>
 
-            <div className="flex flex-1 justify-center px-4">
+            <div className="hidden lg:block">
                 {user && <SearchInput />}
             </div>
 

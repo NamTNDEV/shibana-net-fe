@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, LogOut, MessageCircle, User, ChevronDown, Loader2 } from "lucide-react";
+import { Bell, LogOut, MessageCircle, User, ChevronDown } from "lucide-react";
 import Link from "next/link";
 
 import { logoutAction } from "@/actions/auth.action";
@@ -14,18 +14,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ROUTES } from "@/constants/routes";
-import { getUrlWithParams } from "@/lib/utils";
+import { getInitialName, getUrlWithParams } from "@/lib/utils";
 import { toast } from "sonner";
 import { MyAccountMetadataResponseDataType } from "@/types/user.type";
 
 type HeaderActionPropsType = {
   user?: MyAccountMetadataResponseDataType | null;
-}
-
-function getInitials(firstName: string, lastName: string): string {
-  const first = firstName?.trim().charAt(0) ?? "";
-  const last = lastName?.trim().charAt(0) ?? "";
-  return (first + last).toUpperCase() || "?";
 }
 
 export default function HeaderAction({ user }: HeaderActionPropsType) {
@@ -76,7 +70,7 @@ export default function HeaderAction({ user }: HeaderActionPropsType) {
             <Avatar className="size-10">
               <AvatarImage src={user.avatar ?? undefined} alt={user.firstName} />
               <AvatarFallback>
-                {getInitials(user.firstName, user.lastName)}
+                {getInitialName(user.firstName, user.lastName)}
               </AvatarFallback>
             </Avatar>
 
@@ -87,7 +81,7 @@ export default function HeaderAction({ user }: HeaderActionPropsType) {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-48">
           <DropdownMenuItem asChild>
-            <Link href={getUrlWithParams(ROUTES.USER.PROFILE, { username: user.username })}
+            <Link href={getUrlWithParams(ROUTES.USER.PROFILE, { handle: user.username })}
               className="flex items-center gap-2 cursor-pointer focus:bg-accent/80"
             >
               <User className="size-4" />

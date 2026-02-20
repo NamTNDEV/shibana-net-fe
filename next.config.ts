@@ -9,13 +9,42 @@ const nextConfig: NextConfig = {
       },
     }
   },
-  async rewrites() {
+  async redirects() {
     return [
       {
-        source: '/@:username',
-        destination: '/profile/:username',
+        source: '/profile/:handle(@.*)',
+        destination: '/:handle',
+        permanent: false,
       },
+      {
+        source: '/profile/:handle((?!@).*)',
+        destination: '/@:handle',
+        permanent: false,
+      }
     ];
+  },
+  images: {
+    dangerouslyAllowLocalIP: true,
+    remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '8888',
+        pathname: '/api/v1/media/static/**',
+      },
+      // {
+      //   protocol: 'http',
+      //   hostname: '127.0.0.1',
+      //   port: '8888',
+      //   pathname: '/api/v1/media/static/**',
+      // },
+      // {
+      //   protocol: 'http',
+      //   hostname: '::1',
+      //   port: '8888',
+      //   pathname: '/api/v1/media/static/**',
+      // }
+    ],
   },
 };
 

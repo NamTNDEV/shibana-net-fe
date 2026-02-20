@@ -1,5 +1,3 @@
-import ProfileItem from "@/components/features/profile/profile-item";
-
 export default function HomePage() {
     return (
         <>
