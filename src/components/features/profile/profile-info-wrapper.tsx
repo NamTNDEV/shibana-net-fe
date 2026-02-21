@@ -5,6 +5,7 @@ import { getInitialName } from "@/lib/utils"
 import ProfileAvatar from "./profile-avatar"
 import ProfileDetails from "./profile-details"
 import ProfileBio from "./profile-bio"
+import ProfileTabs from "./profile-tabs"
 
 type ProfileInfoWrapperPropsType = {
     profile: ProfileResponseDataType;
@@ -21,16 +22,17 @@ export default function ProfileInfoWrapper({ profile }: ProfileInfoWrapperPropsT
                             initialName={getInitialName(profile.firstName, profile.lastName)} />
                     </div>
                     <div className="flex-1 px-1 md:py-3">
-                        <ProfileDetails firstName={profile.firstName} lastName={profile.lastName} />
+                        <ProfileDetails firstName={profile.firstName} lastName={profile.lastName} userId={profile.userId} />
                         <ProfileBio bio={profile.bio} />
-                        {/* MetaList */}
                     </div>
                 </div>
             </div>
             <div className="w-full lg:max-w-[74%] lg:px-6">
                 <Separator className="w-full bg-[#ced1d5] h-0.5" />
             </div>
-            <div className="h-10"></div>
+            <div className="w-full lg:max-w-[74%] lg:px-6">
+                <ProfileTabs />
+            </div>
         </section>
     )
 }

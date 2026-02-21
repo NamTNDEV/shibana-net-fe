@@ -1,11 +1,16 @@
+'use client'
 import Link from "next/link"
-import { Button } from "@/components/ui/button"
+import ProfileActions from "./profile-actions";
+import { useAuthStore } from "@/stores/auth.store";
 
 export type ProfileDetailsPropsType = {
+    userId: string;
     firstName: string;
     lastName: string;
 }
-export default function ProfileDetails({ firstName, lastName }: ProfileDetailsPropsType) {
+export default function ProfileDetails({ firstName, lastName, userId }: ProfileDetailsPropsType) {
+    const { authUser } = useAuthStore();
+
     return (
         <div className="flex flex-col items-center justify-between lg:flex-row lg:items-start">
             <div className="text-center lg:text-left">
@@ -21,14 +26,7 @@ export default function ProfileDetails({ firstName, lastName }: ProfileDetailsPr
                 </div>
             </div>
 
-            <div className="flex gap-2 md:pt-3 lg:pt-0">
-                <Button>
-                    Theo dõi
-                </Button>
-                <Button variant="outline">
-                    Tin nhắn
-                </Button>
-            </div>
+            <ProfileActions isOwner={userId === authUser?.userId} />
         </div>
     )
 }
