@@ -1,13 +1,25 @@
-import { Button } from "@/components/ui/button";
-import { CameraIcon } from "lucide-react";
+'use client'
 import Image from "next/image";
+import { useAuthStore } from "@/stores/auth.store";
+import ProfileCoverActions from "./profile-cover-actions";
 
 type ProfileCoverProps = {
     coverUrl?: string | null;
     altText?: string;
+    userId: string;
 };
 
-export default function ProfileCover({ coverUrl, altText = "Cover Photo" }: ProfileCoverProps) {
+export default function ProfileCover({ coverUrl, altText = "Cover Photo", userId }: ProfileCoverProps) {
+    const { authUser } = useAuthStore();
+
+    const handleRemoveCover = () => {
+        console.log("remove cover 🗑:::");
+    }
+
+    const handleRepositionCover = () => {
+        console.log("reposition cover 🔄:::");
+    }
+
     if (!coverUrl) {
         return (
             <div className="flex justify-center w-full bg-white">
@@ -41,16 +53,14 @@ export default function ProfileCover({ coverUrl, altText = "Cover Photo" }: Prof
                     priority
                 />
 
-                <div className="absolute bottom-3 right-6 md:bottom-4 md:right-8 z-50">
-                    <Button
-                        variant="secondary"
-                        size="default"
-                        className="font-semibold rounded-sm bg-white hover:bg-gray-100 px-4!"
-                    >
-                        <CameraIcon className="size-4" />
-                        <span className="hidden lg:inline">Chỉnh sửa ảnh bìa</span>
-                    </Button>
-                </div>
+                {userId === authUser?.userId && (
+                    <div className="absolute bottom-3 right-6 md:bottom-4 md:right-8 z-50">
+                        <ProfileCoverActions
+                            onRemoveCover={handleRemoveCover}
+                            onRepositionCover={handleRepositionCover}
+                        />
+                    </div>
+                )}
             </div>
         </div>
     );

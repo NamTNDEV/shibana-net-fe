@@ -19,7 +19,9 @@ export default function ProfileInfoWrapper({ profile }: ProfileInfoWrapperPropsT
                     <div className="md:-mt-20 lg:mt-0 lg:py-1 lg:pl-1 lg:pr-3">
                         <ProfileAvatar
                             avatar={profile.avatar}
-                            initialName={getInitialName(profile.firstName, profile.lastName)} />
+                            initialName={getInitialName(profile.firstName, profile.lastName)}
+                            userId={profile.userId}
+                        />
                     </div>
                     <div className="flex-1 px-1 md:py-3">
                         <ProfileDetails firstName={profile.firstName} lastName={profile.lastName} userId={profile.userId} />

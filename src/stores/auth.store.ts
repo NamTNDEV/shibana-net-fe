@@ -1,11 +1,11 @@
-import { UserResponseDataType } from "@/types/user.type"
+import { MyAccountMetadataResponseDataType } from "@/types/user.type"
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
 export type AuthStoreType = {
-    authUser: UserResponseDataType | null;
+    authUser: MyAccountMetadataResponseDataType | null;
     logout: () => void;
-    setAuthUser: (user: UserResponseDataType | null) => void;
+    setAuthUser: (user: MyAccountMetadataResponseDataType | null) => void;
 }
 
 export const useAuthStore = create<AuthStoreType>()(
@@ -13,7 +13,7 @@ export const useAuthStore = create<AuthStoreType>()(
         (set) => ({
             authUser: null,
             logout: () => set({ authUser: null }),
-            setAuthUser: (user: UserResponseDataType | null) => set({ authUser: user })
+            setAuthUser: (user: MyAccountMetadataResponseDataType | null) => set({ authUser: user })
         }),
         { name: "AuthStore" }
     )

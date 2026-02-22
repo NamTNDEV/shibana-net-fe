@@ -1,12 +1,17 @@
+'use client'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { useAuthStore } from "@/stores/auth.store";
 import { Camera } from "lucide-react";
 
 export type ProfileAvatarPropsType = {
     avatar: string | null;
     initialName: string;
+    userId: string;
 }
 
-export default function ProfileAvatar({ avatar, initialName }: ProfileAvatarPropsType) {
+export default function ProfileAvatar({ avatar, initialName, userId }: ProfileAvatarPropsType) {
+    const { authUser } = useAuthStore();
+
     return (
         <div className="relative">
             <div className="bg-white rounded-full p-1">
@@ -15,11 +20,13 @@ export default function ProfileAvatar({ avatar, initialName }: ProfileAvatarProp
                     <AvatarFallback>{initialName}</AvatarFallback>
                 </Avatar>
             </div>
-            <div className="absolute bottom-4 right-4 size-9
+            {userId === authUser?.userId && (
+                <div className="absolute bottom-4 right-4 size-9
              bg-secondary rounded-full flex items-center justify-center
-              shadow hover:cursor-pointer hover:bg-[#dbdee1]">
-                <Camera className="size-5" />
-            </div>
+                    shadow hover:cursor-pointer hover:bg-[#dbdee1]">
+                    <Camera className="size-5" />
+                </div>
+            )}
         </div>
 
     )
