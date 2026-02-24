@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { useAuthStore } from "@/stores/auth.store";
 import ProfileCoverActions from "./profile-cover-actions";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Earth, Move } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -14,8 +14,25 @@ type ProfileCoverProps = {
 };
 
 export default function ProfileCover({ coverUrl, altText = "Cover Photo", userId }: ProfileCoverProps) {
-    const [isEditingCover, setIsEditingCover] = useState<boolean>(false);
     const { authUser } = useAuthStore();
+    const [isEditingCover, setIsEditingCover] = useState<boolean>(false);
+    const [selectedCover, setSelectedCover] = useState<File | null>(null);
+    const [previewCoverUrl, setPreviewCoverUrl] = useState<string | null>(null);
+
+    // useEffect(() => {
+    //     return () => {
+    //         if (previewCoverUrl) {
+    //             URL.revokeObjectURL(previewCoverUrl);
+    //         }
+    //     }
+    // }, [previewCoverUrl])
+
+    const handleUploadCover = (file: File) => {
+        setSelectedCover(file);
+        const objUrl = URL.createObjectURL(file);
+        setPreviewCoverUrl(objUrl);
+        setIsEditingCover(true);
+    }
 
     const handleRemoveCover = () => {
         console.log("remove cover 🗑:::");
@@ -26,15 +43,18 @@ export default function ProfileCover({ coverUrl, altText = "Cover Photo", userId
     }
 
     const handleSaveRepositionCover = () => {
-        console.log("save reposition cover 💾:::");
+        console.log("save reposition cover 💾::: ", selectedCover);
     }
 
     const handleCancelRepositionCover = () => {
         setIsEditingCover(false);
+        setSelectedCover(null);
+        setPreviewCoverUrl(null);
     }
 
+    const displayCoverUrl = previewCoverUrl || coverUrl;
 
-    if (!coverUrl) {
+    if (!displayCoverUrl) {
         return (
             <div className="flex justify-center w-full bg-white">
                 <div className="w-full max-w-[74%] h-[240px] md:h-[310px] lg:h-[465px] bg-gray-200 rounded-b-xl" />
@@ -46,7 +66,7 @@ export default function ProfileCover({ coverUrl, altText = "Cover Photo", userId
         <div className="relative w-full bg-white flex justify-center">
             <div className="absolute inset-x-0 top-0 h-[240px] md:h-[310px] lg:h-[465px] overflow-hidden pointer-events-none z-0">
                 <Image
-                    src={coverUrl}
+                    src={displayCoverUrl}
                     alt="Ambient Background"
                     fill
                     className="object-cover blur-[100px] scale-110"
@@ -63,16 +83,20 @@ export default function ProfileCover({ coverUrl, altText = "Cover Photo", userId
                 )}
             >
                 <Image
-                    src={coverUrl}
+                    src={displayCoverUrl}
                     alt={altText}
                     fill
-                    className="object-cover object-center hover:cursor-pointer hover:opacity-95 pointer-events-none"
+                    className={cn(
+                        "object-cover object-center hover:cursor-pointer hover:opacity-95",
+                        !isEditingCover && "pointer-events-none"
+                    )}
                     priority
                 />
 
                 {userId === authUser?.userId && !isEditingCover && (
                     <div className="absolute bottom-3 right-6 md:bottom-4 md:right-8 z-50">
                         <ProfileCoverActions
+                            onUploadCover={handleUploadCover}
                             onRemoveCover={handleRemoveCover}
                             onRepositionCover={handleRepositionCover}
                         />
@@ -97,7 +121,7 @@ export default function ProfileCover({ coverUrl, altText = "Cover Photo", userId
 
                         <div className="flex items-center gap-2">
                             <Button className="bg-secondary/20 text-white px-10" onClick={handleCancelRepositionCover}>Huỷ</Button>
-                            <Button className="px-10 text-white">Lưu thay đổi</Button>
+                            <Button className="px-10 text-white" onClick={handleSaveRepositionCover}>Lưu thay đổi</Button>
                         </div>
                     </div>
                 </div>

@@ -5,23 +5,26 @@ import { CameraIcon, Images, Move, Trash, Upload } from "lucide-react";
 import { useRef } from "react";
 
 type ProfileCoverActionsProps = {
+    onUploadCover: (file: File) => void;
     onRemoveCover: () => void;
     onRepositionCover: () => void;
 }
 
-export default function ProfileCoverActions({ onRemoveCover, onRepositionCover }: ProfileCoverActionsProps) {
+export default function ProfileCoverActions({ onRemoveCover, onRepositionCover, onUploadCover }: ProfileCoverActionsProps) {
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const handleUploadCover = () => {
-        console.log("upload cover 📂:::");
+    const handleUploadClick = () => {
         fileInputRef.current?.click();
     }
 
     const handleCoverChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        console.log("cover change 📷:::");
         const uploadedCover = e.target.files?.[0];
         if (uploadedCover) {
-            console.log("uploadedCover :::", uploadedCover);
+            onUploadCover(uploadedCover);
+
+            if (fileInputRef.current) {
+                fileInputRef.current.value = "";
+            }
         }
     }
 
@@ -44,7 +47,7 @@ export default function ProfileCoverActions({ onRemoveCover, onRepositionCover }
                             <Images className="size-5" />
                             <span className="text-base sm:w-[280px] font-semibold">Chọn ảnh bìa</span>
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="gap-3 px-3 py-2 hover:cursor-pointer" onClick={handleUploadCover}>
+                        <DropdownMenuItem className="gap-3 px-3 py-2 hover:cursor-pointer" onClick={handleUploadClick}>
                             <Upload className="size-5" />
                             <span className="text-base sm:w-[280px] font-semibold">Tải ảnh lên</span>
                         </DropdownMenuItem>
@@ -66,6 +69,7 @@ export default function ProfileCoverActions({ onRemoveCover, onRepositionCover }
                 type="file"
                 ref={fileInputRef}
                 className="hidden"
+                accept="image/*"
                 onChange={handleCoverChange}
             />
         </>
