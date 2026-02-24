@@ -2,6 +2,10 @@
 import Image from "next/image";
 import { useAuthStore } from "@/stores/auth.store";
 import ProfileCoverActions from "./profile-cover-actions";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Earth, Move } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 type ProfileCoverProps = {
     coverUrl?: string | null;
@@ -10,6 +14,7 @@ type ProfileCoverProps = {
 };
 
 export default function ProfileCover({ coverUrl, altText = "Cover Photo", userId }: ProfileCoverProps) {
+    const [isEditingCover, setIsEditingCover] = useState<boolean>(false);
     const { authUser } = useAuthStore();
 
     const handleRemoveCover = () => {
@@ -17,8 +22,17 @@ export default function ProfileCover({ coverUrl, altText = "Cover Photo", userId
     }
 
     const handleRepositionCover = () => {
-        console.log("reposition cover 🔄:::");
+        setIsEditingCover(true);
     }
+
+    const handleSaveRepositionCover = () => {
+        console.log("save reposition cover 💾:::");
+    }
+
+    const handleCancelRepositionCover = () => {
+        setIsEditingCover(false);
+    }
+
 
     if (!coverUrl) {
         return (
@@ -43,17 +57,20 @@ export default function ProfileCover({ coverUrl, altText = "Cover Photo", userId
             </div>
 
             <div
-                className="relative z-10 w-full lg:max-w-[74%] h-[240px] md:h-[310px] lg:h-[465px] rounded-b-sm overflow-hidden shadow-sm border border-gray-100/20 group"
+                className={cn(
+                    "relative z-10 w-full lg:max-w-[74%] h-[240px] md:h-[310px] lg:h-[465px] rounded-b-sm overflow-hidden shadow-sm border border-gray-100/20 group",
+                    isEditingCover && "cursor-move"
+                )}
             >
                 <Image
                     src={coverUrl}
                     alt={altText}
                     fill
-                    className="object-cover object-center hover:cursor-pointer hover:opacity-95"
+                    className="object-cover object-center hover:cursor-pointer hover:opacity-95 pointer-events-none"
                     priority
                 />
 
-                {userId === authUser?.userId && (
+                {userId === authUser?.userId && !isEditingCover && (
                     <div className="absolute bottom-3 right-6 md:bottom-4 md:right-8 z-50">
                         <ProfileCoverActions
                             onRemoveCover={handleRemoveCover}
@@ -61,7 +78,30 @@ export default function ProfileCover({ coverUrl, altText = "Cover Photo", userId
                         />
                     </div>
                 )}
+
+                {isEditingCover && (
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-fit w-1/2 max-w-[450px] bg-black/50 px-3 py-2 flex items-center gap-2 rounded-md">
+                        <Move className="size-5 text-white" />
+                        <span className="text-white text-[15px] font-semibold">Kéo hoặc dùng các phím mũi tên để đặt lại vị trí ảnh bìa.</span>
+                    </div>
+                )}
             </div>
+
+            {isEditingCover && (
+                <div className="absolute top-0 left-0 h-[60px] w-full bg-black/50 px-4 py-3 z-50">
+                    <div className="h-full w-full flex justify-between items-center">
+                        <div className="flex items-center gap-3">
+                            <Earth className="size-5 text-white" />
+                            <span className="text-white text-base">Ảnh bìa của bạn hiển thị công khai.</span>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                            <Button className="bg-secondary/20 text-white px-10" onClick={handleCancelRepositionCover}>Huỷ</Button>
+                            <Button className="px-10 text-white">Lưu thay đổi</Button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
