@@ -13,7 +13,7 @@ type ProfileInfoWrapperPropsType = {
 
 export default function ProfileInfoWrapper({ profile }: ProfileInfoWrapperPropsType) {
     return (
-        <section className="w-full flex flex-col items-center justify-center z-50 md:px-4 lg:px-3">
+        <section className="w-full flex flex-col items-center justify-center z-40 md:px-4 lg:px-3">
             <div className="w-full max-w-[73%] px-5 py-1">
                 <div className="w-full mt-3 mb-4 flex flex-col items-center lg:flex-row lg:items-center lg:justify-between">
                     <div className="md:-mt-20 lg:mt-0 lg:py-1 lg:pl-1 lg:pr-3">

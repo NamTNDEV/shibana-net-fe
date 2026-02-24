@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Earth, Move } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useCoverDrag } from "@/hooks/use-cover-drag";
 
 type ProfileCoverProps = {
     coverUrl?: string | null;
@@ -13,19 +14,26 @@ type ProfileCoverProps = {
     userId: string;
 };
 
+const DEFAULT_IMAGE_POSITION_Y = 50;
+
 export default function ProfileCover({ coverUrl, altText = "Cover Photo", userId }: ProfileCoverProps) {
     const { authUser } = useAuthStore();
     const [isEditingCover, setIsEditingCover] = useState<boolean>(false);
     const [selectedCover, setSelectedCover] = useState<File | null>(null);
     const [previewCoverUrl, setPreviewCoverUrl] = useState<string | null>(null);
 
-    // useEffect(() => {
-    //     return () => {
-    //         if (previewCoverUrl) {
-    //             URL.revokeObjectURL(previewCoverUrl);
-    //         }
-    //     }
-    // }, [previewCoverUrl])
+    const { imagePositionY, onMouseDown, setImagePositionY, isDragging } = useCoverDrag({
+        containerHeight: 310,
+        imageHeight: 462,
+    });
+
+    useEffect(() => {
+        return () => {
+            if (previewCoverUrl) {
+                URL.revokeObjectURL(previewCoverUrl);
+            }
+        }
+    }, [previewCoverUrl])
 
     const handleUploadCover = (file: File) => {
         setSelectedCover(file);
@@ -50,6 +58,7 @@ export default function ProfileCover({ coverUrl, altText = "Cover Photo", userId
         setIsEditingCover(false);
         setSelectedCover(null);
         setPreviewCoverUrl(null);
+        setImagePositionY(DEFAULT_IMAGE_POSITION_Y);
     }
 
     const displayCoverUrl = previewCoverUrl || coverUrl;
@@ -87,14 +96,18 @@ export default function ProfileCover({ coverUrl, altText = "Cover Photo", userId
                     alt={altText}
                     fill
                     className={cn(
-                        "object-cover object-center hover:cursor-pointer hover:opacity-95",
-                        !isEditingCover && "pointer-events-none"
+                        "object-cover transition-none",
+                        isEditingCover ? "cursor-move" : "pointer-events-none hover:cursor-pointer hover:opacity-95"
                     )}
+                    style={{
+                        objectPosition: `50% ${imagePositionY}%`
+                    }}
+                    onMouseDown={isEditingCover ? onMouseDown : undefined}
                     priority
                 />
 
                 {userId === authUser?.userId && !isEditingCover && (
-                    <div className="absolute bottom-3 right-6 md:bottom-4 md:right-8 z-50">
+                    <div className="absolute bottom-3 right-6 md:bottom-4 md:right-8 z-40">
                         <ProfileCoverActions
                             onUploadCover={handleUploadCover}
                             onRemoveCover={handleRemoveCover}
@@ -103,7 +116,7 @@ export default function ProfileCover({ coverUrl, altText = "Cover Photo", userId
                     </div>
                 )}
 
-                {isEditingCover && (
+                {isEditingCover && !isDragging && (
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-fit w-1/2 max-w-[450px] bg-black/50 px-3 py-2 flex items-center gap-2 rounded-md">
                         <Move className="size-5 text-white" />
                         <span className="text-white text-[15px] font-semibold">Kéo hoặc dùng các phím mũi tên để đặt lại vị trí ảnh bìa.</span>
@@ -112,7 +125,7 @@ export default function ProfileCover({ coverUrl, altText = "Cover Photo", userId
             </div>
 
             {isEditingCover && (
-                <div className="absolute top-0 left-0 h-[60px] w-full bg-black/50 px-4 py-3 z-50">
+                <div className="absolute top-0 left-0 h-[60px] w-full bg-black/50 px-4 py-3 z-40">
                     <div className="h-full w-full flex justify-between items-center">
                         <div className="flex items-center gap-3">
                             <Earth className="size-5 text-white" />
