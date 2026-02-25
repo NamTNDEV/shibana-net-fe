@@ -63,7 +63,7 @@ export default function ProfileCover({ coverUrl: initialCoverUrl, altText = "Cov
     const handleUpdateCoverImage = async () => {
         setIsUploadingCover(true);
         try {
-            let uploadedCoverMediaId: string | undefined;
+            let uploadedCoverMediaName: string | undefined;
             let newCoverUrl: string | undefined;
             if (selectedCover) {
                 const response = await uploadCoverImageAction({ file: selectedCover });
@@ -76,11 +76,11 @@ export default function ProfileCover({ coverUrl: initialCoverUrl, altText = "Cov
                     return;
                 }
                 newCoverUrl = response.data?.url;
-                uploadedCoverMediaId = response.data?.mediaId;
+                uploadedCoverMediaName = response.data?.fileName;
             }
 
             const updateBody: UpdateCoverImageRequestBodyType = {
-                coverMediaId: uploadedCoverMediaId,
+                coverMediaName: uploadedCoverMediaName,
                 coverPositionY: imagePositionY,
             }
 

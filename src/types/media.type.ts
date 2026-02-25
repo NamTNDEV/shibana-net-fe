@@ -5,7 +5,7 @@ export type UploadCoverImageRequestBodyType = {
 }
 
 export type UpdateCoverImageRequestBodyType = {
-    coverMediaId?: string
+    coverMediaName?: string
     coverPositionY: number
 }
 
