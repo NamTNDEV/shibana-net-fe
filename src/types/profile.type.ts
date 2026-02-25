@@ -1,3 +1,6 @@
+// Request
+
+// Response
 export type ProfileResponseDataType = {
     address: string | null
     avatar: string | null

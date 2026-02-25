@@ -12,6 +12,10 @@ export const API_ROUTES = {
     },
     PROFILES: {
         PROFILE_BY_USERNAME: "social/profiles/:username",
+        UPDATE_COVER_IMAGE: "social/profiles/me/cover",
+    },
+    MEDIA: {
+        UPLOAD_COVER_IMAGE: "media/upload",
     }
 } as const;
 

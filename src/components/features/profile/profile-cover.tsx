@@ -7,21 +7,28 @@ import { Button } from "@/components/ui/button";
 import { Earth, Move } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCoverDrag } from "@/hooks/use-cover-drag";
+import { updateCoverImageAction, uploadCoverImageAction } from "@/actions/profile.action";
+import { toast } from "sonner";
+import { UpdateCoverImageRequestBodyType, UploadCoverImageRequestBodyType } from "@/types/media.type";
+import { useRouter } from "next/navigation";
 
 type ProfileCoverProps = {
-    coverUrl?: string | null;
+    coverUrl?: string;
     altText?: string;
     userId: string;
 };
 
 const DEFAULT_IMAGE_POSITION_Y = 50;
 
-export default function ProfileCover({ coverUrl, altText = "Cover Photo", userId }: ProfileCoverProps) {
+export default function ProfileCover({ coverUrl: initialCoverUrl, altText = "Cover Photo", userId }: ProfileCoverProps) {
+    const router = useRouter();
     const { authUser } = useAuthStore();
     const [isEditingCover, setIsEditingCover] = useState<boolean>(false);
     const [selectedCover, setSelectedCover] = useState<File | null>(null);
+    const [isUploadingCover, setIsUploadingCover] = useState<boolean>(false);
     const [imageNaturalSize, setImageNaturalSize] = useState<{ width: number, height: number }>({ width: 0, height: 0 });
     const [previewCoverUrl, setPreviewCoverUrl] = useState<string | null>(null);
+    const [currentCoverUrl, setCurrentCoverUrl] = useState<string | undefined>(initialCoverUrl);
 
     const containerCoverRef = useRef<HTMLDivElement>(null);
 
@@ -47,15 +54,65 @@ export default function ProfileCover({ coverUrl, altText = "Cover Photo", userId
     }
 
     const handleRemoveCover = () => {
-        console.log("remove cover 🗑:::");
     }
 
     const handleRepositionCover = () => {
         setIsEditingCover(true);
     }
 
-    const handleSaveRepositionCover = () => {
-        console.log("save reposition cover 💾::: ", selectedCover);
+    const handleUpdateCoverImage = async () => {
+        setIsUploadingCover(true);
+        try {
+            let uploadedCoverMediaId: string | undefined;
+            let newCoverUrl: string | undefined;
+            if (selectedCover) {
+                const response = await uploadCoverImageAction({ file: selectedCover });
+                if (!response.success || !response.data) {
+                    toast.error(response.message, {
+                        position: "bottom-right",
+                        richColors: true,
+                        duration: 3000,
+                    })
+                    return;
+                }
+                newCoverUrl = response.data?.url;
+                uploadedCoverMediaId = response.data?.mediaId;
+            }
+
+            const updateBody: UpdateCoverImageRequestBodyType = {
+                coverMediaId: uploadedCoverMediaId,
+                coverPositionY: imagePositionY,
+            }
+
+            const res = await updateCoverImageAction(updateBody);
+            if (!res.success) {
+                toast.error(res.message, {
+                    position: "bottom-right",
+                    richColors: true,
+                    duration: 3000,
+                })
+                return;
+            }
+
+            toast.success(res.message, {
+                position: "bottom-right",
+                richColors: true,
+                duration: 3000,
+            })
+
+            if (newCoverUrl) {
+                setCurrentCoverUrl(newCoverUrl);
+                setPreviewCoverUrl(null);
+            }
+
+            setSelectedCover(null);
+            setIsEditingCover(false);
+            router.refresh();
+        } catch (error) {
+            toast.error("Lỗi hệ thống, vui lòng thử lại sau.", { position: "bottom-right", richColors: true });
+        } finally {
+            setIsUploadingCover(false);
+        }
     }
 
     const handleCancelRepositionCover = () => {
@@ -65,7 +122,7 @@ export default function ProfileCover({ coverUrl, altText = "Cover Photo", userId
         setImagePositionY(DEFAULT_IMAGE_POSITION_Y);
     }
 
-    const displayCoverUrl = previewCoverUrl || coverUrl;
+    const displayCoverUrl = previewCoverUrl || currentCoverUrl;
 
     if (!displayCoverUrl) {
         return (
@@ -109,10 +166,10 @@ export default function ProfileCover({ coverUrl, altText = "Cover Photo", userId
                     }}
                     onMouseDown={isEditingCover ? onMouseDown : undefined}
                     onLoad={(e) => {
-                        const image = e.target as HTMLImageElement;
-                        const imageNaturalWidth = image.naturalWidth;
-                        const imageNaturalHeight = image.naturalHeight;
-                        setImageNaturalSize({ width: imageNaturalWidth, height: imageNaturalHeight });
+                        setImageNaturalSize({
+                            width: e.currentTarget.naturalWidth,
+                            height: e.currentTarget.naturalHeight
+                        });
                     }}
                     priority
                 />
@@ -145,7 +202,7 @@ export default function ProfileCover({ coverUrl, altText = "Cover Photo", userId
 
                         <div className="flex items-center gap-2">
                             <Button className="bg-secondary/20 text-white px-10" onClick={handleCancelRepositionCover}>Huỷ</Button>
-                            <Button className="px-10 text-white" onClick={handleSaveRepositionCover}>Lưu thay đổi</Button>
+                            <Button className="px-10 text-white" onClick={handleUpdateCoverImage} disabled={isUploadingCover}>Lưu thay đổi</Button>
                         </div>
                     </div>
                 </div>

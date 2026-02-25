@@ -30,10 +30,19 @@ class Http {
         options?: HttpClientOptions
     ): Promise<T> {
         let body: any = options?.body;
+        const isFormData = body instanceof FormData;
+
         const headers = {
-            "Content-Type": "application/json",
             ...options?.headers,
         } as Record<string, string>;
+
+        if (!isFormData && !headers["Content-Type"]) {
+            headers["Content-Type"] = "application/json";
+        }
+
+        if (isFormData) {
+            delete headers["Content-Type"];
+        }
 
         if (!headers["Authorization"]) {
             const accessToken = await getCookies("accessToken");
@@ -45,7 +54,7 @@ class Http {
         const baseUrl = options?.baseUrl || this.baseUrl;
         const fullUrl = url.startsWith("http") ? url : `${baseUrl}${url.startsWith("/") ? url : `/${url}`}`;
 
-        if (body && typeof body === "object") {
+        if (body && typeof body === "object" && !isFormData) {
             body = JSON.stringify(body);
         }
 

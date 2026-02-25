@@ -7,15 +7,10 @@ import { HttpError } from "@/lib/http-errors";
 import { getErrorMessage } from "@/lib/utils";
 import { authService } from "@/services/auth.service";
 import { LoginRequestBodyType, RegisterRequestBodyType } from "@/types/auth.type";
+import { ActionResponseDataType } from "@/types/response.type";
 import { redirect } from "next/navigation";
 
-type ActionResponseType = {
-    success: boolean
-    message: string
-    code?: number
-}
-
-export async function registerAction(body: RegisterRequestBodyType): Promise<ActionResponseType> {
+export async function registerAction(body: RegisterRequestBodyType): Promise<ActionResponseDataType<void>> {
     try {
         const response = await authService.register(body);
 
@@ -38,7 +33,7 @@ export async function registerAction(body: RegisterRequestBodyType): Promise<Act
     }
 }
 
-export async function loginAction(body: LoginRequestBodyType): Promise<ActionResponseType> {
+export async function loginAction(body: LoginRequestBodyType): Promise<ActionResponseDataType<void>> {
     try {
         const response = await authService.login(body);
 
@@ -61,7 +56,7 @@ export async function loginAction(body: LoginRequestBodyType): Promise<ActionRes
     }
 }
 
-export async function logoutAction(): Promise<void> {
+export async function logoutAction(): Promise<ActionResponseDataType<void>> {
     try {
         await authService.logout();
     } catch (error) {
