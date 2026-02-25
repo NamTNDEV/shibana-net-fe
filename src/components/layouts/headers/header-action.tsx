@@ -68,7 +68,7 @@ export default function HeaderAction({ user }: HeaderActionPropsType) {
             aria-label="Menu người dùng"
           >
             <Avatar className="size-10">
-              <AvatarImage src={user.avatar ?? undefined} alt={user.firstName} />
+              <AvatarImage src={user.avatar ?? undefined} alt={user.firstName} className="object-cover" />
               <AvatarFallback>
                 {getInitialName(user.firstName, user.lastName)}
               </AvatarFallback>

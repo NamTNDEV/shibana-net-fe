@@ -16,7 +16,7 @@ export default function ProfileAvatar({ avatar, initialName, userId }: ProfileAv
         <div className="relative">
             <div className="bg-white rounded-full p-1">
                 <Avatar className="w-44 h-44 border border-black rounded-full hover:cursor-pointer hover:opacity-95">
-                    <AvatarImage src={avatar ?? undefined} />
+                    <AvatarImage src={avatar ?? undefined} className="object-cover" />
                     <AvatarFallback>{initialName}</AvatarFallback>
                 </Avatar>
             </div>

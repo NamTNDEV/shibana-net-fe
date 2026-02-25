@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { useAuthStore } from "@/stores/auth.store";
 import ProfileCoverActions from "./profile-cover-actions";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Earth, Move } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -20,11 +20,15 @@ export default function ProfileCover({ coverUrl, altText = "Cover Photo", userId
     const { authUser } = useAuthStore();
     const [isEditingCover, setIsEditingCover] = useState<boolean>(false);
     const [selectedCover, setSelectedCover] = useState<File | null>(null);
+    const [imageNaturalSize, setImageNaturalSize] = useState<{ width: number, height: number }>({ width: 0, height: 0 });
     const [previewCoverUrl, setPreviewCoverUrl] = useState<string | null>(null);
 
+    const containerCoverRef = useRef<HTMLDivElement>(null);
+
     const { imagePositionY, onMouseDown, setImagePositionY, isDragging } = useCoverDrag({
-        containerHeight: 310,
-        imageHeight: 462,
+        containerReference: containerCoverRef,
+        imageNaturalWidth: imageNaturalSize.width,
+        imageNaturalHeight: imageNaturalSize.height,
     });
 
     useEffect(() => {
@@ -90,6 +94,7 @@ export default function ProfileCover({ coverUrl, altText = "Cover Photo", userId
                     "relative z-10 w-full lg:max-w-[74%] h-[240px] md:h-[310px] lg:h-[465px] rounded-b-sm overflow-hidden shadow-sm border border-gray-100/20 group",
                     isEditingCover && "cursor-move"
                 )}
+                ref={containerCoverRef}
             >
                 <Image
                     src={displayCoverUrl}
@@ -103,6 +108,12 @@ export default function ProfileCover({ coverUrl, altText = "Cover Photo", userId
                         objectPosition: `50% ${imagePositionY}%`
                     }}
                     onMouseDown={isEditingCover ? onMouseDown : undefined}
+                    onLoad={(e) => {
+                        const image = e.target as HTMLImageElement;
+                        const imageNaturalWidth = image.naturalWidth;
+                        const imageNaturalHeight = image.naturalHeight;
+                        setImageNaturalSize({ width: imageNaturalWidth, height: imageNaturalHeight });
+                    }}
                     priority
                 />
 
