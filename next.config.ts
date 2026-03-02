@@ -32,6 +32,12 @@ const nextConfig: NextConfig = {
         port: '8888',
         pathname: '/api/v1/media/static/**',
       },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '3000',
+        pathname: '/**',
+      }
       // {
       //   protocol: 'http',
       //   hostname: '127.0.0.1',

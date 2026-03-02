@@ -11,4 +11,5 @@ export type ProfileResponseDataType = {
     lastName: string
     phoneNumber: string | null
     userId: string
+    coverPositionY: number
 }

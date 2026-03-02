@@ -1,6 +1,6 @@
 import { authService } from "@/services/auth.service";
 import { RefreshTokenResponseDataType } from "@/types/auth.type";
-import { deleteCookies, getCookies, setAuthCookie } from "./cookies";
+import { getCookies, setAuthCookie } from "./cookies";
 import { TOKEN_TYPE } from "@/constants/token-type";
 
 let promiseCached: Promise<RefreshTokenResponseDataType | null> | null = null;

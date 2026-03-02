@@ -5,7 +5,7 @@ import { authService } from "@/services/auth.service";
 import { TOKEN_TYPE } from "@/constants/token-type";
 import { ROUTES } from "@/constants/routes";
 
-const BUFFER_TIME = 5 * 1000;
+const BUFFER_TIME = 5 * 1000; // 5 seconds
 
 export const zoneRoleHandler = async ({
     request,

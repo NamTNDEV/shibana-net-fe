@@ -61,7 +61,7 @@ function Button({
       data-variant={variant}
       data-size={size}
       className={cn(buttonVariants({ variant, size, className }),
-        "text-base cursor-pointer",
+        "text-base hover:cursor-pointer",
         isLoading && "opacity-50 cursor-not-allowed relative")}
       disabled={isLoading}
       {...props}

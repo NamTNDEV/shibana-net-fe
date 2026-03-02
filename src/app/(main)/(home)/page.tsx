@@ -1,12 +1,9 @@
+import PostList from "@/components/features/post/post-list";
+
 export default function HomePage() {
     return (
         <>
-            <div className="w-full h-[60px] bg-white">
-            </div>
-            <div className="w-full h-[60px] bg-white">
-            </div>
-            <div className="w-full h-[60px] bg-white">
-            </div>
+            <PostList />
         </>
     )
 }

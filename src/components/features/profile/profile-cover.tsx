@@ -14,21 +14,24 @@ import { useRouter } from "next/navigation";
 
 type ProfileCoverProps = {
     coverUrl?: string;
+    coverPositionY?: number;
     altText?: string;
     userId: string;
 };
 
 const DEFAULT_IMAGE_POSITION_Y = 50;
+const DEFAULT_COVER_URL = "/placeholder-image.png";
 
-export default function ProfileCover({ coverUrl: initialCoverUrl, altText = "Cover Photo", userId }: ProfileCoverProps) {
+export default function ProfileCover({ coverUrl: initialCoverUrl, altText = "Cover Photo", userId, coverPositionY: initialCoverPositionY }: ProfileCoverProps) {
     const router = useRouter();
     const { authUser } = useAuthStore();
     const [isEditingCover, setIsEditingCover] = useState<boolean>(false);
     const [selectedCover, setSelectedCover] = useState<File | null>(null);
-    const [isUploadingCover, setIsUploadingCover] = useState<boolean>(false);
+    const [isUpdatingCover, setIsUpdatingCover] = useState<boolean>(false);
     const [imageNaturalSize, setImageNaturalSize] = useState<{ width: number, height: number }>({ width: 0, height: 0 });
     const [previewCoverUrl, setPreviewCoverUrl] = useState<string | null>(null);
     const [currentCoverUrl, setCurrentCoverUrl] = useState<string | undefined>(initialCoverUrl);
+    const [coverPositionY, setCoverPositionY] = useState<number>(initialCoverPositionY ?? DEFAULT_IMAGE_POSITION_Y);
 
     const containerCoverRef = useRef<HTMLDivElement>(null);
 
@@ -36,6 +39,7 @@ export default function ProfileCover({ coverUrl: initialCoverUrl, altText = "Cov
         containerReference: containerCoverRef,
         imageNaturalWidth: imageNaturalSize.width,
         imageNaturalHeight: imageNaturalSize.height,
+        initialImagePosition: initialCoverPositionY,
     });
 
     useEffect(() => {
@@ -61,7 +65,7 @@ export default function ProfileCover({ coverUrl: initialCoverUrl, altText = "Cov
     }
 
     const handleUpdateCoverImage = async () => {
-        setIsUploadingCover(true);
+        setIsUpdatingCover(true);
         try {
             let uploadedCoverMediaName: string | undefined;
             let newCoverUrl: string | undefined;
@@ -104,14 +108,14 @@ export default function ProfileCover({ coverUrl: initialCoverUrl, altText = "Cov
                 setCurrentCoverUrl(newCoverUrl);
                 setPreviewCoverUrl(null);
             }
-
+            setCoverPositionY(imagePositionY);
             setSelectedCover(null);
             setIsEditingCover(false);
             router.refresh();
         } catch (error) {
             toast.error("Lỗi hệ thống, vui lòng thử lại sau.", { position: "bottom-right", richColors: true });
         } finally {
-            setIsUploadingCover(false);
+            setIsUpdatingCover(false);
         }
     }
 
@@ -119,24 +123,16 @@ export default function ProfileCover({ coverUrl: initialCoverUrl, altText = "Cov
         setIsEditingCover(false);
         setSelectedCover(null);
         setPreviewCoverUrl(null);
-        setImagePositionY(DEFAULT_IMAGE_POSITION_Y);
+        setImagePositionY(coverPositionY ?? DEFAULT_IMAGE_POSITION_Y);
     }
 
     const displayCoverUrl = previewCoverUrl || currentCoverUrl;
-
-    if (!displayCoverUrl) {
-        return (
-            <div className="flex justify-center w-full bg-white">
-                <div className="w-full max-w-[74%] h-[240px] md:h-[310px] lg:h-[465px] bg-gray-200 rounded-b-xl" />
-            </div>
-        );
-    }
-
+    const displayCoverPositionY = isEditingCover ? imagePositionY : coverPositionY;
     return (
         <div className="relative w-full bg-white flex justify-center">
             <div className="absolute inset-x-0 top-0 h-[240px] md:h-[310px] lg:h-[465px] overflow-hidden pointer-events-none z-0">
                 <Image
-                    src={displayCoverUrl}
+                    src={displayCoverUrl ?? DEFAULT_COVER_URL}
                     alt="Ambient Background"
                     fill
                     className="object-cover blur-[100px] scale-110"
@@ -154,7 +150,7 @@ export default function ProfileCover({ coverUrl: initialCoverUrl, altText = "Cov
                 ref={containerCoverRef}
             >
                 <Image
-                    src={displayCoverUrl}
+                    src={displayCoverUrl ?? DEFAULT_COVER_URL}
                     alt={altText}
                     fill
                     className={cn(
@@ -162,7 +158,7 @@ export default function ProfileCover({ coverUrl: initialCoverUrl, altText = "Cov
                         isEditingCover ? "cursor-move" : "pointer-events-none hover:cursor-pointer hover:opacity-95"
                     )}
                     style={{
-                        objectPosition: `50% ${imagePositionY}%`
+                        objectPosition: `50% ${displayCoverPositionY}%`
                     }}
                     onMouseDown={isEditingCover ? onMouseDown : undefined}
                     onLoad={(e) => {
@@ -202,7 +198,7 @@ export default function ProfileCover({ coverUrl: initialCoverUrl, altText = "Cov
 
                         <div className="flex items-center gap-2">
                             <Button className="bg-secondary/20 text-white px-10" onClick={handleCancelRepositionCover}>Huỷ</Button>
-                            <Button className="px-10 text-white" onClick={handleUpdateCoverImage} disabled={isUploadingCover}>Lưu thay đổi</Button>
+                            <Button className="px-10 text-white" onClick={handleUpdateCoverImage} disabled={isUpdatingCover}>Lưu thay đổi</Button>
                         </div>
                     </div>
                 </div>
