@@ -2,7 +2,7 @@
 import { Separator } from "@/components/ui/separator"
 import { ProfileResponseDataType } from "@/types/profile.type"
 import { getInitialName } from "@/lib/utils"
-import ProfileAvatar from "./profile-avatar"
+import ProfileAvatar from "./avatar/profile-avatar"
 import ProfileDetails from "./profile-details"
 import ProfileBio from "./profile-bio"
 import ProfileTabs from "./profile-tabs"
@@ -16,7 +16,7 @@ export default function ProfileInfoWrapper({ profile }: ProfileInfoWrapperPropsT
         <section className="w-full flex flex-col items-center justify-center z-40 md:px-4 lg:px-3">
             <div className="w-full max-w-[73%] px-5 py-1">
                 <div className="w-full mt-3 mb-4 flex flex-col items-center lg:flex-row lg:items-center lg:justify-between">
-                    <div className="md:-mt-20 lg:mt-0 lg:py-1 lg:pl-1 lg:pr-3">
+                    <div className="-mt-20 lg:mt-0 lg:py-1 lg:pl-1 lg:pr-3">
                         <ProfileAvatar
                             avatar={profile.avatar}
                             initialName={getInitialName(profile.firstName, profile.lastName)}

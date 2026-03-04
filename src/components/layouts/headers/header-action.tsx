@@ -22,6 +22,8 @@ type HeaderActionPropsType = {
   user?: MyAccountMetadataResponseDataType | null;
 }
 
+const DEFAULT_AVATAR_URL = "/placeholder-avatar.png";
+
 export default function HeaderAction({ user }: HeaderActionPropsType) {
   const handleLogout = async () => {
     await logoutAction();
@@ -67,8 +69,8 @@ export default function HeaderAction({ user }: HeaderActionPropsType) {
             border border-foreground hover:border-primary group"
             aria-label="Menu người dùng"
           >
-            <Avatar className="size-10">
-              <AvatarImage src={user.avatar ?? undefined} alt={user.firstName} className="object-cover" />
+            <Avatar className="size-10 p-1">
+              <AvatarImage src={user.avatar || DEFAULT_AVATAR_URL} alt={user.firstName} className="object-cover" />
               <AvatarFallback>
                 {getInitialName(user.firstName, user.lastName)}
               </AvatarFallback>

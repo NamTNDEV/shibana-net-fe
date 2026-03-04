@@ -1,4 +1,4 @@
-import ProfileCover from "@/components/features/profile/profile-cover"
+import ProfileCover from "@/components/features/profile/cover/profile-cover"
 import ProfileInfoWrapper from "@/components/features/profile/profile-info-wrapper";
 import { ProfileResponseDataType } from "@/types/profile.type";
 

@@ -51,6 +51,10 @@ export default function ProfileCover({ coverUrl: initialCoverUrl, altText = "Cov
     }, [previewCoverUrl])
 
     const handleUploadCover = (file: File) => {
+        if (previewCoverUrl) {
+            URL.revokeObjectURL(previewCoverUrl);
+        }
+
         setSelectedCover(file);
         const objUrl = URL.createObjectURL(file);
         setPreviewCoverUrl(objUrl);
