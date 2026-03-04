@@ -12,6 +12,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
+import { useAvatarDragAndScale } from "@/hooks/use-avatar-drag-and-scale";
 import { cn } from "@/lib/utils";
 import { Minus, Plus, X } from "lucide-react";
 import Image from "next/image";
@@ -19,13 +20,18 @@ import { useEffect, useState } from "react";
 
 type ProfileAvatarModalProps = {
     avatarUrl: string | null;
+    initialAvatarPositionX?: number;
+    initialAvatarPositionY?: number;
     onClose: () => void;
 }
 
+const DEFAULT_CONTAINER_SIZE = 300;
 const DEFAULT_AVATAR_SCALE = 1;
 const SCALE_STEP = 0.1;
+const DEFAULT_AVATAR_POSITION_X = 0;
+const DEFAULT_AVATAR_POSITION_Y = 0;
 
-export default function ProfileAvatarModal({ avatarUrl, onClose }: ProfileAvatarModalProps) {
+export default function ProfileAvatarModal({ avatarUrl, initialAvatarPositionX, initialAvatarPositionY, onClose }: ProfileAvatarModalProps) {
     const [avatarScale, setAvatarScale] = useState(DEFAULT_AVATAR_SCALE);
 
     useEffect(() => {
@@ -64,7 +70,7 @@ export default function ProfileAvatarModal({ avatarUrl, onClose }: ProfileAvatar
                     <Textarea placeholder="Nhập mô tả (Tuỳ chọn)" className="w-full max-w-[666px] h-20 p-4 mb-4 border border-gray-300 resize-none" />
                     <div className="w-full">
                         {/* Nơi xử lý kéo ảnh đại diện */}
-                        <AvatarPreview avatarUrl={avatarUrl} avatarScale={avatarScale} />
+                        <AvatarPreview avatarUrl={avatarUrl} avatarScale={avatarScale} initialAvatarPositionX={initialAvatarPositionX} initialAvatarPositionY={initialAvatarPositionY} />
 
                         <AvatarScaleSlider
                             avatarScale={avatarScale}
@@ -110,9 +116,14 @@ const AvatarScaleSlider = ({ avatarScale, setAvatarScale, onDecreaseAvatarScale,
     )
 }
 
-const DEFAULT_CONTAINER_SIZE = 300;
+type AvatarPreviewProps = {
+    avatarUrl: string;
+    avatarScale: number;
+    initialAvatarPositionX?: number;
+    initialAvatarPositionY?: number;
+}
 
-const AvatarPreview = ({ avatarUrl, avatarScale }: { avatarUrl: string, avatarScale: number }) => {
+const AvatarPreview = ({ avatarUrl, avatarScale, initialAvatarPositionX = DEFAULT_AVATAR_POSITION_X, initialAvatarPositionY = DEFAULT_AVATAR_POSITION_Y }: AvatarPreviewProps) => {
     const [imageNaturalSize, setImageNaturalSize] = useState({
         width: 0,
         height: 0
@@ -120,6 +131,15 @@ const AvatarPreview = ({ avatarUrl, avatarScale }: { avatarUrl: string, avatarSc
     const [renderedSize, setRenderedSize] = useState({
         width: 0,
         height: 0
+    });
+
+    const { isDragging, onMouseDown, avatarPositionX, avatarPositionY } = useAvatarDragAndScale({
+        containerSize: DEFAULT_CONTAINER_SIZE,
+        initialImagePositionX: initialAvatarPositionX,
+        initialImagePositionY: initialAvatarPositionY,
+        renderedAvatarWidth: renderedSize.width,
+        renderedAvatarHeight: renderedSize.height,
+        currentAvatarScale: avatarScale,
     });
 
     useEffect(() => {
@@ -140,9 +160,6 @@ const AvatarPreview = ({ avatarUrl, avatarScale }: { avatarUrl: string, avatarSc
         }
     }, [imageNaturalSize])
 
-    const x = 0;
-    const y = 0;
-    // http://localhost:3000/ac56a441-218f-48f6-892e-c7aad34d980b
     return (
         <div className="relative w-full h-[420px] overflow-hidden">
             <div className="absolute inset-0 flex items-center justify-center">
@@ -150,18 +167,20 @@ const AvatarPreview = ({ avatarUrl, avatarScale }: { avatarUrl: string, avatarSc
                     src={avatarUrl}
                     alt="Avatar Preview"
                     className={cn(
-                        "max-w-none"
+                        "max-w-none",
+                        isDragging && "cursor-move"
                     )}
                     style={{
                         transform: `
-                            scale(${avatarScale})
-                            translate(${x}%, ${y}%)
+                        translate(${avatarPositionX}px, ${avatarPositionY}px)
+                        scale(${avatarScale})
                         `,
                         width: renderedSize.width,
                         height: renderedSize.height
                     }}
                     width={0}
                     height={0}
+                    onMouseDown={onMouseDown}
                     onLoad={(e) => {
                         const image = e.currentTarget;
                         const naturalWidth = image.naturalWidth;

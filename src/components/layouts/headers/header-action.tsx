@@ -22,7 +22,7 @@ type HeaderActionPropsType = {
   user?: MyAccountMetadataResponseDataType | null;
 }
 
-const DEFAULT_AVATAR_URL = "/placeholder-avatar.png";
+// const DEFAULT_AVATAR_URL = "http://localhost:8888/api/v1/media/static/8537ab0f-c26d-4a2b-b239-fad2e47cae8d.jpg";
 
 export default function HeaderAction({ user }: HeaderActionPropsType) {
   const handleLogout = async () => {
@@ -69,8 +69,15 @@ export default function HeaderAction({ user }: HeaderActionPropsType) {
             border border-foreground hover:border-primary group"
             aria-label="Menu người dùng"
           >
-            <Avatar className="size-10 p-1">
-              <AvatarImage src={user.avatar || DEFAULT_AVATAR_URL} alt={user.firstName} className="object-cover" />
+            <Avatar className="size-10">
+              <AvatarImage
+                src={user.avatar || undefined}
+                alt={user.firstName}
+                className="object-cover"
+              // style={{
+              //   transform: `scale(${avatarScale}) translate(${avatarPositionX}%, ${avatarPositionY}%)`
+              // }}
+              />
               <AvatarFallback>
                 {getInitialName(user.firstName, user.lastName)}
               </AvatarFallback>

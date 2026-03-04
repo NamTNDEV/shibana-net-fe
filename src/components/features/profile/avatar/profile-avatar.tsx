@@ -11,11 +11,14 @@ export type ProfileAvatarPropsType = {
     avatar: string | null;
     initialName: string;
     userId: string;
+    avatarScale?: number;
+    avatarPositionX?: number;
+    avatarPositionY?: number;
 }
 
-const DEFAULT_AVATAR_URL = "/placeholder-avatar.png";
+// const DEFAULT_AVATAR_URL = "http://localhost:8888/api/v1/media/static/8537ab0f-c26d-4a2b-b239-fad2e47cae8d.jpg";
 
-export default function ProfileAvatar({ avatar: initialAvatar, initialName, userId }: ProfileAvatarPropsType) {
+export default function ProfileAvatar({ avatar: initialAvatar, initialName, userId, avatarScale = 1, avatarPositionX = 0, avatarPositionY = 0 }: ProfileAvatarPropsType) {
     const { authUser } = useAuthStore();
     const avatarUploadedInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -45,7 +48,6 @@ export default function ProfileAvatar({ avatar: initialAvatar, initialName, user
 
         setSelectedAvatar(uploadedAvatar);
         const objUrl = URL.createObjectURL(uploadedAvatar);
-        console.log("objUrl:: ", objUrl)
         setPreviewAvatarUrl(objUrl);
 
         if (avatarUploadedInputRef.current) {
@@ -63,7 +65,16 @@ export default function ProfileAvatar({ avatar: initialAvatar, initialName, user
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Avatar className="w-44 h-44 border border-black rounded-full hover:cursor-pointer hover:opacity-95">
-                            <AvatarImage src={currentAvatarUrl || DEFAULT_AVATAR_URL} className="object-cover" />
+                            <AvatarImage
+                                src={currentAvatarUrl || undefined}
+                                className="object-cover"
+                                style={{
+                                    transform: `
+                                        scale(${avatarScale})
+                                        translate(${avatarPositionX}%, ${avatarPositionY}%)  
+                                    `
+                                }}
+                            />
                             <AvatarFallback>{initialName}</AvatarFallback>
                         </Avatar>
                     </DropdownMenuTrigger>
