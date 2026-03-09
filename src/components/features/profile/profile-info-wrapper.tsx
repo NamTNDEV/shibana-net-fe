@@ -21,6 +21,9 @@ export default function ProfileInfoWrapper({ profile }: ProfileInfoWrapperPropsT
                             avatar={profile.avatar}
                             initialName={getInitialName(profile.firstName, profile.lastName)}
                             userId={profile.userId}
+                            avatarPositionX={profile.avatarPositionX}
+                            avatarPositionY={profile.avatarPositionY}
+                            avatarScale={profile.avatarScale}
                         />
                     </div>
                     <div className="flex-1 px-1 md:py-3">

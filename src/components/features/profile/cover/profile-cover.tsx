@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import { useCoverDrag } from "@/hooks/use-cover-drag";
 import { updateCoverImageAction, uploadCoverImageAction } from "@/actions/profile.action";
 import { toast } from "sonner";
-import { UpdateCoverImageRequestBodyType, UploadCoverImageRequestBodyType } from "@/types/media.type";
+import { UpdateCoverImageRequestBodyType } from "@/types/profile.type";
 import { useRouter } from "next/navigation";
 
 type ProfileCoverProps = {

@@ -7,10 +7,8 @@ export type MyAccountMetadataResponseDataType = {
     roles: RoleResponseDataType[]
     firstName: string
     lastName: string
-    dob: string
-    address: string
-    phoneNumber: string | null
     avatar: string | null
-    bio: string | null
-    cover: string | null
+    avatarScale: number
+    avatarPositionX: number
+    avatarPositionY: number
 }

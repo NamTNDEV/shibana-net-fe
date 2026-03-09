@@ -2,9 +2,7 @@
 
 import { Bell, LogOut, MessageCircle, User, ChevronDown } from "lucide-react";
 import Link from "next/link";
-
 import { logoutAction } from "@/actions/auth.action";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -17,12 +15,11 @@ import { ROUTES } from "@/constants/routes";
 import { getInitialName, getUrlWithParams } from "@/lib/utils";
 import { toast } from "sonner";
 import { MyAccountMetadataResponseDataType } from "@/types/user.type";
+import ProfileAvatarContainer from "@/components/features/profile/avatar/profile-avatar-container";
 
 type HeaderActionPropsType = {
   user?: MyAccountMetadataResponseDataType | null;
 }
-
-// const DEFAULT_AVATAR_URL = "http://localhost:8888/api/v1/media/static/8537ab0f-c26d-4a2b-b239-fad2e47cae8d.jpg";
 
 export default function HeaderAction({ user }: HeaderActionPropsType) {
   const handleLogout = async () => {
@@ -39,7 +36,6 @@ export default function HeaderAction({ user }: HeaderActionPropsType) {
       <UnauthenticatedAction />
     );
   }
-
   return (
     <div className="flex items-center justify-end gap-2">
       <Button
@@ -69,19 +65,14 @@ export default function HeaderAction({ user }: HeaderActionPropsType) {
             border border-foreground hover:border-primary group"
             aria-label="Menu người dùng"
           >
-            <Avatar className="size-10">
-              <AvatarImage
-                src={user.avatar || undefined}
-                alt={user.firstName}
-                className="object-cover"
-              // style={{
-              //   transform: `scale(${avatarScale}) translate(${avatarPositionX}%, ${avatarPositionY}%)`
-              // }}
-              />
-              <AvatarFallback>
-                {getInitialName(user.firstName, user.lastName)}
-              </AvatarFallback>
-            </Avatar>
+            <ProfileAvatarContainer
+              avatar={user.avatar}
+              initialName={getInitialName(user.firstName, user.lastName)}
+              avatarScale={user.avatarScale || 1}
+              avatarPositionX={user.avatarPositionX || 0}
+              avatarPositionY={user.avatarPositionY || 0}
+              containerSize={40}
+            />
 
             <div className="absolute bottom-0 right-0 size-4 bg-white rounded-full flex items-center justify-center">
               <ChevronDown className="size-3 bg-background rounded-full group-hover:text-primary" />

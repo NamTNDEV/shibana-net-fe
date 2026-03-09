@@ -1,12 +1,7 @@
 import { MediaStorageType } from "@/constants/media-type"
 // Request
-export type UploadCoverImageRequestBodyType = {
+export type UploadMediaRequestBodyType = {
     file: File
-}
-
-export type UpdateCoverImageRequestBodyType = {
-    coverMediaName?: string
-    coverPositionY: number
 }
 
 // Response

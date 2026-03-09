@@ -1,11 +1,12 @@
 'use client'
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useAuthStore } from "@/stores/auth.store";
 import ProfileAvatarActions from "./profile-avatar-actions";
 import { useEffect, useRef, useState } from "react";
 import { Images, SquareUser } from "lucide-react";
 import ProfileAvatarModal from "./profile-avatar-modal";
+import { useRouter } from "next/navigation";
+import ProfileAvatarContainer from "./profile-avatar-container";
 
 export type ProfileAvatarPropsType = {
     avatar: string | null;
@@ -16,15 +17,20 @@ export type ProfileAvatarPropsType = {
     avatarPositionY?: number;
 }
 
-// const DEFAULT_AVATAR_URL = "http://localhost:8888/api/v1/media/static/8537ab0f-c26d-4a2b-b239-fad2e47cae8d.jpg";
-
-export default function ProfileAvatar({ avatar: initialAvatar, initialName, userId, avatarScale = 1, avatarPositionX = 0, avatarPositionY = 0 }: ProfileAvatarPropsType) {
+export default function ProfileAvatar({
+    avatar: initialAvatar,
+    initialName,
+    userId,
+    avatarScale = 1,
+    avatarPositionX = 0,
+    avatarPositionY = 0,
+}: ProfileAvatarPropsType) {
+    const router = useRouter();
     const { authUser } = useAuthStore();
     const avatarUploadedInputRef = useRef<HTMLInputElement | null>(null);
 
     const [previewAvatarUrl, setPreviewAvatarUrl] = useState<string | null>(null);
     const [selectedAvatar, setSelectedAvatar] = useState<File | null>(null);
-    const [currentAvatarUrl, setCurrentAvatarUrl] = useState<string | null>(initialAvatar);
 
     useEffect(() => {
         return () => {
@@ -59,24 +65,24 @@ export default function ProfileAvatar({ avatar: initialAvatar, initialName, user
         setPreviewAvatarUrl(null);
     }
 
+    const handleAvatarUpdateSuccess = () => {
+        setPreviewAvatarUrl(null);
+        setSelectedAvatar(null);
+        router.refresh();
+    }
+
     return (
         <div className="relative">
             <div className="bg-white rounded-full p-1">
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Avatar className="w-44 h-44 border border-black rounded-full hover:cursor-pointer hover:opacity-95">
-                            <AvatarImage
-                                src={currentAvatarUrl || undefined}
-                                className="object-cover"
-                                style={{
-                                    transform: `
-                                        scale(${avatarScale})
-                                        translate(${avatarPositionX}%, ${avatarPositionY}%)  
-                                    `
-                                }}
-                            />
-                            <AvatarFallback>{initialName}</AvatarFallback>
-                        </Avatar>
+                        <ProfileAvatarContainer
+                            avatar={initialAvatar}
+                            initialName={initialName}
+                            avatarScale={avatarScale}
+                            avatarPositionX={avatarPositionX}
+                            avatarPositionY={avatarPositionY}
+                        />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-fit rounded-xl mt-3 shadow-lg/50 p-2" align="center">
                         <DropdownMenuGroup>
@@ -108,7 +114,9 @@ export default function ProfileAvatar({ avatar: initialAvatar, initialName, user
 
             <ProfileAvatarModal
                 avatarUrl={previewAvatarUrl}
+                selectedAvatar={selectedAvatar}
                 onClose={handleCloseModal}
+                onUpdateSuccess={handleAvatarUpdateSuccess}
             />
         </div>
 
