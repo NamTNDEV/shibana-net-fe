@@ -5,10 +5,11 @@ import { useAuthStore } from "@/stores/auth.store";
 
 export type ProfileDetailsPropsType = {
     userId: string;
+    username: string;
     firstName: string;
     lastName: string;
 }
-export default function ProfileDetails({ firstName, lastName, userId }: ProfileDetailsPropsType) {
+export default function ProfileDetails({ firstName, lastName, userId, username }: ProfileDetailsPropsType) {
     const { authUser } = useAuthStore();
 
     return (
@@ -26,7 +27,11 @@ export default function ProfileDetails({ firstName, lastName, userId }: ProfileD
                 </div>
             </div>
 
-            <ProfileActions isOwner={userId === authUser?.userId} />
+            <ProfileActions
+                username={username}
+                isOwner={userId === authUser?.userId}
+            />
+
         </div>
     )
 }

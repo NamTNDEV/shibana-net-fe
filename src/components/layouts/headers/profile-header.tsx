@@ -1,5 +1,5 @@
-import ProfileCover from "@/components/features/profile/cover/profile-cover"
-import ProfileInfoWrapper from "@/components/features/profile/profile-info-wrapper";
+import ProfileCover from "@/components/features/profile/header/cover/profile-cover"
+import ProfileInfoWrapper from "@/components/features/profile/header/profile-info-wrapper";
 import { ProfileResponseDataType } from "@/types/profile.type";
 
 type ProfileHeaderPropsType = {

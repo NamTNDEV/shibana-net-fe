@@ -21,7 +21,7 @@ export function SearchInput() {
 
   return (
     <div className="w-full flex justify-center">
-      <form className="relative w-full lg:w-[70%]" onSubmit={handleSearch}>
+      <form className="relative w-full lg:w-[70%] max-w-[700px]" onSubmit={handleSearch}>
         <Search
           className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
           aria-hidden

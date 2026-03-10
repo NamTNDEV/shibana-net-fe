@@ -148,7 +148,7 @@ export default function ProfileCover({ coverUrl: initialCoverUrl, altText = "Cov
 
             <div
                 className={cn(
-                    "relative z-10 w-full lg:max-w-[74%] h-[240px] md:h-[310px] lg:h-[465px] rounded-b-sm overflow-hidden shadow-sm border border-gray-100/20 group",
+                    "relative z-10 w-full lg:max-w-[1250px] lg:w-[73%] h-[240px] md:h-[310px] lg:h-[465px] rounded-b-sm overflow-hidden shadow-sm border border-gray-100/20 group",
                     isEditingCover && "cursor-move"
                 )}
                 ref={containerCoverRef}

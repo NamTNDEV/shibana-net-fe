@@ -15,7 +15,7 @@ import { ROUTES } from "@/constants/routes";
 import { getInitialName, getUrlWithParams } from "@/lib/utils";
 import { toast } from "sonner";
 import { MyAccountMetadataResponseDataType } from "@/types/user.type";
-import ProfileAvatarContainer from "@/components/features/profile/avatar/profile-avatar-container";
+import ProfileAvatarContainer from "@/components/features/profile/header/avatar/profile-avatar-container";
 
 type HeaderActionPropsType = {
   user?: MyAccountMetadataResponseDataType | null;

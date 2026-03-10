@@ -12,12 +12,20 @@ export const ROUTES = {
     },
     USER: {
         PROFILE: "/@:handle",
+        EDIT: "/@:handle/about",
+        PHOTOS: "/@:handle/photos",
+        FRIENDS: "/@:handle/friends",
+        REELS: "/@:handle/reels",
     },
 } as const;
 
 export const PUBLIC_ROUTES = [
     ROUTES.FORBIDDEN,
     ROUTES.USER.PROFILE,
+    ROUTES.USER.EDIT,
+    ROUTES.USER.PHOTOS,
+    ROUTES.USER.FRIENDS,
+    ROUTES.USER.REELS,
 ];
 
 export const PRIVATE_ROUTES = [

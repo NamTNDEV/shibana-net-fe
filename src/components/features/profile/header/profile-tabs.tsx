@@ -2,6 +2,7 @@
 
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const profileTabs = [
     {
@@ -26,23 +27,30 @@ const profileTabs = [
     },
 ]
 
-const getCurrentTabFromPathname = (pathname: string) => {
-    return pathname.split("/").length == 2 ? "all" : pathname.split("/").pop();
+const getCurrentMainSubTabFromPathname = (pathname: string) => {
+    const pathnameSegments = pathname.split("/").filter(Boolean);
+    if (pathnameSegments.length <= 1) return "all";
+    const mainSubPathname = pathnameSegments[1];
+    return mainSubPathname;
 }
 
 export default function ProfileTabs() {
     const router = useRouter();
     const pathname = usePathname();
-    const currentTab = getCurrentTabFromPathname(pathname);
+    const [currentTab, setCurrentTab] = useState(getCurrentMainSubTabFromPathname(pathname));
+
+    useEffect(() => {
+        setCurrentTab(getCurrentMainSubTabFromPathname(pathname));
+    }, [pathname]);
 
     const handleChangeTab = (tabValue: string) => {
-        const originPathname = pathname.split("/").slice(0, 2).join("/");
-        const newPathname = `${originPathname}/${tabValue === "all" ? "" : tabValue}`;
+        const originPathname = pathname.split("/").filter(Boolean)[0];
+        const newPathname = `/${originPathname}/${tabValue === "all" ? "" : tabValue}`;
         router.push(newPathname);
     }
     return (
-        <Tabs defaultValue={currentTab} className="h-[60px] flex justify-center">
-            <TabsList variant="line">
+        <Tabs value={currentTab} className="h-[60px] flex justify-center">
+            <TabsList variant="line" >
                 {
                     profileTabs.map(
                         tab => (
@@ -51,7 +59,9 @@ export default function ProfileTabs() {
                                 className="h-[60px] py-0 px-4 text-base font-semibold 
                     group-data-[orientation=horizontal]/tabs:after:h-[3px] 
                     group-data-[orientation=horizontal]/tabs:after:-bottom-px
-                    hover:cursor-pointer hover:bg-foreground/5"
+                    hover:cursor-pointer hover:bg-foreground/5
+                    data-[state=active]:after:bg-primary data-[state=active]:text-primary
+                    "
                                 value={tab.value}
                                 onClick={() => handleChangeTab(tab.value)}
                             >

@@ -32,3 +32,7 @@ export const getUsernameFromHandle = (handle: string) => {
 export const getInitialName = (firstName: string, lastName: string): string => {
   return `${firstName?.trim().charAt(0)}${lastName?.trim().charAt(0)}`.toUpperCase() || "?";
 };
+
+export const getHandledFromPathname = (pathname: string) => {
+  return pathname.split("/").filter(Boolean)[0];
+}

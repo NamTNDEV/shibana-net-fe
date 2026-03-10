@@ -14,6 +14,7 @@ export type UpdateAvatarImageRequestBodyType = {
 // Response
 export type ProfileResponseDataType = {
     userId: string
+    username: string
 
     firstName: string
     lastName: string
