@@ -1,7 +1,10 @@
+import { AboutList } from "@/components/features/profile/about/profile-about-list"
+import { ABOUT_ITEM_RENDER_LIST_TYPES } from "@/constants/profile-about"
+
 type PersonalDetailsPagePropsType = {}
 
 export default function PersonalDetailsPage({ }: PersonalDetailsPagePropsType) {
     return (
-        <div>Thông tin cá nhân</div>
+        <AboutList renderListType={ABOUT_ITEM_RENDER_LIST_TYPES.PERSONAL_DETAILS} />
     )
 }

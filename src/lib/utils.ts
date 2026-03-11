@@ -36,3 +36,8 @@ export const getInitialName = (firstName: string, lastName: string): string => {
 export const getHandledFromPathname = (pathname: string) => {
   return pathname.split("/").filter(Boolean)[0];
 }
+
+export const checkIsOwner = (userId?: string, profileUserId?: string) => {
+  if (!userId || !profileUserId) return false;
+  return userId === profileUserId;
+}

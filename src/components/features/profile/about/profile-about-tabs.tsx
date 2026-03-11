@@ -40,8 +40,8 @@ export default function ProfileAboutTabs() {
         router.push(newPathname);
     }
     return (
-        <Tabs value={currentTab} orientation="vertical" className="min-h-[600px] ">
-            <TabsList variant="line" className="w-full p-0 gap-2">
+        <Tabs value={currentTab} orientation="vertical" className="min-h-[280px]">
+            <TabsList variant="line" className="w-full p-0 gap-2" >
                 {
                     profileAboutTabs.map(tab => (
                         <TabsTrigger
@@ -59,7 +59,7 @@ export default function ProfileAboutTabs() {
                         </TabsTrigger>
                     ))
                 }
-            </TabsList>
-        </Tabs>
+            </TabsList >
+        </Tabs >
     )
 }

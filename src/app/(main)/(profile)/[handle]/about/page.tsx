@@ -1,9 +1,10 @@
-type ProfileAboutPagePropsType = {}
+import { AboutList } from "@/components/features/profile/about/profile-about-list"
+import { ABOUT_ITEM_RENDER_LIST_TYPES } from "@/constants/profile-about"
 
-export default function ProfileAboutPage({ }: ProfileAboutPagePropsType) {
+type ProfileAboutPagePropType = {}
+
+export default function ProfileAboutPage({ }: ProfileAboutPagePropType) {
     return (
-        <div>
-            Tiểu sử
-        </div>
+        <AboutList renderListType={ABOUT_ITEM_RENDER_LIST_TYPES.INTRO} />
     )
 }
