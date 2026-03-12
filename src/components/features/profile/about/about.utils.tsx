@@ -3,6 +3,7 @@ import { AboutItemPropType, AboutItemRenderListType, AboutItemType, PrivacyType 
 import { Cake, Mail, Hand, MapPinHouse, Phone, Earth, Lock, Pencil } from "lucide-react";
 import { MyAccountMetadataResponseDataType } from "@/types/user.type";
 import { ProfileResponseDataType } from "@/types/profile.type";
+import { cn } from "@/lib/utils";
 
 export const getTitleWhenContentIsEmpty = (type: AboutItemType) => {
     switch (type) {
@@ -35,13 +36,23 @@ export const getIconByType = (type: AboutItemType) => {
     }
 }
 
-export const getPrivacyIconByType = (type: PrivacyType) => {
-    const iconClassName = 'size-5';
+export const getPrivacyIconByType = (type: PrivacyType, className?: string) => {
+    const defaultClassName = 'size-5';
+    const iconClassName = cn(defaultClassName, className);
     switch (type) {
         case PRIVACY_TYPES.PUBLIC:
             return <Earth className={iconClassName} />;
         case PRIVACY_TYPES.PRIVATE:
             return <Lock className={iconClassName} />;
+    }
+}
+
+export const getPrivacyTitleByType = (type: PrivacyType) => {
+    switch (type) {
+        case PRIVACY_TYPES.PUBLIC:
+            return "Công khai";
+        case PRIVACY_TYPES.PRIVATE:
+            return "Riêng tư";
     }
 }
 

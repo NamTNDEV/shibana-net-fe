@@ -7,6 +7,7 @@ import { Images, SquareUser } from "lucide-react";
 import ProfileAvatarModal from "./profile-avatar-modal";
 import { useRouter } from "next/navigation";
 import ProfileAvatarContainer from "./profile-avatar-container";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export type ProfileAvatarPropsType = {
     avatar: string | null;
@@ -76,13 +77,15 @@ export default function ProfileAvatar({
             <div className="bg-white rounded-full p-1">
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <ProfileAvatarContainer
-                            avatar={initialAvatar}
-                            initialName={initialName}
-                            avatarScale={avatarScale}
-                            avatarPositionX={avatarPositionX}
-                            avatarPositionY={avatarPositionY}
-                        />
+                        <div>
+                            <ProfileAvatarContainer
+                                avatar={initialAvatar}
+                                initialName={initialName}
+                                avatarScale={avatarScale}
+                                avatarPositionX={avatarPositionX}
+                                avatarPositionY={avatarPositionY}
+                            />
+                        </div>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-fit rounded-xl mt-3 shadow-lg/50 p-2" align="center">
                         <DropdownMenuGroup>

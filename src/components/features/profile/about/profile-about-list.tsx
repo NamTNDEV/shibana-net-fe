@@ -1,10 +1,9 @@
 'use client'
 import { AboutItem } from "./profile-about-item"
 import { useProfileStore } from "@/stores/profile.store"
-import { AboutItemPropType, AboutItemRenderListType } from "./profile-about-item.type"
+import { AboutItemRenderListType } from "./profile-about-item.type"
 import { checkIsOwner } from "@/lib/utils"
 import { useAuthStore } from "@/stores/auth.store"
-import { useEffect, useState } from "react"
 import { generateAboutItemList } from "./about.utils"
 import ProfileAboutListSkeleton from "./profile-about-skeleton"
 
