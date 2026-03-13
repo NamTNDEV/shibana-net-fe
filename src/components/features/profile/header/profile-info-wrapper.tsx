@@ -34,7 +34,7 @@ export default function ProfileInfoWrapper({ profile }: ProfileInfoWrapperPropsT
                             firstName={profile.firstName}
                             lastName={profile.lastName}
                         />
-                        <ProfileBio bio={profile.bio} />
+                        <ProfileBio bio={profile.bio.value} />
                     </div>
                 </div>
             </div>

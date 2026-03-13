@@ -60,7 +60,7 @@ const generateBioItem = (content: string | null) => {
     return {
         type: ABOUT_ITEM_TYPES.BIO,
         title: "Tiểu sử",
-        content: content || "Hello World ☕☕",
+        content: content,
         privacy: PRIVACY_TYPES.PUBLIC,
     }
 }
@@ -69,7 +69,7 @@ const generateAddressItem = (content: string | null) => {
     return {
         type: ABOUT_ITEM_TYPES.ADDRESS,
         title: "Địa chỉ",
-        content: content || "666 Đường ABC, Quận XYZ, TP. HCM",
+        content: content,
         privacy: PRIVACY_TYPES.PUBLIC,
     }
 }
@@ -78,7 +78,7 @@ const generateDobItem = (content: string | null) => {
     return {
         type: ABOUT_ITEM_TYPES.DOB,
         title: "Ngày sinh",
-        content: content || "12/12/1990",
+        content: content,
         privacy: PRIVACY_TYPES.PUBLIC,
     }
 }
@@ -88,7 +88,7 @@ const generatePhoneItem = (content: string | null) => {
     return {
         type: ABOUT_ITEM_TYPES.PHONE,
         title: "Số điện thoại",
-        content: content || "0909090909",
+        content: content,
         privacy: PRIVACY_TYPES.PUBLIC,
     }
 }
@@ -110,14 +110,14 @@ export const generateAboutItemList = (
     const list: AboutItemPropType[] = [];
     switch (renderListType) {
         case ABOUT_ITEM_RENDER_LIST_TYPES.INTRO:
-            list.push(generateBioItem(profile.bio));
+            list.push(generateBioItem(profile.bio.value));
             break;
         case ABOUT_ITEM_RENDER_LIST_TYPES.PERSONAL_DETAILS:
-            list.push(generateDobItem(profile.dob));
-            list.push(generateAddressItem(profile.address));
+            list.push(generateDobItem(profile.dob.value));
+            list.push(generateAddressItem(profile.address.value));
             break;
         case ABOUT_ITEM_RENDER_LIST_TYPES.CONTACT_INFO:
-            list.push(generatePhoneItem(profile.phoneNumber));
+            list.push(generatePhoneItem(profile.phoneNumber.value));
             list.push(generateEmailItem(owner.email));
             break;
     }
