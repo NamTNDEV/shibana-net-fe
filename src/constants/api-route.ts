@@ -17,11 +17,14 @@ export const API_ROUTES = {
     },
     MEDIA: {
         UPLOAD_IMAGE: "media/upload",
+    },
+    PRIVACIES: {
+        GET_LIST: "social/privacies",
     }
 } as const;
 
 export const NEXT_SERVER_ROUTES = {
-    USER: {
-        MY_ACCOUNT: "/api/users/me",
+    PRIVACIES: {
+        GET_LIST: "/api/privacies",
     }
 }

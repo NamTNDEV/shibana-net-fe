@@ -8,6 +8,7 @@ import { getPrivacyIconByType, getPrivacyTitleByType } from "./about.utils";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
+import ProfileFieldPrivacyModal from "../profile-field-privacy/modal";
 
 type ProfileAboutUpdateFieldFormProps = {
     type: AboutItemType;
@@ -26,11 +27,12 @@ export default function ProfileAboutUpdateFieldForm({
     onSave,
     onCancel,
 }: ProfileAboutUpdateFieldFormProps) {
+    const [isOpenModal, setIsOpenModal] = useState(false);
     const [privacyState, setPrivacyState] = useState<PrivacyType>(privacy);
     const [updateFieldValue, setUpdateFieldValue] = useState<string>(content || "");
 
     return (
-        <div>
+        <>
             <Button
                 variant="outline"
                 className="flex items-center gap-1 py-2 px-3 h-9 rounded-sm hover:bg-secondary/80"
@@ -59,6 +61,7 @@ export default function ProfileAboutUpdateFieldForm({
                     </div>
                 </div>
             </div>
-        </div>
+            <ProfileFieldPrivacyModal isOpen={isOpenModal} setIsOpen={setIsOpenModal} />
+        </>
     )
 }

@@ -58,8 +58,6 @@ export const zoneRoleHandler = async ({
         return NextResponse.next();
     }
 
-    console.log("Middleware đang thực hiện Refresh...");
-
     const newTokensPair = await authService.refreshToken({ token: refreshToken });
 
     if (newTokensPair && newTokensPair.accessToken && newTokensPair.refreshToken) {

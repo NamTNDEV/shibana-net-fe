@@ -1,8 +1,8 @@
 import { RoleType } from './../constants/roles';
-import { UserResponseDataType } from "@/types/user.type";
+import { MyAccountMetadataResponseDataType } from "@/types/user.type";
 
 export type CheckHasPermissionParamsType = {
-    user: UserResponseDataType | null;
+    user: MyAccountMetadataResponseDataType | null;
     roles: RoleType[];
 }
 export const checkHasPermission = ({ user, roles }: CheckHasPermissionParamsType): boolean => {

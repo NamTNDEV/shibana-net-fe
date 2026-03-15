@@ -53,7 +53,6 @@ class Http {
 
         const baseUrl = options?.baseUrl || this.baseUrl;
         const fullUrl = url.startsWith("http") ? url : `${baseUrl}${url.startsWith("/") ? url : `/${url}`}`;
-
         if (body && typeof body === "object" && !isFormData) {
             body = JSON.stringify(body);
         }
@@ -78,7 +77,15 @@ class Http {
                     method,
                 });
             } else {
-                throw new HttpError({ status: 401, payload: { code: 401, message: "Token không hợp lệ" } });
+                throw new HttpError(
+                    {
+                        status: 401,
+                        payload: {
+                            code: 401,
+                            message: "Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại."
+                        }
+                    }
+                );
             }
         }
 

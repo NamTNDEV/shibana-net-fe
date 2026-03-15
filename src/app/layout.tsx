@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "sonner";
+import QueryProvider from "@/components/providers/query";
 
 export const metadata: Metadata = {
   title: {
@@ -21,7 +22,10 @@ export default async function RootLayout({
   return (
     <html lang="vi">
       <body className="antialiased">
-        {children}
+        <QueryProvider>
+          {children}
+          <Toaster />
+        </QueryProvider>
         <Toaster />
       </body>
     </html>
