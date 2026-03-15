@@ -19,6 +19,7 @@ export default async function ProfileLayout({
     if (!profile) {
         notFound();
     }
+
     return (
         <main className="min-h-[calc(100vh-56px)]">
             <ProfileHeader profile={profile} />

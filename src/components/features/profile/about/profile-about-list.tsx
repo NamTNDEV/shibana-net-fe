@@ -25,7 +25,7 @@ export const AboutList = ({ renderListType }: AboutListPropType) => {
     return (
         <ul className="flex flex-col gap-2">
             {
-                renderList.map((item) => (
+                renderList.length > 0 ? renderList.map((item) => (
                     <AboutItem
                         key={item.type}
                         type={item.type}
@@ -34,7 +34,11 @@ export const AboutList = ({ renderListType }: AboutListPropType) => {
                         privacy={item.privacy}
                         isOwner={isOwner}
                     />
-                ))
+                )) : (
+                    <div className="flex items-center justify-center h-full">
+                        <p className="text-xl font-bold text-gray-500">Không có hoạt động để hiển thị</p>
+                    </div>
+                )
             }
         </ul>
     )

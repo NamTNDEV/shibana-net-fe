@@ -93,6 +93,11 @@ const generatePhoneItem = (content: string | null) => {
     }
 }
 
+const checkIsOwner = (owner: MyAccountMetadataResponseDataType | null, profile: ProfileResponseDataType | null) => {
+    if (!owner || !profile) return false;
+    return owner.userId === profile.userId;
+}
+
 const generateEmailItem = (content: string | null) => {
     return {
         type: ABOUT_ITEM_TYPES.EMAIL,
@@ -106,19 +111,23 @@ export const generateAboutItemList = (
     profile: ProfileResponseDataType | null,
     renderListType: AboutItemRenderListType
 ): AboutItemPropType[] => {
-    if (!profile || !owner) return [];
+    if (!profile) return [];
     const list: AboutItemPropType[] = [];
     switch (renderListType) {
         case ABOUT_ITEM_RENDER_LIST_TYPES.INTRO:
+            if (!profile.bio.value && !checkIsOwner(owner, profile)) return [];
             list.push(generateBioItem(profile.bio.value));
             break;
         case ABOUT_ITEM_RENDER_LIST_TYPES.PERSONAL_DETAILS:
+            if (!profile.dob.value && !profile.address.value && !checkIsOwner(owner, profile)) return [];
             list.push(generateDobItem(profile.dob.value));
             list.push(generateAddressItem(profile.address.value));
             break;
         case ABOUT_ITEM_RENDER_LIST_TYPES.CONTACT_INFO:
+            const email = owner?.email || null;
+            if (!profile.phoneNumber.value && !email && !checkIsOwner(owner, profile)) return [];
             list.push(generatePhoneItem(profile.phoneNumber.value));
-            list.push(generateEmailItem(owner.email));
+            list.push(generateEmailItem(email));
             break;
     }
     return list;

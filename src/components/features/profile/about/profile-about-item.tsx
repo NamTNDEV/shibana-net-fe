@@ -18,6 +18,8 @@ export const AboutItem = ({ type, title, subtitle, content, privacy, isOwner = f
         setIsEditing(false);
     }
 
+    if (!content && !isOwner) return <></>;
+
     return (
         <li className="group">
             <h2 className="text-lg font-bold mb-4">{title}</h2>
@@ -31,7 +33,9 @@ export const AboutItem = ({ type, title, subtitle, content, privacy, isOwner = f
                             "flex items-start gap-3",
                             content && "flex-1",
                             !content && "hover:cursor-pointer hover:opacity-60 hover:bg-secondary/50 rounded-md py-2 px-3"
-                        )}>
+                        )}
+                            onClick={() => !content && setIsEditing(true)}
+                        >
                             {getIconByType(type)}
                             <div className={
                                 cn(
