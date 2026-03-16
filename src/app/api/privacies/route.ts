@@ -7,9 +7,12 @@ export async function GET() {
         const data = await privacyService.getList();
         return NextResponse.json({ code: 200, message: "Lấy danh sách quyền riêng tư thành công", data });
     } catch (error) {
-        if (error instanceof HttpError && error.status === 401) {
-            return NextResponse.json({ code: error.payload.code, message: error.payload.message }, { status: 401 });
+        if (error instanceof HttpError) {
+            return NextResponse.json(error.payload, { status: error.status });
         }
-        return NextResponse.json({ code: 500, message: "Lỗi hệ thống, vui lòng thử lại sau." }, { status: 500 });
+        return NextResponse.json(
+            { code: 500, message: "Lỗi hệ thống, vui lòng thử lại sau." },
+            { status: 500 }
+        );
     }
 }

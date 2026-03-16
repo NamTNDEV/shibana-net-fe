@@ -9,11 +9,13 @@ export const usePrivacyListQuery = (isAllowFetch: boolean = true) => {
         queryFn: async () => {
             const res = await fetch(NEXT_SERVER_ROUTES.PRIVACIES.GET_LIST);
             if (!res.ok) {
+                const errorPayload = await res.json().catch(() => null);
+
                 throw new HttpError({
                     status: res.status,
                     payload: {
-                        code: res.status,
-                        message: res.statusText
+                        code: errorPayload?.code || res.status,
+                        message: errorPayload?.message || res.statusText
                     }
                 });
             }
