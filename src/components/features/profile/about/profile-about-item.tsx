@@ -4,24 +4,48 @@ import { ABOUT_ITEM_TYPES } from "@/constants/profile-about";
 import { cn } from "@/lib/utils";
 import { getIconByType, getPrivacyIconByType, getTitleWhenContentIsEmpty } from "./about.utils";
 import { Pencil } from "lucide-react";
-import { AboutItemPropType } from "./profile-about-item.type";
+import { AboutItemPropType, PrivacyType } from "./profile-about-item.type";
 import { useState } from "react";
 import ProfileAboutUpdateFieldForm from "./profile-about-update-field-form";
 import ProfileFieldPrivacyModal from "../profile-field-privacy/modal";
+import { ProfileUpdateRequestBodyType } from "@/types/profile.type";
+import { updateProfileAction } from "@/actions/profile.action";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export const AboutItem = ({ type, title, subtitle, content, privacy, isOwner = false }: AboutItemPropType) => {
+    const router = useRouter();
     const [isEditing, setIsEditing] = useState(false);
-    const [isUpdating, setIsUpdating] = useState(false);
     const [isOpenModal, setIsOpenModal] = useState(false);
-
-    const handleSaveEdit = async () => { }
 
     const handleCancelEdit = () => {
         setIsEditing(false);
     }
 
-    if (!content && !isOwner) return <></>;
+    const handleUpdateProfileField = async (selectedPrivacy: PrivacyType, newContent?: string): Promise<void> => {
+        try {
+            const body: ProfileUpdateRequestBodyType = {
+                privacyLevel: selectedPrivacy,
+                fieldKey: type,
+                content: newContent ?? content,
+            }
 
+            const response = await updateProfileAction(body);
+            if (!response.success) {
+                toast.error(response.message, { position: "bottom-right", richColors: true, duration: 2000 });
+                return;
+            }
+            toast.success(response.message, { position: "bottom-right", richColors: true, duration: 2000 });
+            router.refresh();
+        } catch (error) {
+            console.log("error:: ", error);
+            toast.error("Lỗi hệ thống, vui lòng thử lại sau.", { position: "bottom-right", richColors: true, duration: 2000 });
+        } finally {
+            setIsOpenModal(false);
+        }
+    }
+
+    if (!content && !isOwner) return <></>;
     return (
         <>
             <li className="group">
@@ -46,7 +70,12 @@ export const AboutItem = ({ type, title, subtitle, content, privacy, isOwner = f
                                         content && "px-3",
                                     )
                                 }>
-                                    <p className="text-base">{content ? content : getTitleWhenContentIsEmpty(type)}</p>
+                                    <p className={cn(
+                                        "text-base",
+                                        !content && "text-gray-500"
+                                    )}>
+                                        {content ? content : getTitleWhenContentIsEmpty(type)}
+                                    </p>
                                     {subtitle && <p className="text-xs text-gray-500">{subtitle}</p>}
                                 </div>
                             </div>
@@ -73,13 +102,18 @@ export const AboutItem = ({ type, title, subtitle, content, privacy, isOwner = f
                             content={content}
                             privacy={privacy}
                             desc={getTitleWhenContentIsEmpty(type)}
-                            onSave={handleSaveEdit}
                             onCancel={handleCancelEdit}
+                            onUpdateProfileField={handleUpdateProfileField}
+                            setIsEditing={setIsEditing}
                         />
                     )
                 }
             </li>
-            <ProfileFieldPrivacyModal isOpen={isOpenModal} setIsOpen={setIsOpenModal} />
+            <ProfileFieldPrivacyModal
+                isOpen={isOpenModal}
+                setIsOpen={setIsOpenModal}
+                onUpdatePrivacy={handleUpdateProfileField}
+                defaultPrivacy={privacy} />
         </>
     )
 }

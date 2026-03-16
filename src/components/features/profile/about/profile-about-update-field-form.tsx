@@ -1,11 +1,10 @@
 'use client'
 
-import { ABOUT_ITEM_TYPES, PRIVACY_TYPES } from "@/constants/profile-about";
+import { ABOUT_ITEM_TYPES } from "@/constants/profile-about";
 import { AboutItemType, PrivacyType } from "./profile-about-item.type";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { getPrivacyIconByType, getPrivacyTitleByType } from "./about.utils";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import ProfileFieldPrivacyModal from "../profile-field-privacy/modal";
@@ -15,8 +14,9 @@ type ProfileAboutUpdateFieldFormProps = {
     content: string | null;
     privacy: PrivacyType;
     desc?: string;
-    onSave: () => void;
     onCancel: () => void;
+    setIsEditing: (isEditing: boolean) => void;
+    onUpdateProfileField: (selectedPrivacy: PrivacyType, newContent?: string) => Promise<void>;
 }
 
 export default function ProfileAboutUpdateFieldForm({
@@ -24,12 +24,26 @@ export default function ProfileAboutUpdateFieldForm({
     content,
     privacy,
     desc,
-    onSave,
     onCancel,
+    setIsEditing,
+    onUpdateProfileField,
 }: ProfileAboutUpdateFieldFormProps) {
+    const [isLoading, setIsLoading] = useState(false);
     const [isOpenModal, setIsOpenModal] = useState(false);
     const [privacyState, setPrivacyState] = useState<PrivacyType>(privacy);
     const [updateFieldValue, setUpdateFieldValue] = useState<string>(content || "");
+
+    const handleSelectPrivacy = (selectedPrivacy: PrivacyType) => {
+        setPrivacyState(selectedPrivacy);
+        setIsOpenModal(false);
+    }
+
+    const handleSave = async () => {
+        setIsLoading(true);
+        await onUpdateProfileField(privacyState, updateFieldValue);
+        setIsLoading(false);
+        setIsEditing(false);
+    }
 
     return (
         <>
@@ -37,6 +51,7 @@ export default function ProfileAboutUpdateFieldForm({
                 variant="outline"
                 className="flex items-center gap-1 py-2 px-3 h-9 rounded-sm hover:bg-secondary/80"
                 disabled={type === ABOUT_ITEM_TYPES.BIO}
+                onClick={() => setIsOpenModal(true)}
             >
                 {getPrivacyIconByType(privacyState, "size-4")}
                 <span className="text-md">{getPrivacyTitleByType(privacyState)}</span>
@@ -57,11 +72,16 @@ export default function ProfileAboutUpdateFieldForm({
                     <Separator className="w-full bg-[#ced1d5] h-0.5 my-3" />
                     <div className="flex items-center justify-end gap-2">
                         <Button variant="outline" className="h-9 px-3 py-0 hover:bg-secondary" onClick={onCancel}>Huỷ</Button>
-                        <Button className="h-9 px-3 py-0 text-white" onClick={onSave}>Lưu</Button>
+                        <Button className="text-white h-9 px-3 py-0" isLoading={isLoading} onClick={handleSave}>Lưu</Button>
                     </div>
                 </div>
             </div>
-            <ProfileFieldPrivacyModal isOpen={isOpenModal} setIsOpen={setIsOpenModal} />
+            <ProfileFieldPrivacyModal
+                isOpen={isOpenModal}
+                setIsOpen={setIsOpenModal}
+                onUpdatePrivacy={handleSelectPrivacy}
+                defaultPrivacy={privacyState}
+            />
         </>
     )
 }

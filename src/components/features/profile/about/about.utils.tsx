@@ -56,40 +56,58 @@ export const getPrivacyTitleByType = (type: PrivacyType) => {
     }
 }
 
-const generateBioItem = (content: string | null) => {
+export const getPrivacyDescriptionByType = (type: PrivacyType) => {
+    switch (type) {
+        case PRIVACY_TYPES.PUBLIC:
+            return "Bất kỳ ai ở trên hoặc ngoài Facebook";
+        case PRIVACY_TYPES.PRIVATE:
+            return "Chỉ bạn có thể xem";
+    }
+}
+
+const generateBioItem = (content: string | null, privacy: PrivacyType) => {
     return {
         type: ABOUT_ITEM_TYPES.BIO,
         title: "Tiểu sử",
         content: content,
-        privacy: PRIVACY_TYPES.PUBLIC,
+        privacy: privacy,
     }
 }
 
-const generateAddressItem = (content: string | null) => {
+const generateAddressItem = (content: string | null, privacy: PrivacyType) => {
     return {
         type: ABOUT_ITEM_TYPES.ADDRESS,
         title: "Địa chỉ",
         content: content,
-        privacy: PRIVACY_TYPES.PUBLIC,
+        privacy: privacy,
     }
 }
 
-const generateDobItem = (content: string | null) => {
+const generateDobItem = (content: string | null, privacy: PrivacyType) => {
     return {
         type: ABOUT_ITEM_TYPES.DOB,
         title: "Ngày sinh",
         content: content,
-        privacy: PRIVACY_TYPES.PUBLIC,
+        privacy: privacy,
     }
 }
 
-const generatePhoneItem = (content: string | null) => {
+const generatePhoneItem = (content: string | null, privacy: PrivacyType) => {
 
     return {
         type: ABOUT_ITEM_TYPES.PHONE,
         title: "Số điện thoại",
         content: content,
-        privacy: PRIVACY_TYPES.PUBLIC,
+        privacy: privacy,
+    }
+}
+
+const generateEmailItem = (content: string | null, privacy: PrivacyType) => {
+    return {
+        type: ABOUT_ITEM_TYPES.EMAIL,
+        title: "Email",
+        content: content,
+        privacy: privacy,
     }
 }
 
@@ -98,14 +116,6 @@ const checkIsOwner = (owner: MyAccountMetadataResponseDataType | null, profile: 
     return owner.userId === profile.userId;
 }
 
-const generateEmailItem = (content: string | null) => {
-    return {
-        type: ABOUT_ITEM_TYPES.EMAIL,
-        title: "Email",
-        content: content || "example@example.com",
-        privacy: PRIVACY_TYPES.PUBLIC,
-    }
-}
 export const generateAboutItemList = (
     owner: MyAccountMetadataResponseDataType | null,
     profile: ProfileResponseDataType | null,
@@ -116,18 +126,18 @@ export const generateAboutItemList = (
     switch (renderListType) {
         case ABOUT_ITEM_RENDER_LIST_TYPES.INTRO:
             if (!profile.bio.value && !checkIsOwner(owner, profile)) return [];
-            list.push(generateBioItem(profile.bio.value));
+            list.push(generateBioItem(profile.bio.value, profile.bio.privacyLevel));
             break;
         case ABOUT_ITEM_RENDER_LIST_TYPES.PERSONAL_DETAILS:
             if (!profile.dob.value && !profile.address.value && !checkIsOwner(owner, profile)) return [];
-            list.push(generateDobItem(profile.dob.value));
-            list.push(generateAddressItem(profile.address.value));
+            list.push(generateDobItem(profile.dob.value, profile.dob.privacyLevel));
+            list.push(generateAddressItem(profile.address.value, profile.address.privacyLevel));
             break;
         case ABOUT_ITEM_RENDER_LIST_TYPES.CONTACT_INFO:
             const email = owner?.email || null;
             if (!profile.phoneNumber.value && !email && !checkIsOwner(owner, profile)) return [];
-            list.push(generatePhoneItem(profile.phoneNumber.value));
-            list.push(generateEmailItem(email));
+            list.push(generatePhoneItem(profile.phoneNumber.value, profile.phoneNumber.privacyLevel));
+            list.push(generateEmailItem(email, profile.email.privacyLevel));
             break;
     }
     return list;

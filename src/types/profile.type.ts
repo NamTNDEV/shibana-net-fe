@@ -1,4 +1,4 @@
-import { PrivacyType } from "@/components/features/profile/about/profile-about-item.type"
+import { AboutItemType, PrivacyType } from "@/components/features/profile/about/profile-about-item.type"
 
 // Request
 export type UpdateCoverImageRequestBodyType = {
@@ -11,6 +11,12 @@ export type UpdateAvatarImageRequestBodyType = {
     avatarScale: number
     avatarPositionX: number
     avatarPositionY: number
+}
+
+export type ProfileUpdateRequestBodyType = {
+    privacyLevel: PrivacyType;
+    fieldKey: AboutItemType;
+    content: string | null;
 }
 
 // Response
@@ -28,6 +34,7 @@ export type ProfileResponseDataType = {
 
     bio: ProfileFieldWithPrivacyResponseDataType<any>;
     dob: ProfileFieldWithPrivacyResponseDataType<any>;
+    email: ProfileFieldWithPrivacyResponseDataType<any>;
     address: ProfileFieldWithPrivacyResponseDataType<any>;
     phoneNumber: ProfileFieldWithPrivacyResponseDataType<any>;
 

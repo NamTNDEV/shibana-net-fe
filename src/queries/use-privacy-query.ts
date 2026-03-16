@@ -1,12 +1,13 @@
 import { NEXT_SERVER_ROUTES } from "@/constants/api-route"
 import { HttpError } from "@/lib/http-errors";
+import { PrivacyResponseDataType } from "@/types/privacy.type";
 import { useQuery } from "@tanstack/react-query"
 
 export const usePrivacyListQuery = (isAllowFetch: boolean = true) => {
     return useQuery({
         enabled: isAllowFetch,
         queryKey: ["privacy-list"],
-        queryFn: async () => {
+        queryFn: async (): Promise<PrivacyResponseDataType[]> => {
             const res = await fetch(NEXT_SERVER_ROUTES.PRIVACIES.GET_LIST);
             if (!res.ok) {
                 const errorPayload = await res.json().catch(() => null);
@@ -20,7 +21,7 @@ export const usePrivacyListQuery = (isAllowFetch: boolean = true) => {
                 });
             }
             const data = await res.json();
-            return data;
+            return data.data;
         },
         staleTime: Infinity,
     })

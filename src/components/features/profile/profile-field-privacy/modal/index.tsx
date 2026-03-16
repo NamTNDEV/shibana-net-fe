@@ -7,14 +7,24 @@ import { X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
 import ProfileFieldPrivacyModalContent from "./content"
+import { PrivacyType } from "../../about/profile-about-item.type"
 
 type ProfileFieldPrivacyModalProps = {
+    defaultPrivacy: PrivacyType;
     isOpen: boolean;
     setIsOpen: (isOpen: boolean) => void;
+    onUpdatePrivacy: (selectedPrivacy: PrivacyType) => Promise<void> | void;
 }
 
-export default function ProfileFieldPrivacyModal({ isOpen, setIsOpen }: ProfileFieldPrivacyModalProps) {
+export default function ProfileFieldPrivacyModal({ defaultPrivacy, isOpen, setIsOpen, onUpdatePrivacy }: ProfileFieldPrivacyModalProps) {
     const [isLoading, setIsLoading] = useState(false);
+    const [selectedPrivacy, setSelectedPrivacy] = useState<PrivacyType>(defaultPrivacy);
+
+    const handleSave = async () => {
+        setIsLoading(true);
+        await onUpdatePrivacy(selectedPrivacy);
+        setIsLoading(false);
+    }
 
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -34,14 +44,18 @@ export default function ProfileFieldPrivacyModal({ isOpen, setIsOpen }: ProfileF
                     </div>
                     <DialogDescription className="hidden" />
                 </DialogHeader>
+
                 <Separator className="w-full bg-[#ced1d5] h-0.5" />
-                <ProfileFieldPrivacyModalContent isOpen={isOpen} />
+
+                <ProfileFieldPrivacyModalContent selectedPrivacy={selectedPrivacy} setSelectedPrivacy={setSelectedPrivacy} />
+
                 <Separator className="w-full bg-[#ced1d5] h-0.5" />
+
                 <DialogFooter className="p-4 flex justify-end bg-white rounded-b-lg">
                     <DialogClose asChild>
                         <Button type="button" className="bg-transparent text-primary hover:bg-secondary p-3">Huỷ</Button>
                     </DialogClose>
-                    <Button type="button" className="text-white px-9 min-w-10" isLoading={isLoading}>Lưu</Button>
+                    <Button type="button" className="text-white px-9 w-[117px]" isLoading={isLoading} onClick={handleSave}>Lưu</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

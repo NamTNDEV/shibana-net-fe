@@ -1,20 +1,27 @@
 'use client'
 
-import ProfileFieldPrivacyModalList from "./list";
 import { usePrivacyListQuery } from "@/queries/use-privacy-query";
 import { toast } from "sonner";
 import { HttpError } from "@/lib/http-errors";
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/constants/routes";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { PRIVACY_TYPES } from "@/constants/profile-about";
+import { PrivacyType } from "../../about/profile-about-item.type";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Field, FieldContent, FieldDescription, FieldLabel, FieldTitle } from "@/components/ui/field";
+import { getPrivacyDescriptionByType, getPrivacyIconByType, getPrivacyTitleByType } from "../../about/about.utils";
+import { cn } from "@/lib/utils";
 
 type ProfileFieldPrivacyModalContentProps = {
-    isOpen: boolean;
+    selectedPrivacy: PrivacyType;
+    setSelectedPrivacy: (privacy: PrivacyType) => void;
 }
 
-export default function ProfileFieldPrivacyModalContent({ isOpen }: ProfileFieldPrivacyModalContentProps) {
+export default function ProfileFieldPrivacyModalContent({ selectedPrivacy, setSelectedPrivacy }: ProfileFieldPrivacyModalContentProps) {
     const router = useRouter();
-    const { data, error, isLoading, isError, refetch } = usePrivacyListQuery();
+    const { data, error, isLoading, isError } = usePrivacyListQuery();
 
     useEffect(() => {
         if (!isError && !error) return;
@@ -39,7 +46,62 @@ export default function ProfileFieldPrivacyModalContent({ isOpen }: ProfileField
 
     return (
         <div className="bg-white py-3 px-2">
-            <ProfileFieldPrivacyModalList />
+            {
+                isLoading ? (
+                    <ProfileFieldPrivacyModalContentLoading />
+                ) : !data || data.length === 0 ? (
+                    <ProfileFieldPrivacyModalContentEmpty />
+                ) : (
+                    <RadioGroup
+                        className="bg-white"
+                        value={selectedPrivacy}
+                    >
+                        {data.map((item) => (
+                            <FieldLabel
+                                key={item.id}
+                                htmlFor={item.id.toString()}
+                                onClick={() => setSelectedPrivacy(item.name)}>
+                                <Field orientation="horizontal" className="flex flex-row items-center! cursor-pointer">
+                                    <FieldContent className="flex flex-row items-center gap-3">
+                                        <div className={cn(
+                                            "size-[60px] rounded-full flex items-center justify-center",
+                                            selectedPrivacy === item.name ? "bg-primary" : "bg-gray-200"
+                                        )}>
+                                            {getPrivacyIconByType(item.name)}
+                                        </div>
+                                        <div>
+                                            <FieldTitle>{getPrivacyTitleByType(item.name)}</FieldTitle>
+                                            <FieldDescription>
+                                                {getPrivacyDescriptionByType(item.name)}
+                                            </FieldDescription>
+                                        </div>
+                                    </FieldContent>
+                                    <RadioGroupItem value={item.name} id={item.name} className="border-gray-400 size-5 p-0.5 cursor-pointer data-[state=checked]:border-primary" />
+                                </Field>
+                            </FieldLabel>
+                        ))}
+                    </RadioGroup>
+                )
+            }
         </div>
+    )
+}
+
+function ProfileFieldPrivacyModalContentLoading() {
+    return (
+        <ul className="flex flex-col gap-3">
+            <li>
+                <Skeleton className="h-10 w-full bg-gray-200" />
+            </li>
+            <li>
+                <Skeleton className="h-10 w-full bg-gray-200" />
+            </li>
+        </ul>
+    )
+}
+
+function ProfileFieldPrivacyModalContentEmpty() {
+    return (
+        <p className="text-center text-gray-500">Không có quyền riêng tư nào.</p>
     )
 }

@@ -14,6 +14,7 @@ export const API_ROUTES = {
         PROFILE_BY_USERNAME: "social/profiles/:username",
         UPDATE_COVER_IMAGE: "social/profiles/me/cover",
         UPDATE_AVATAR_IMAGE: "social/profiles/me/avatar",
+        UPDATE_PROFILE: "social/profiles/me",
     },
     MEDIA: {
         UPLOAD_IMAGE: "media/upload",
