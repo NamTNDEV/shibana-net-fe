@@ -1,16 +1,16 @@
 'use client'
 import Link from "next/link"
 import ProfileActions from "./profile-actions";
-import { useAuthStore } from "@/stores/auth.store";
+import { ViewerContextResponseDataType } from "@/types/profile.type";
 
 export type ProfileDetailsPropsType = {
     userId: string;
     username: string;
     firstName: string;
     lastName: string;
+    viewerContext: ViewerContextResponseDataType;
 }
-export default function ProfileDetails({ firstName, lastName, userId, username }: ProfileDetailsPropsType) {
-    const { authUser } = useAuthStore();
+export default function ProfileDetails({ firstName, lastName, userId, username, viewerContext }: ProfileDetailsPropsType) {
 
     return (
         <div className="flex flex-col items-center justify-between lg:flex-row lg:items-start">
@@ -29,7 +29,8 @@ export default function ProfileDetails({ firstName, lastName, userId, username }
 
             <ProfileActions
                 username={username}
-                isOwner={userId === authUser?.userId}
+                userId={userId}
+                viewerContext={viewerContext}
             />
 
         </div>

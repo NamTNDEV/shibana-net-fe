@@ -2,8 +2,6 @@
 import { AboutItem } from "./profile-about-item"
 import { useProfileStore } from "@/stores/profile.store"
 import { AboutItemRenderListType } from "./profile-about-item.type"
-import { checkIsOwner } from "@/lib/utils"
-import { useAuthStore } from "@/stores/auth.store"
 import { generateAboutItemList } from "./about.utils"
 import ProfileAboutListSkeleton from "./profile-about-skeleton"
 
@@ -12,16 +10,12 @@ type AboutListPropType = {
 }
 
 export const AboutList = ({ renderListType }: AboutListPropType) => {
-    const { authUser } = useAuthStore();
     const { profile } = useProfileStore();
 
     if (!profile) return (
         <ProfileAboutListSkeleton />
     );
-
-    const isOwner = checkIsOwner(authUser?.userId, profile?.userId);
-    const renderList = generateAboutItemList(authUser, profile, renderListType);
-
+    const renderList = generateAboutItemList(profile, renderListType);
     return (
         <ul className="flex flex-col gap-2">
             {
@@ -32,7 +26,7 @@ export const AboutList = ({ renderListType }: AboutListPropType) => {
                         title={item.title}
                         content={item.content}
                         privacy={item.privacy}
-                        isOwner={isOwner}
+                        viewerContext={profile.viewerContext}
                     />
                 )) : (
                     <div className="flex items-center justify-center h-full">

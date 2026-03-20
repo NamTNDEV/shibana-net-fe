@@ -9,6 +9,7 @@ export const ABOUT_ITEM_TYPES = {
 export const PRIVACY_TYPES = {
     PUBLIC: 'PUBLIC',
     PRIVATE: 'PRIVATE',
+    FRIENDS: 'FRIENDS',
 } as const;
 
 export const ABOUT_ITEM_RENDER_LIST_TYPES = {

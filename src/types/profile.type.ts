@@ -45,4 +45,17 @@ export type ProfileResponseDataType = {
 
     cover: string | null
     coverPositionY: number
+
+    viewerContext: ViewerContextResponseDataType;
+}
+
+export type relationshipContext = {
+    isFriended: boolean;
+    isFollowing: boolean;
+    hasSentFriendRequest: boolean;
+}
+
+export type ViewerContextResponseDataType = {
+    isOwner: boolean;
+    relationshipContext: relationshipContext;
 }

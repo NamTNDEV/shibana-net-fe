@@ -1,6 +1,6 @@
 import { ABOUT_ITEM_RENDER_LIST_TYPES, ABOUT_ITEM_TYPES, PRIVACY_TYPES } from "@/constants/profile-about";
 import { AboutItemPropType, AboutItemRenderListType, AboutItemType, PrivacyType } from "@/components/features/profile/about/profile-about-item.type";
-import { Cake, Mail, Hand, MapPinHouse, Phone, Earth, Lock, Pencil } from "lucide-react";
+import { Cake, Mail, Hand, MapPinHouse, Phone, Earth, Lock, Pencil, Users } from "lucide-react";
 import { MyAccountMetadataResponseDataType } from "@/types/user.type";
 import { ProfileResponseDataType } from "@/types/profile.type";
 import { cn } from "@/lib/utils";
@@ -44,6 +44,8 @@ export const getPrivacyIconByType = (type: PrivacyType, className?: string) => {
             return <Earth className={iconClassName} />;
         case PRIVACY_TYPES.PRIVATE:
             return <Lock className={iconClassName} />;
+        case PRIVACY_TYPES.FRIENDS:
+            return <Users className={iconClassName} />;
     }
 }
 
@@ -53,6 +55,8 @@ export const getPrivacyTitleByType = (type: PrivacyType) => {
             return "Công khai";
         case PRIVACY_TYPES.PRIVATE:
             return "Riêng tư";
+        case PRIVACY_TYPES.FRIENDS:
+            return "Bạn bè";
     }
 }
 
@@ -62,6 +66,8 @@ export const getPrivacyDescriptionByType = (type: PrivacyType) => {
             return "Bất kỳ ai ở trên hoặc ngoài Facebook";
         case PRIVACY_TYPES.PRIVATE:
             return "Chỉ bạn có thể xem";
+        case PRIVACY_TYPES.FRIENDS:
+            return "Chỉ bạn bè có thể xem";
     }
 }
 
@@ -111,13 +117,7 @@ const generateEmailItem = (content: string | null, privacy: PrivacyType) => {
     }
 }
 
-const checkIsOwner = (owner: MyAccountMetadataResponseDataType | null, profile: ProfileResponseDataType | null) => {
-    if (!owner || !profile) return false;
-    return owner.userId === profile.userId;
-}
-
 export const generateAboutItemList = (
-    owner: MyAccountMetadataResponseDataType | null,
     profile: ProfileResponseDataType | null,
     renderListType: AboutItemRenderListType
 ): AboutItemPropType[] => {
@@ -125,17 +125,17 @@ export const generateAboutItemList = (
     const list: AboutItemPropType[] = [];
     switch (renderListType) {
         case ABOUT_ITEM_RENDER_LIST_TYPES.INTRO:
-            if (!profile.bio.value && !checkIsOwner(owner, profile)) return [];
+            if (!profile.bio.value && !profile.viewerContext.isOwner) return [];
             list.push(generateBioItem(profile.bio.value, profile.bio.privacyLevel));
             break;
         case ABOUT_ITEM_RENDER_LIST_TYPES.PERSONAL_DETAILS:
-            if (!profile.dob.value && !profile.address.value && !checkIsOwner(owner, profile)) return [];
+            if (!profile.dob.value && !profile.address.value && !profile.viewerContext.isOwner) return [];
             list.push(generateDobItem(profile.dob.value, profile.dob.privacyLevel));
             list.push(generateAddressItem(profile.address.value, profile.address.privacyLevel));
             break;
         case ABOUT_ITEM_RENDER_LIST_TYPES.CONTACT_INFO:
-            const email = owner?.email || null;
-            if (!profile.phoneNumber.value && !email && !checkIsOwner(owner, profile)) return [];
+            const email = profile?.email.value || null;
+            if (!profile.phoneNumber.value && !email && !profile.viewerContext.isOwner) return [];
             list.push(generatePhoneItem(profile.phoneNumber.value, profile.phoneNumber.privacyLevel));
             list.push(generateEmailItem(email, profile.email.privacyLevel));
             break;

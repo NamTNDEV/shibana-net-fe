@@ -74,6 +74,10 @@ export default function ProfileCover({ coverUrl: initialCoverUrl, altText = "Cov
             let uploadedCoverMediaName: string | undefined;
             let newCoverUrl: string | undefined;
             if (selectedCover) {
+                if (selectedCover.size > 5 * 1024 * 1024) {
+                    toast.error("Ảnh bìa không được lớn hơn 5MB. Vui lòng chọn ảnh khác.", { position: "bottom-right", richColors: true });
+                    return;
+                }
                 const response = await uploadCoverImageAction({ file: selectedCover });
                 if (!response.success || !response.data) {
                     toast.error(response.message, {

@@ -21,6 +21,10 @@ export const API_ROUTES = {
     },
     PRIVACIES: {
         GET_LIST: "social/privacies",
+    },
+    CONNECTIONS: {
+        FOLLOW: "social/follows",
+        UNFOLLOW: "social/follows/:followeeId",
     }
 } as const;
 

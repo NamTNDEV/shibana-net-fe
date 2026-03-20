@@ -13,7 +13,7 @@ import { updateProfileAction } from "@/actions/profile.action";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
-export const AboutItem = ({ type, title, subtitle, content, privacy, isOwner = false }: AboutItemPropType) => {
+export const AboutItem = ({ type, title, subtitle, content, privacy, viewerContext }: AboutItemPropType) => {
     const router = useRouter();
     const [isEditing, setIsEditing] = useState(false);
     const [isOpenModal, setIsOpenModal] = useState(false);
@@ -21,7 +21,6 @@ export const AboutItem = ({ type, title, subtitle, content, privacy, isOwner = f
     const handleCancelEdit = () => {
         setIsEditing(false);
     }
-
     const handleUpdateProfileField = async (selectedPrivacy: PrivacyType, newContent?: string): Promise<void> => {
         try {
             const body: ProfileUpdateRequestBodyType = {
@@ -45,7 +44,7 @@ export const AboutItem = ({ type, title, subtitle, content, privacy, isOwner = f
         }
     }
 
-    if (!content && !isOwner) return <></>;
+    if (!content && !viewerContext.isOwner) return <></>;
     return (
         <>
             <li className="group">
@@ -80,7 +79,7 @@ export const AboutItem = ({ type, title, subtitle, content, privacy, isOwner = f
                                 </div>
                             </div>
                             {
-                                content && isOwner && (
+                                content && viewerContext.isOwner && (
                                     <div className="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                                         <Button
                                             className="p-0 size-5 bg-outline hover:opacity-60"
@@ -89,8 +88,13 @@ export const AboutItem = ({ type, title, subtitle, content, privacy, isOwner = f
                                         >
                                             {getPrivacyIconByType(privacy)}
                                         </Button>
-                                        <Button className="size-9 bg-outline hover:bg-secondary/50 rounded-full" onClick={() => setIsEditing(true)}>
-                                            <Pencil className="size-5 text-gray-600" />
+                                        <Button
+                                            className="size-9 bg-outline hover:bg-secondary/50 rounded-full"
+                                            onClick={() => setIsEditing(true)}
+                                            disabled={type === ABOUT_ITEM_TYPES.EMAIL}
+                                        >
+                                            <Pencil className="size-5 text-gray-600"
+                                            />
                                         </Button>
                                     </div>
                                 )

@@ -33,6 +33,7 @@ export default function ProfileInfoWrapper({ profile }: ProfileInfoWrapperPropsT
                             username={profile.username}
                             firstName={profile.firstName}
                             lastName={profile.lastName}
+                            viewerContext={profile.viewerContext}
                         />
                         <ProfileBio bio={profile.bio.value} />
                     </div>

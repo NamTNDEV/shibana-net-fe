@@ -58,25 +58,25 @@ export default function ProfileFieldPrivacyModalContent({ selectedPrivacy, setSe
                     >
                         {data.map((item) => (
                             <FieldLabel
-                                key={item.id}
-                                htmlFor={item.id.toString()}
-                                onClick={() => setSelectedPrivacy(item.name)}>
+                                key={item}
+                                htmlFor={item.toString()}
+                                onClick={() => setSelectedPrivacy(item)}>
                                 <Field orientation="horizontal" className="flex flex-row items-center! cursor-pointer">
                                     <FieldContent className="flex flex-row items-center gap-3">
                                         <div className={cn(
                                             "size-[60px] rounded-full flex items-center justify-center",
-                                            selectedPrivacy === item.name ? "bg-primary" : "bg-gray-200"
+                                            selectedPrivacy === item ? "bg-primary" : "bg-gray-200"
                                         )}>
-                                            {getPrivacyIconByType(item.name)}
+                                            {getPrivacyIconByType(item)}
                                         </div>
                                         <div>
-                                            <FieldTitle>{getPrivacyTitleByType(item.name)}</FieldTitle>
+                                            <FieldTitle>{getPrivacyTitleByType(item)}</FieldTitle>
                                             <FieldDescription>
-                                                {getPrivacyDescriptionByType(item.name)}
+                                                {getPrivacyDescriptionByType(item)}
                                             </FieldDescription>
                                         </div>
                                     </FieldContent>
-                                    <RadioGroupItem value={item.name} id={item.name} className="border-gray-400 size-5 p-0.5 cursor-pointer data-[state=checked]:border-primary" />
+                                    <RadioGroupItem value={item} id={item} className="border-gray-400 size-5 p-0.5 cursor-pointer data-[state=checked]:border-primary" />
                                 </Field>
                             </FieldLabel>
                         ))}
