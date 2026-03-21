@@ -45,14 +45,12 @@ export default function FollowButton({ isFollowing, followeeUserId }: FollowButt
         <>
             <Button
                 onClick={handleFollow}
-                className={cn(
-                    "flex items-center justify-center gap-1",
-                    optimisticIsFollowing && "bg-gray-200"
-                )}
+                variant="outline"
+                className="flex items-center justify-center gap-1 px-3 h-9 hover:opacity-80"
             >
                 {isPending ? <Loader2 className="size-4 animate-spin" /> : optimisticIsFollowing ? <CircleCheckBig className="size-4" /> : <CirclePlus className="size-4" />}
                 {optimisticIsFollowing ? "Bỏ theo dõi" : "Theo dõi"}
-            </Button>
+            </Button >
         </>
     )
 }

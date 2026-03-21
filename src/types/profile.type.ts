@@ -1,4 +1,5 @@
 import { AboutItemType, PrivacyType } from "@/components/features/profile/about/profile-about-item.type"
+import { FriendshipStatusResponseType } from "@/constants/connection"
 
 // Request
 export type UpdateCoverImageRequestBodyType = {
@@ -49,13 +50,12 @@ export type ProfileResponseDataType = {
     viewerContext: ViewerContextResponseDataType;
 }
 
-export type relationshipContext = {
-    isFriended: boolean;
+export type RelationshipContext = {
     isFollowing: boolean;
-    hasSentFriendRequest: boolean;
+    friendshipStatus: FriendshipStatusResponseType;
 }
 
 export type ViewerContextResponseDataType = {
     isOwner: boolean;
-    relationshipContext: relationshipContext;
+    relationshipContext: RelationshipContext;
 }

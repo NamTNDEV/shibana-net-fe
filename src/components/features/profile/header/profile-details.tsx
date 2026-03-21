@@ -1,6 +1,6 @@
 'use client'
 import Link from "next/link"
-import ProfileActions from "./profile-actions";
+import ProfileActions from "./actions/profile-actions";
 import { ViewerContextResponseDataType } from "@/types/profile.type";
 
 export type ProfileDetailsPropsType = {
