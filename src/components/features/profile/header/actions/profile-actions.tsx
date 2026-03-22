@@ -60,7 +60,7 @@ function ProfileActionsNotOwner({ userId, relationshipContext }: { userId: strin
             <FollowButton followeeUserId={userId} isFollowing={isFollowing} />
             <MessageButton />
             {
-                friendshipStatus !== FRIENDSHIP_STATUS.BE_REJECTED && <FriendButton friendshipStatus={friendshipStatus} />
+                friendshipStatus !== FRIENDSHIP_STATUS.BE_REJECTED && <FriendButton friendshipStatus={friendshipStatus} recieverId={userId} />
             }
         </div>
     )

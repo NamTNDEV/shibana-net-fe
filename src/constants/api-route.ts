@@ -25,6 +25,11 @@ export const API_ROUTES = {
     CONNECTIONS: {
         FOLLOW: "social/follows",
         UNFOLLOW: "social/follows/:followeeId",
+        SEND_FRIEND_REQUEST: "social/friendships/send-request/:recieverId",
+        ACCEPT_FRIEND_REQUEST: "social/friendships/accept-request/:recieverId",
+        REJECT_FRIEND_REQUEST: "social/friendships/reject-request/:recieverId",
+        UNFRIEND: "social/friendships/unfriend/:recieverId",
+        REVOKE_FRIEND_REQUEST: "social/friendships/revoke-request/:revokeeId",
     }
 } as const;
 
