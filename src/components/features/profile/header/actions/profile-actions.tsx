@@ -23,7 +23,7 @@ export default function ProfileActions({ username, viewerContext, userId }: Prof
         return null;
     }
     return (
-        <div className="flex gap-2 md:pt-3 lg:pt-0">
+        <div className="flex gap-2 p-2 md:p-0 md:pt-3 lg:pt-0">
             {
                 viewerContext.isOwner ?
                     <ProfileActionsOwner username={username} />

@@ -34,4 +34,12 @@ export const connectionService = {
         const response = await httpClient.delete<void>(API_ROUTES.CONNECTIONS.REVOKE_FRIEND_REQUEST.replace(":revokeeId", revokeeId));
         return response;
     },
+    blockUser: async (blockeeId: string) => {
+        const response = await httpClient.post<void>(API_ROUTES.CONNECTIONS.BLOCK_USER.replace(":blockeeId", blockeeId));
+        return response;
+    },
+    unblockUser: async (blockeeId: string) => {
+        const response = await httpClient.delete<void>(API_ROUTES.CONNECTIONS.UNBLOCK_USER.replace(":blockeeId", blockeeId));
+        return response;
+    },
 }

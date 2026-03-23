@@ -6,6 +6,7 @@ import ProfileAvatar from "./avatar/profile-avatar"
 import ProfileDetails from "./profile-details"
 import ProfileBio from "./profile-bio"
 import ProfileTabs from "./profile-tabs"
+import ProfileMoreActions from "./cover/profile-more-actions"
 
 type ProfileInfoWrapperPropsType = {
     profile: ProfileResponseDataType;
@@ -39,11 +40,12 @@ export default function ProfileInfoWrapper({ profile }: ProfileInfoWrapperPropsT
                     </div>
                 </div>
             </div>
-            <div className="w-full lg:max-w-[1250px] lg:w-[73%] lg:px-6">
+            <div className="w-full lg:max-w-[1250px] lg:w-[73%] px-3 lg:px-6">
                 <Separator className="w-full bg-[#ced1d5] h-0.5" />
             </div>
-            <div className="w-full lg:max-w-[1250px] lg:w-[73%] lg:px-6">
+            <div className="w-full lg:max-w-[1250px] lg:w-[73%] px-3 lg:px-6 flex items-center justify-between">
                 <ProfileTabs />
+                <ProfileMoreActions viewerContext={profile.viewerContext} userId={profile.userId} />
             </div>
         </section>
     )

@@ -146,3 +146,46 @@ export const revokeFriendRequestAction = async (revokeeId: string): Promise<Acti
         return { success: false, message: "Lỗi hệ thống, vui lòng thử lại sau." };
     }
 }
+
+export const blockUserAction = async (blockeeId: string): Promise<ActionResponseDataType<void>> => {
+    try {
+        await connectionService.blockUser(blockeeId);
+        revalidatePath("/profile/[handle]", "page");
+        return {
+            success: true,
+            message: "Đã chặn người dùng thành công",
+        };
+    } catch (error) {
+        if (error instanceof HttpError) {
+            return {
+                success: false,
+                message: getErrorMessage(error.payload.code),
+                code: error.payload.code
+            };
+        }
+        return {
+            success: false,
+            message: "Lỗi hệ thống, vui lòng thử lại sau.",
+        };
+    }
+}
+
+export const unblockUserAction = async (blockeeId: string): Promise<ActionResponseDataType<void>> => {
+    try {
+        await connectionService.unblockUser(blockeeId);
+        revalidatePath("/profile/[handle]", "page");
+        return {
+            success: true,
+            message: "Đã bỏ chặn người dùng thành công",
+        };
+    } catch (error) {
+        if (error instanceof HttpError) {
+            return {
+                success: false,
+                message: getErrorMessage(error.payload.code),
+                code: error.payload.code
+            };
+        }
+        return { success: false, message: "Lỗi hệ thống, vui lòng thử lại sau." };
+    }
+}

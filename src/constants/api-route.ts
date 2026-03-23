@@ -30,6 +30,8 @@ export const API_ROUTES = {
         REJECT_FRIEND_REQUEST: "social/friendships/reject-request/:recieverId",
         UNFRIEND: "social/friendships/unfriend/:recieverId",
         REVOKE_FRIEND_REQUEST: "social/friendships/revoke-request/:revokeeId",
+        BLOCK_USER: "social/blocks/:blockeeId",
+        UNBLOCK_USER: "social/blocks/:blockeeId",
     }
 } as const;
 
