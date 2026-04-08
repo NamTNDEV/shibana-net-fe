@@ -1,9 +1,9 @@
-import PostList from "@/components/features/post/post-list";
+import NewsfeedContainer from "@/components/features/post/newsfeed-container";
 
 export default function HomePage() {
     return (
         <>
-            <PostList />
+            <NewsfeedContainer />
         </>
     )
 }
