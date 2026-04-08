@@ -1,6 +1,9 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
+/* Tailwind v4 content sources (ensure arbitrary classes like h-[72px] are generated) */
+@source "../**/*.{js,jsx,ts,tsx,mdx}";
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {

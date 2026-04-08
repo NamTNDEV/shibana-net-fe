@@ -30,7 +30,7 @@ export const getUsernameFromHandle = (handle: string) => {
 }
 
 export const getInitialName = (firstName: string, lastName: string): string => {
-  return `${firstName?.trim().charAt(0)}${lastName?.trim().charAt(0)}`.toUpperCase() || "?";
+  return `${firstName?.trim().charAt(0)}${lastName?.trim().charAt(0)}`.toUpperCase() || "Anonymous";
 };
 
 export const getHandledFromPathname = (pathname: string) => {

@@ -1,7 +1,6 @@
 import { ABOUT_ITEM_RENDER_LIST_TYPES, ABOUT_ITEM_TYPES, PRIVACY_TYPES } from "@/constants/profile-about";
 import { AboutItemPropType, AboutItemRenderListType, AboutItemType, PrivacyType } from "@/components/features/profile/about/profile-about-item.type";
-import { Cake, Mail, Hand, MapPinHouse, Phone, Earth, Lock, Pencil, Users } from "lucide-react";
-import { MyAccountMetadataResponseDataType } from "@/types/user.type";
+import { Cake, Mail, Hand, MapPinHouse, Phone, Earth, Lock, Users } from "lucide-react";
 import { ProfileResponseDataType } from "@/types/profile.type";
 import { cn } from "@/lib/utils";
 
@@ -99,7 +98,6 @@ const generateDobItem = (content: string | null, privacy: PrivacyType) => {
 }
 
 const generatePhoneItem = (content: string | null, privacy: PrivacyType) => {
-
     return {
         type: ABOUT_ITEM_TYPES.PHONE,
         title: "Số điện thoại",
@@ -126,18 +124,33 @@ export const generateAboutItemList = (
     switch (renderListType) {
         case ABOUT_ITEM_RENDER_LIST_TYPES.INTRO:
             if (!profile.bio.value && !profile.viewerContext.isOwner) return [];
-            list.push(generateBioItem(profile.bio.value, profile.bio.privacyLevel));
+            list.push({
+                ...generateBioItem(profile.bio.value, profile.bio.privacyLevel),
+                viewerContext: profile.viewerContext,
+            });
             break;
         case ABOUT_ITEM_RENDER_LIST_TYPES.PERSONAL_DETAILS:
             if (!profile.dob.value && !profile.address.value && !profile.viewerContext.isOwner) return [];
-            list.push(generateDobItem(profile.dob.value, profile.dob.privacyLevel));
-            list.push(generateAddressItem(profile.address.value, profile.address.privacyLevel));
+            list.push({
+                ...generateDobItem(profile.dob.value, profile.dob.privacyLevel),
+                viewerContext: profile.viewerContext,
+            });
+            list.push({
+                ...generateAddressItem(profile.address.value, profile.address.privacyLevel),
+                viewerContext: profile.viewerContext,
+            });
             break;
         case ABOUT_ITEM_RENDER_LIST_TYPES.CONTACT_INFO:
             const email = profile?.email.value || null;
             if (!profile.phoneNumber.value && !email && !profile.viewerContext.isOwner) return [];
-            list.push(generatePhoneItem(profile.phoneNumber.value, profile.phoneNumber.privacyLevel));
-            list.push(generateEmailItem(email, profile.email.privacyLevel));
+            list.push({
+                ...generatePhoneItem(profile.phoneNumber.value, profile.phoneNumber.privacyLevel),
+                viewerContext: profile.viewerContext,
+            });
+            list.push({
+                ...generateEmailItem(email, profile.email.privacyLevel),
+                viewerContext: profile.viewerContext,
+            });
             break;
     }
     return list;

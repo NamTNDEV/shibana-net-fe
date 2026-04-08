@@ -7,7 +7,6 @@ import { Images, SquareUser } from "lucide-react";
 import ProfileAvatarModal from "./profile-avatar-modal";
 import { useRouter } from "next/navigation";
 import ProfileAvatarContainer from "./profile-avatar-container";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export type ProfileAvatarPropsType = {
     avatar: string | null;
