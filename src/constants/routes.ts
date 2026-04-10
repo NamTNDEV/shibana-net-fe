@@ -17,6 +17,9 @@ export const ROUTES = {
         FRIENDS: "/@:handle/friends",
         REELS: "/@:handle/reels",
     },
+    POST: {
+        HASHTAG: "/hashtag/:hashtag",
+    },
 } as const;
 
 export const PUBLIC_ROUTES = [

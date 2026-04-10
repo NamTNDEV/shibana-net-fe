@@ -1,6 +1,7 @@
-import PostItem, { Post } from "./post-item";
+import { PostResponseDataType } from "@/types/post.type"
+import PostItem from "./post-item"
 
-const MOCK_POST_LIST: Post[] = [
+const MOCK_POST_LIST: PostResponseDataType[] = [
     {
         "id": "378e8e95-5ad3-45d2-8633-e80fa843d3f8",
         "content": "Mỗi lần bạn bước vào Minecraft, bạn có thể là bất cứ ai: một kiến trúc sư, một thợ mỏ, hay thậm chí là một chiến binh đấu với quái vật. ⚔️\n\n🌍 Cùng nhau xây dựng những công trình huyền thoại, khai thác tài nguyên, và tìm ra những bí mật ẩn giấu trong từng block. Đừng quên, mọi thứ có thể thay đổi trong nháy mắt — mỗi cuộc phiêu lưu luôn mới mẻ và đầy thử thách.\n\nHãy chia sẻ những sáng tạo của bạn trong thế giới Minecraft! Bạn đã xây dựng được công trình nào ấn tượng chưa?\n\n#Minecraft #GamingCommunity #BlockBuilding #Adventure #Survival",

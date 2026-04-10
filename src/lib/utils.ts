@@ -2,6 +2,7 @@ import { ERROR_DICTIONARY, ErrorDictionaryType } from "@/constants/error-diction
 import { ROUTES } from "@/constants/routes";
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
+import { format, FormatOptions } from "date-fns"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -40,4 +41,8 @@ export const getHandledFromPathname = (pathname: string) => {
 export const checkIsOwner = (userId?: string, profileUserId?: string) => {
   if (!userId || !profileUserId) return false;
   return userId === profileUserId;
+}
+
+export const formatDate = (date: string, formatString: string = "dd/MM/yyyy HH:mm", options?: FormatOptions) => {
+  return format(new Date(date), formatString, options)
 }
