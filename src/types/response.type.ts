@@ -10,3 +10,11 @@ export type ActionResponseDataType<T> = {
     code?: number
     data?: T
 }
+
+export type PaginationResponseDataType<T> = {
+    hasNext: boolean
+    page: number
+    payload: T
+    size: number
+    totalElements: number
+}

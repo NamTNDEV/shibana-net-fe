@@ -32,11 +32,17 @@ export const API_ROUTES = {
         REVOKE_FRIEND_REQUEST: "social/friendships/revoke-request/:revokeeId",
         BLOCK_USER: "social/blocks/:blockeeId",
         UNBLOCK_USER: "social/blocks/:blockeeId",
+    },
+    POSTS: {
+        GET_NEWSFEED: "posts/newsfeed",
     }
 } as const;
 
 export const NEXT_SERVER_ROUTES = {
     PRIVACIES: {
         GET_LIST: "/api/privacies",
+    },
+    POSTS: {
+        GET_NEWSFEED: "/api/posts/newsfeed",
     }
 }
