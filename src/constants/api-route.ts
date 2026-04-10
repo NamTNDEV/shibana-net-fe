@@ -34,7 +34,7 @@ export const API_ROUTES = {
         UNBLOCK_USER: "social/blocks/:blockeeId",
     },
     POSTS: {
-        GET_NEWSFEED: "posts/newsfeed",
+        GET_NEWSFEED: "posts/newsfeed?page=:page&size=:size",
     }
 } as const;
 
@@ -43,6 +43,6 @@ export const NEXT_SERVER_ROUTES = {
         GET_LIST: "/api/privacies",
     },
     POSTS: {
-        GET_NEWSFEED: "/api/posts/newsfeed",
+        GET_NEWSFEED: "/api/posts/newsfeed?page=:page&size=:size",
     }
 }

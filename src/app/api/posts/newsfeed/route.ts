@@ -2,9 +2,13 @@ import { HttpError } from "@/lib/http-errors";
 import { postService } from "@/services/post.service";
 import { NextResponse } from "next/server";
 
-export async function GET() {
+export async function GET(request: Request) {
+    const { searchParams } = new URL(request.url);
+    const page = Number(searchParams.get("page"));
+    const size = Number(searchParams.get("size"));
+
     try {
-        const data = await postService.getNewsfeed();
+        const data = await postService.getNewsfeed(page, size);
         return NextResponse.json({ code: 200, message: "Lấy danh sách bài viết thành công", data });
     } catch (error) {
         if (error instanceof HttpError) {
