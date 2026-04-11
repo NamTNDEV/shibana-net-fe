@@ -2,7 +2,7 @@
 import { PostResponseDataType } from "@/types/post.type"
 import PostItem from "./post-item"
 import { usePostNewsfeedQuery } from "@/queries/use-post-query";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { HttpError } from "@/lib/http-errors";
@@ -21,16 +21,7 @@ export default function PostList() {
     const [isLoading, setIsLoading] = useState(false);
     const [hasNext, setHasNext] = useState(true);
 
-    const observerTarget = useRef<HTMLDivElement | null>(null);
-
-    const isLoadingRef = useRef(isLoading);
-    const hasNextRef = useRef(hasNext);
-
-    // 2. Luôn giữ cho đồ đạc trong hộp là mới nhất (bằng cách đồng bộ với state)
-    useEffect(() => {
-        isLoadingRef.current = isLoading;
-        hasNextRef.current = hasNext;
-    }, [isLoading, hasNext]);
+    const observer = useRef<IntersectionObserver | null>(null);
 
     useEffect(() => {
         const controller = new AbortController();
@@ -86,24 +77,22 @@ export default function PostList() {
         }
     }, [page])
 
-    useEffect(() => {
-        const target = observerTarget.current;
-        if (!target) return;
-        const observer = new IntersectionObserver((entries) => {
+    const lastPostElementAppearedCallback = useCallback((node: HTMLDivElement | null) => {
+        if (isLoading || !hasNext) return;
+        if (observer.current) observer.current.disconnect();
+
+        observer.current = new IntersectionObserver((entries) => {
             const firstEntry = entries[0];
-            if (firstEntry.isIntersecting && !isLoadingRef.current && hasNextRef.current) {
+            if (firstEntry.isIntersecting) {
+                console.log("🔥 Lấy trang tiếp theo!");
                 setPage(prevPage => prevPage + 1);
             }
         }, {
             threshold: .5
         });
 
-        observer.observe(target);
-
-        return () => {
-            observer.unobserve(target);
-        }
-    }, [])
+        if (node) observer.current.observe(node);
+    }, []);
 
     // const { data: paginationData, isLoading, isError, error } = usePostNewsfeedQuery();
 
@@ -141,7 +130,7 @@ export default function PostList() {
         <div className="flex flex-col gap-4">
             {posts.map(post => <PostItem key={post.id} post={post} displayMode="NEWSFEED" />)}
 
-            <div ref={observerTarget} className="flex flex-col gap-4">
+            <div ref={lastPostElementAppearedCallback} className="flex flex-col gap-4">
                 {isLoading && <>
                     <PostItemSkeleton />
                     <PostItemSkeleton />
