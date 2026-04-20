@@ -54,7 +54,11 @@ class Http {
         const baseUrl = options?.baseUrl || this.baseUrl;
         const fullUrl = url.startsWith("http") ? url : `${baseUrl}${url.startsWith("/") ? url : `/${url}`}`;
         if (body && typeof body === "object" && !isFormData) {
+            console.log("Body:: ", body);
+
             body = JSON.stringify(body);
+
+            console.log("Stringified Body:: ", body);
         }
 
         let res = await fetch(fullUrl, {

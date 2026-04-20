@@ -70,7 +70,7 @@ export const AboutItem = ({ type, title, subtitle, content, privacy, viewerConte
                                     )
                                 }>
                                     <p className={cn(
-                                        "text-base",
+                                        "text-base whitespace-pre-wrap",
                                         !content && "text-gray-500"
                                     )}>
                                         {content ? content : getTitleWhenContentIsEmpty(type)}

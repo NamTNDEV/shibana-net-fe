@@ -63,7 +63,6 @@ export default function PostList() {
     const posts = data?.pages.flatMap(page => page.payload) || [];
 
     if (!posts || posts.length === 0) return <p className="text-center text-gray-500 mt-10">Không có bài viết nào.</p>;
-
     return (
         <div className="flex flex-col gap-4">
             {posts.map(post => <PostItem key={post.id} post={post} displayMode="NEWSFEED" />)}

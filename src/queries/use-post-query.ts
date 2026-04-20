@@ -4,7 +4,7 @@ import { PostResponseDataType } from "@/types/post.type";
 import { PaginationResponseDataType } from "@/types/response.type";
 import { useInfiniteQuery } from "@tanstack/react-query"
 
-const PAGE_SIZE = 5;
+const PAGE_SIZE = 3;
 
 export const usePostNewsfeedQuery = (isAllowFetch: boolean = true) => {
     return useInfiniteQuery({

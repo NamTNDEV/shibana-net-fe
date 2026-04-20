@@ -10,7 +10,7 @@ type MainHeaderPropsType = {
 export default async function MainHeader({ user }: MainHeaderPropsType) {
     return (
         <div className="sticky top-0 z-50 flex h-14 w-full items-center justify-between bg-white px-4 shadow-sm">
-            <div className="flex items-center gap-2 min-w-[100px] lg:min-w-[340px]">
+            <div className="flex items-center gap-2 min-w-25 lg:min-w-85">
                 <Logo />
                 <div className="block md:hidden size-10 bg-red-500">
                 </div>
@@ -18,7 +18,7 @@ export default async function MainHeader({ user }: MainHeaderPropsType) {
 
             <div className="hidden md:block flex-1">{user && <SearchInput />}</div>
 
-            <div className="min-w-[200px] lg:min-w-[340px]">
+            <div className="min-w-50 lg:min-w-85">
                 <HeaderAction user={user} />
             </div>
         </div>

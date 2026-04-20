@@ -7,7 +7,6 @@ export const API_ROUTES = {
         REFRESH_TOKEN: "identity/auth/refresh-token",
     },
     USERS: {
-        HELLO_WORLD: "identity/users/hello-world",
         MY_ACCOUNT: "identity/users/me/account",
     },
     PROFILES: {
@@ -45,4 +44,4 @@ export const NEXT_SERVER_ROUTES = {
     POSTS: {
         GET_NEWSFEED: "/api/posts/newsfeed?page=:page&size=:size",
     }
-}
+} as const;
