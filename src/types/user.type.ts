@@ -11,4 +11,5 @@ export type MyAccountMetadataResponseDataType = {
     avatarScale: number
     avatarPositionX: number
     avatarPositionY: number
+    profileReady: boolean
 }

@@ -4,10 +4,10 @@ import ReelsCarousel from "@/components/features/reels/reels-carousel";
 
 export default function NewsfeedContainer() {
     return (
-        <div className="w-full sm:max-w-[680px] mx-auto flex flex-col gap-2">
+        <div className="w-full sm:max-w-170 mx-auto flex flex-col gap-2">
             <PostCreationTrigger />
             <ReelsCarousel />
-            <PostList />
+            {/* <PostList /> */}
         </div>
     )
 }

@@ -43,5 +43,8 @@ export const NEXT_SERVER_ROUTES = {
     },
     POSTS: {
         GET_NEWSFEED: "/api/posts/newsfeed?page=:page&size=:size",
-    }
+    },
+    USERS: {
+        MY_ACCOUNT: "/api/users/my-account",
+    },
 } as const;

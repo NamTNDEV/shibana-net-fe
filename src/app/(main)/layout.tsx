@@ -1,5 +1,6 @@
 import MainHeader from "@/components/layouts/headers/main-header";
-import AuthHydrate from "@/components/providers/auth.hydrate";
+import AuthHydrate from "@/components/providers/auth-hydrate";
+import ProfileBackgroundSync from "@/components/providers/profile-sync";
 import { userService } from "@/services/user.service";
 
 export default async function MainLayout({
@@ -12,6 +13,7 @@ export default async function MainLayout({
         <div className="flex min-h-screen flex-col relative">
             <AuthHydrate user={user} />
             <MainHeader user={user} />
+            {user && !user.profileReady && <ProfileBackgroundSync />}
 
             {children}
         </div>

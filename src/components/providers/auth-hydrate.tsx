@@ -8,7 +8,6 @@ type AuthHydratePropsType = {
 }
 export default function AuthHydrate({ user }: AuthHydratePropsType) {
     const { setAuthUser } = useAuthStore();
-
     useEffect(() => {
         setAuthUser(user);
     }, [user, setAuthUser]);
