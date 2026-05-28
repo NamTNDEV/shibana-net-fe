@@ -8,13 +8,13 @@ const MAX_RETRIES = 100;
 const ORIGINAL_DELAY = 5000;
 
 function ProfileBackgroundSync() {
-    const { authUser, setAuthUser } = useAuthStore();
+    const authUser = useAuthStore((state) => state.authUser);
+    const setAuthUser = useAuthStore((state) => state.setAuthUser);
     let retryCount = useRef(0);
+    let syncInterval = useRef<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
         if (!authUser || authUser?.profileReady) return;
-
-        let syncInterval: NodeJS.Timeout | null = null;
 
         const syncProfile = async () => {
             if (retryCount.current >= MAX_RETRIES) {
@@ -29,22 +29,23 @@ function ProfileBackgroundSync() {
             if (res.ok && parsedRes.data && parsedRes.data.profileReady) {
                 console.log("✅ Profile đã sẵn sàng, cập nhật thông tin người dùng.");
                 setAuthUser(parsedRes.data);
+                window.location.reload();
                 return;
             } else {
                 console.error("⏳ Profile chưa sẵn sàng, tiếp tục đồng bộ...");
                 retryCount.current++;
                 const nextDelay = retryCount.current * ORIGINAL_DELAY;
-                syncInterval = setTimeout(syncProfile, nextDelay);
+                syncInterval.current = setTimeout(syncProfile, nextDelay);
             }
         }
 
-        syncInterval = setTimeout(syncProfile, ORIGINAL_DELAY);
+        syncInterval.current = setTimeout(syncProfile, ORIGINAL_DELAY);
         return () => {
-            if (syncInterval) {
-                clearTimeout(syncInterval);
+            if (syncInterval.current) {
+                clearTimeout(syncInterval.current);
             }
         }
-    }, [authUser, setAuthUser]);
+    }, [authUser?.userId, authUser?.profileReady, setAuthUser]);
 
     return null;
 }

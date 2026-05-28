@@ -8,7 +8,7 @@ export default async function AdminMainLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    const user = await userService.getMe();
+    const user = await userService.getMyAccountMetadata();
     if (!user) {
         return redirect(ROUTES.AUTH.LOGIN);
     }

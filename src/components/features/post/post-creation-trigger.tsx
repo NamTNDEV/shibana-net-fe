@@ -42,7 +42,7 @@ export default function PostCreationTrigger() {
                     alert("Post creation clicked");
                 }}
             >
-                <p className="text-base">{authUser.firstName} ơi, bạn đang nghĩ gì thế?</p>
+                <p className="text-base">{authUser.firstName ? `${authUser.firstName} ơi, bạn đang nghĩ gì thế?` : "Bạn đang nghĩ gì thế?"}</p>
             </div>
 
             <div className="flex items-center">

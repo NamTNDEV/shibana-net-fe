@@ -9,21 +9,20 @@ export const userService = {
         const response = await httpClient.get<MyAccountMetadataResponseDataType>(API_ROUTES.USERS.MY_ACCOUNT, { cache: "no-store" });
         return response;
     }),
-    safeGetMyAccountMetadata: React.cache(async (): Promise<MyAccountMetadataResponseDataType | null> => {
+    safeGetMyAccountMetadata: async (): Promise<MyAccountMetadataResponseDataType | null> => {
         try {
             const response = await httpClient.get<MyAccountMetadataResponseDataType>(API_ROUTES.USERS.MY_ACCOUNT, { cache: "no-store" });
             return response;
         } catch (error) {
             return null;
         }
-    }),
-    safeGetProfileByUsername: React.cache(async (username: string): Promise<ProfileResponseDataType | null> => {
+    },
+    safeGetProfileByUsername: async (username: string): Promise<ProfileResponseDataType | null> => {
         try {
             const response = await httpClient.get<ProfileResponseDataType>(API_ROUTES.PROFILES.PROFILE_BY_USERNAME.replace(":username", username), { cache: "no-store" });
             return response;
         } catch (error) {
-            console.error("userService.safeGetProfileByUsername::", error);
             return null;
         }
-    }),
+    },
 }   

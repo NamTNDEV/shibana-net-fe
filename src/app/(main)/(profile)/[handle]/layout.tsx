@@ -11,6 +11,7 @@ export default async function ProfileLayout({
     children: React.ReactNode;
 }>) {
     const decodedHandle = decodeURIComponent((await params).handle);
+
     if (!decodedHandle.startsWith("@")) {
         notFound();
     }
@@ -19,6 +20,7 @@ export default async function ProfileLayout({
     if (!profile) {
         notFound();
     }
+
     return (
         <main className="min-h-[calc(100vh-56px)]">
             <ProfileHeader profile={profile} />
