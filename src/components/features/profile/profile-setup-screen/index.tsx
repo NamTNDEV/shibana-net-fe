@@ -1,8 +1,21 @@
 "use client";
 
+import { useAuthStore } from "@/stores/auth.store";
+import { ProfileResponseDataType } from "@/types/profile.type";
 import { Loader2 } from "lucide-react";
+import { notFound } from "next/navigation";
 
-export default function ProfileSetupScreen() {
+type ProfileSetupScreenProps = {
+    searchingUsername: string;
+};
+
+export default function ProfileSetupScreen({ searchingUsername }: ProfileSetupScreenProps) {
+    const authUser = useAuthStore((state) => state.authUser);
+
+    if (authUser?.username !== searchingUsername) {
+        return notFound();
+    }
+
     return (
         <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
             <Loader2 className="w-12 h-12 text-primary animate-spin mb-6" />

@@ -2,12 +2,14 @@
 
 import { NEXT_SERVER_ROUTES } from "@/constants/api-route";
 import { useAuthStore } from "@/stores/auth.store";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 
 const MAX_RETRIES = 100;
 const ORIGINAL_DELAY = 5000;
 
 function ProfileBackgroundSync() {
+    const router = useRouter();
     const authUser = useAuthStore((state) => state.authUser);
     const setAuthUser = useAuthStore((state) => state.setAuthUser);
     let retryCount = useRef(0);
@@ -29,7 +31,7 @@ function ProfileBackgroundSync() {
             if (res.ok && parsedRes.data && parsedRes.data.profileReady) {
                 console.log("✅ Profile đã sẵn sàng, cập nhật thông tin người dùng.");
                 setAuthUser(parsedRes.data);
-                window.location.reload();
+                router.refresh();
                 return;
             } else {
                 console.error("⏳ Profile chưa sẵn sàng, tiếp tục đồng bộ...");

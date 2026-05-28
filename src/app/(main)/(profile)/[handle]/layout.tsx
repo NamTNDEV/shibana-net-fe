@@ -1,3 +1,4 @@
+import ProfileSetupScreen from "@/components/features/profile/profile-setup-screen";
 import ProfileHeader from "@/components/layouts/headers/profile-header";
 import { getUsernameFromHandle } from "@/lib/utils";
 import { userService } from "@/services/user.service";
@@ -13,12 +14,15 @@ export default async function ProfileLayout({
     const decodedHandle = decodeURIComponent((await params).handle);
 
     if (!decodedHandle.startsWith("@")) {
-        notFound();
+        return notFound();
     }
 
+    const searchingUsername = decodedHandle.split("@")[1];
     const profile = await userService.safeGetProfileByUsername(getUsernameFromHandle(decodedHandle));
     if (!profile) {
-        notFound();
+        return (
+            <ProfileSetupScreen searchingUsername={searchingUsername} />
+        );
     }
 
     return (
