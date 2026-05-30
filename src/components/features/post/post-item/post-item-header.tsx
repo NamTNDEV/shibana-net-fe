@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { ROUTES } from "@/constants/routes";
 import { Button } from "@/components/ui/button";
 import ProfileAvatarContainer from "../../profile/header/avatar/profile-avatar-container";
-import { formatDate } from "@/lib/utils";
+import { formatDate, getInitialName } from "@/lib/utils";
 import { getPrivacyIconByType } from "../../profile/about/about.utils";
 
 export type PostHeaderProps = {
@@ -31,8 +31,8 @@ export default function PostHeader({ author, createdAt, privacy }: PostHeaderPro
                 onClick={handleProfileAvatarClick}
             >
                 <ProfileAvatarContainer
-                    avatar={author.avatarMediaName}
-                    initialName={author.displayName}
+                    avatar={author.avatarUrl}
+                    initialName={getInitialName(author.lastName, author.firstName)}
                     avatarScale={author.avatarScale || 1}
                     avatarPositionX={author.avatarPositionX || 0}
                     avatarPositionY={author.avatarPositionY || 0}
@@ -41,7 +41,7 @@ export default function PostHeader({ author, createdAt, privacy }: PostHeaderPro
             </Button>
 
             <div className="flex flex-col">
-                <span className="text-[15px] font-semibold cursor-pointer hover:underline" onClick={handleProfileAvatarClick}>{author.displayName}</span>
+                <span className="text-[15px] font-semibold cursor-pointer hover:underline" onClick={handleProfileAvatarClick}>{`${author.lastName} ${author.firstName}`}</span>
                 <div className="flex items-center gap-1">
                     <span className="text-xs text-gray-500 hover:cursor-pointer hover:underline">{formatDate(createdAt, "dd/MM/yyyy HH:mm")}</span>
                     <span className="text-[10px] text-gray-500">•</span>

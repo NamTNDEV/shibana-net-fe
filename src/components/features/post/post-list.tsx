@@ -67,10 +67,10 @@ export default function PostList() {
         <div className="flex flex-col gap-4">
             {posts.map(post => <PostItem key={post.id} post={post} displayMode="NEWSFEED" />)}
 
-            <div ref={lastPostElementAppearedCallback} className="flex flex-col gap-4">
+            {/* <div ref={lastPostElementAppearedCallback} className="flex flex-col gap-4">
                 {isFetchingNextPage && Array.from({ length: 3 }).map((_, index) => <PostItemSkeleton key={index} />)}
                 {!hasNextPage && <p className="text-gray-500 text-sm pb-4 text-center">Bạn đã xem hết bài viết.</p>}
-            </div>
+            </div> */}
         </div>
     )
 }

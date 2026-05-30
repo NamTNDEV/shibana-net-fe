@@ -4,10 +4,11 @@ import { PrivacyType } from "@/components/features/profile/about/profile-about-i
 
 // Response
 export type PostAuthorResponseDataType = {
-    userId: string;
+    id: string;
     username: string;
-    displayName: string;
-    avatarMediaName: string | null;
+    firstName: string;
+    lastName: string;
+    avatarUrl: string | null;
     avatarScale: number | null;
     avatarPositionX: number | null;
     avatarPositionY: number | null;

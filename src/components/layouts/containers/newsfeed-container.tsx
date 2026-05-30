@@ -7,7 +7,7 @@ export default function NewsfeedContainer() {
         <div className="w-full sm:max-w-170 mx-auto flex flex-col gap-2">
             <PostCreationTrigger />
             <ReelsCarousel />
-            {/* <PostList /> */}
+            <PostList />
         </div>
     )
 }
