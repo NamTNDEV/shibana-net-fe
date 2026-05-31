@@ -8,15 +8,14 @@ import PostItemSkeleton from "../post-item-skeleton";
 
 const FETCHING_SIZE = 10
 
-export default function PostListIntersectionObserver() {
+export default function PostListIntersectionObserverV02() {
     const [hasNext, setHasNext] = useState(true)
     const [isLoading, setIsLoading] = useState(false)
     const [posts, setPosts] = useState<PostResponseDataType[]>([])
 
     const isFetchingRef = useRef<boolean>(false)
     const cursorRef = useRef<string | null>(null)
-
-    const bottomRef = useRef<HTMLDivElement | null>(null)
+    const intersectionObserverRef = useRef<IntersectionObserver | null>(null)
 
     const fetchPosts = useCallback(async () => {
         console.log("❤️‍🔥⚡🚀 Attempting to fetch posts...")
@@ -48,23 +47,19 @@ export default function PostListIntersectionObserver() {
         }
     }, [fetchPosts, posts.length])
 
-    useEffect(() => {
-        const observer = new IntersectionObserver((entries) => {
-            if (entries[0].isIntersecting) {
+    const lastPostElementAppearedCallback = useCallback((node: HTMLDivElement | null) => {
+        if (intersectionObserverRef.current) intersectionObserverRef.current.disconnect();
+        if (!node) return;
+
+        intersectionObserverRef.current = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting && hasNext) {
+                console.log("🕵 Fetching more posts...")
                 fetchPosts()
             }
-        })
+        }, { threshold: 0.5 })
 
-        if (bottomRef.current) {
-            observer.observe(bottomRef.current)
-        }
-
-        return () => {
-            if (bottomRef.current) {
-                observer.unobserve(bottomRef.current)
-            }
-        }
-    }, [fetchPosts])
+        intersectionObserverRef.current.observe(node)
+    }, [fetchPosts, hasNext])
 
     return (
         <div className="flex flex-col gap-4">
@@ -73,7 +68,7 @@ export default function PostListIntersectionObserver() {
             {isLoading && Array.from({ length: 5 }).map((_, index) => <PostItemSkeleton key={index} />)}
             {!hasNext && <p className="text-gray-500 text-sm pb-4 text-center">Bạn đã xem hết bài viết.</p>}
 
-            {hasNext && (<div ref={bottomRef} />)}
+            {hasNext && (<div ref={lastPostElementAppearedCallback} />)}
         </div>
     )
 }
