@@ -18,3 +18,10 @@ export type PaginationResponseDataType<T> = {
     size: number
     totalElements: number
 }
+
+export type CursorPaginationResponseDataType<T> = {
+    hasNext: boolean
+    nextCursor: string | null
+    payload: T
+    size: number
+}

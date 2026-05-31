@@ -1,7 +1,7 @@
 import { NEXT_SERVER_ROUTES } from "@/constants/api-route";
 import { HttpError } from "@/lib/http-errors";
 import { PostResponseDataType } from "@/types/post.type";
-import { PaginationResponseDataType } from "@/types/response.type";
+import { CursorPaginationResponseDataType, PaginationResponseDataType } from "@/types/response.type";
 import { useInfiniteQuery } from "@tanstack/react-query"
 
 const PAGE_SIZE = 10;

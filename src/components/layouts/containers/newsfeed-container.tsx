@@ -1,5 +1,5 @@
-import PostList from "../../features/post/post-list";
-import PostCreationTrigger from "../../features/post/post-creation-trigger";
+import PostCreationTrigger from "@/components/features/post/post-creation-trigger";
+import PostListWindowScroll from "@/components/features/post/post-list-window-scroll";
 import ReelsCarousel from "@/components/features/reels/reels-carousel";
 
 export default function NewsfeedContainer() {
@@ -7,7 +7,7 @@ export default function NewsfeedContainer() {
         <div className="w-full sm:max-w-170 mx-auto flex flex-col gap-2">
             <PostCreationTrigger />
             <ReelsCarousel />
-            <PostList />
+            <PostListWindowScroll />
         </div>
     )
 }

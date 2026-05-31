@@ -6,7 +6,8 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { HttpError } from "@/lib/http-errors";
 import { ROUTES } from "@/constants/routes";
-import PostItemSkeleton from "./post-item/post-item-skeleton";
+import PostItemSkeleton from "./post-item-skeleton";
+
 
 export default function PostList() {
     const router = useRouter();
