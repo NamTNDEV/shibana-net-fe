@@ -1,12 +1,12 @@
 'use client'
-import PostItem from "./post-item"
+import PostItem from "../post-item"
 import { usePostNewsfeedQuery } from "@/queries/use-post-query";
 import { useCallback, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { HttpError } from "@/lib/http-errors";
 import { ROUTES } from "@/constants/routes";
-import PostItemSkeleton from "./post-item-skeleton";
+import PostItemSkeleton from "../post-item-skeleton";
 
 
 export default function PostList() {

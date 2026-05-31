@@ -1,10 +1,10 @@
 'use client'
 import { useCallback, useEffect, useRef, useState } from "react";
-import PostItem from "./post-item"
+import PostItem from "../post-item"
 import { PostResponseDataType } from "@/types/post.type"
 import { NEXT_SERVER_ROUTES } from "@/constants/api-route";
 import { CursorPaginationResponseDataType } from "@/types/response.type";
-import PostItemSkeleton from "./post-item-skeleton";
+import PostItemSkeleton from "../post-item-skeleton";
 
 const FETCHING_SIZE = 10
 
@@ -70,6 +70,7 @@ export default function PostListWindowScroll() {
     return (
         <div className="flex flex-col gap-4">
             {posts.map(post => <PostItem key={post.id} post={post} displayMode="NEWSFEED" />)}
+
             {isLoading && Array.from({ length: 3 }).map((_, index) => <PostItemSkeleton key={index} />)}
             {!hasNext && <p className="text-gray-500 text-sm pb-4 text-center">Bạn đã xem hết bài viết.</p>}
         </div>
