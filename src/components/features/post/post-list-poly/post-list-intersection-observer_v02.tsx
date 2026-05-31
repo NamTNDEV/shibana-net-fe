@@ -17,29 +17,45 @@ export default function PostListIntersectionObserverV02() {
     const cursorRef = useRef<string | null>(null)
     const intersectionObserverRef = useRef<IntersectionObserver | null>(null)
 
+    const abortControllerRef = useRef<AbortController | null>(null)
+
     const fetchPosts = useCallback(async () => {
-        console.log("❤️‍🔥⚡🚀 Attempting to fetch posts...")
         if (isFetchingRef.current || !hasNext) return;
 
         isFetchingRef.current = true
         setIsLoading(true)
+
+        abortControllerRef.current = new AbortController()
         try {
             const url = NEXT_SERVER_ROUTES.POSTS.GET_NEWSFEED_CURSOR_BASED
                 .replace(":size", FETCHING_SIZE.toString())
                 .replace(":cursor", cursorRef.current ?? "")
-            const res = await fetch(url)
+            const res = await fetch(url, { signal: abortControllerRef.current.signal })
             const data = (await res.json()).data as CursorPaginationResponseDataType<PostResponseDataType[]>
 
             setPosts(prev => [...prev, ...data.payload])
             cursorRef.current = data.nextCursor
             setHasNext(data.hasNext)
-        } catch (error) {
-            console.error("🚨 Error fetching posts ~ ", error)
+        } catch (error: any) {
+            if (error.name === "AbortError") {
+                console.log("🚫 Fetch aborted");
+            } else {
+                console.error("🚨 Error fetching posts ~ ", error)
+            }
         } finally {
             setIsLoading(false)
             isFetchingRef.current = false
         }
     }, [hasNext])
+
+    useEffect(() => {
+        return () => {
+            if (abortControllerRef.current) {
+                console.log("💀 Rút phích cắm mạng...");
+                abortControllerRef.current.abort()
+            }
+        }
+    }, [])
 
     useEffect(() => {
         if (posts.length === 0) {
@@ -53,7 +69,6 @@ export default function PostListIntersectionObserverV02() {
 
         intersectionObserverRef.current = new IntersectionObserver((entries) => {
             if (entries[0].isIntersecting && hasNext) {
-                console.log("🕵 Fetching more posts...")
                 fetchPosts()
             }
         }, { threshold: 0.5 })
