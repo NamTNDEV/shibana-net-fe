@@ -1,45 +1,52 @@
 'use client'
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react";
 import PostItem from "./post-item"
 import { PostResponseDataType } from "@/types/post.type"
+import { NEXT_SERVER_ROUTES } from "@/constants/api-route";
 import { CursorPaginationResponseDataType } from "@/types/response.type";
+import PostItemSkeleton from "./post-item-skeleton";
 
-const FETCHING_SIZE = 5;
+const FETCHING_SIZE = 10
 
 export default function PostListWindowScroll() {
-    const [posts, setPosts] = useState<PostResponseDataType[]>([])
     const [hasNext, setHasNext] = useState(true)
-    const [cursor, setCursor] = useState<string | null>(null)
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false)
+    const [posts, setPosts] = useState<PostResponseDataType[]>([])
 
-    const isFetchingRef = useRef<boolean>(false);
+    const isFetchingRef = useRef<boolean>(false)
+    const cursorRef = useRef<string | null>(null)
 
     const fetchPosts = useCallback(async () => {
-        console.log("Fetching posts with cursor: ", cursor);
         if (isFetchingRef.current || !hasNext) return;
 
-        isFetchingRef.current = true;
-        setIsLoading(true);
+        isFetchingRef.current = true
+        setIsLoading(true)
         try {
-            const fetchingUrl = `/api/posts/newsfeed-cursor?size=${FETCHING_SIZE}${cursor ? `&cursor=${cursor}` : ""}`;
-            const res = await fetch(fetchingUrl);
-            const data = (await res.json()).data as CursorPaginationResponseDataType<PostResponseDataType[]>;
-            setPosts(prev => [...prev, ...data.payload]);
-            setHasNext(data.hasNext);
-            setCursor(data.nextCursor);
+            const url = NEXT_SERVER_ROUTES.POSTS.GET_NEWSFEED_CURSOR_BASED
+                .replace(":size", FETCHING_SIZE.toString())
+                .replace(":cursor", cursorRef.current ?? "")
+            const res = await fetch(url)
+            const data = (await res.json()).data as CursorPaginationResponseDataType<PostResponseDataType[]>
+
+            setPosts(prev => [...prev, ...data.payload])
+            cursorRef.current = data.nextCursor
+            setHasNext(data.hasNext)
         } catch (error) {
-            console.error("🚨 Error fetching posts: ", error);
+            console.error("🚨 Error fetching posts ~ ", error)
         } finally {
-            isFetchingRef.current = false;
-            setIsLoading(false);
+            setIsLoading(false)
+            isFetchingRef.current = false
         }
-    }, [cursor, hasNext])
+    }, [hasNext])
 
     useEffect(() => {
         if (posts.length === 0) {
-            fetchPosts();
+            fetchPosts()
         }
-    }, [fetchPosts, posts.length])
+    }, [
+        fetchPosts,
+        posts.length
+    ])
 
     const handleScroll = useCallback(() => {
         if (isFetchingRef.current || !hasNext) return;
@@ -49,23 +56,22 @@ export default function PostListWindowScroll() {
         const fullHeight = document.documentElement.offsetHeight;
 
         if (scrollTop + windowHeight >= fullHeight - 100) {
-            fetchPosts();
+            fetchPosts()
         }
-
     }, [hasNext, fetchPosts])
 
     useEffect(() => {
-        window.addEventListener("scroll", handleScroll);
+        window.addEventListener("scroll", handleScroll)
         return () => {
-            window.removeEventListener("scroll", handleScroll);
+            window.removeEventListener("scroll", handleScroll)
         }
-    }, [handleScroll]);
+    }, [handleScroll])
 
     return (
         <div className="flex flex-col gap-4">
             {posts.map(post => <PostItem key={post.id} post={post} displayMode="NEWSFEED" />)}
-            {isLoading && <div className="text-center py-4">Đang tải...</div>}
-            {!hasNext && <div className="text-center py-4 text-gray-500">Không còn bài viết nào nữa.</div>}
+            {isLoading && Array.from({ length: 3 }).map((_, index) => <PostItemSkeleton key={index} />)}
+            {!hasNext && <p className="text-gray-500 text-sm pb-4 text-center">Bạn đã xem hết bài viết.</p>}
         </div>
     )
 }

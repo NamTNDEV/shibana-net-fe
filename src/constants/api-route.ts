@@ -44,7 +44,7 @@ export const NEXT_SERVER_ROUTES = {
     },
     POSTS: {
         GET_NEWSFEED: "/api/posts/newsfeed?page=:page&size=:size",
-        GET_NEWSFEED_CURSOR_BASED: "/api/posts/newsfeed?size=:size&cursor=:cursor",
+        GET_NEWSFEED_CURSOR_BASED: "/api/posts/newsfeed-cursor?size=:size&cursor=:cursor",
     },
     USERS: {
         MY_ACCOUNT: "/api/users/my-account",

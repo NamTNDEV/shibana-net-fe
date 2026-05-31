@@ -6,10 +6,6 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const cursor = searchParams.get("cursor");
     const size = Number(searchParams.get("size"));
-
-    const simulateDelay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-    await simulateDelay(1000);
-
     try {
         const data = await postService.getNewsfeedCursorBased(size, cursor);
         return NextResponse.json(

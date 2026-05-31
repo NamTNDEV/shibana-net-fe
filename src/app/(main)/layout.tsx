@@ -2,6 +2,7 @@ import MainHeader from "@/components/layouts/headers/main-header";
 import AuthHydrate from "@/components/providers/auth-hydrate";
 import ProfileBackgroundSync from "@/components/providers/profile-sync";
 import { userService } from "@/services/user.service";
+import React from "react";
 
 export default async function MainLayout({
     children,
