@@ -37,7 +37,7 @@ export default function ReelsCarousel() {
 export function ReelItem({ index }: { index: number }) {
     return (
         <CarouselItem key={index} className="pl-2 basis-[17.5%]">
-            <div className="bg-secondary h-[200px] rounded-lg">
+            <div className="bg-secondary h-50 rounded-lg">
             </div>
         </CarouselItem>
     )

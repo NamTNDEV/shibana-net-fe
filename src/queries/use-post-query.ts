@@ -43,3 +43,38 @@ export const usePostNewsfeedQuery = (isAllowFetch: boolean = true) => {
         refetchOnWindowFocus: true // true is Default, but write it for clarity
     })
 }
+
+export const usePostNewsfeedCursorBasedQuery = (isAllowFetch: boolean = true, fetchSize: number = PAGE_SIZE) => {
+    return useInfiniteQuery({
+        enabled: isAllowFetch,
+        queryKey: ["posts-newsfeed-cursor-based"],
+        initialPageParam: "",
+        queryFn: async ({ pageParam, signal }) => {
+            const url = NEXT_SERVER_ROUTES.POSTS.GET_NEWSFEED_CURSOR_BASED
+                .replace(":cursor", pageParam)
+                .replace(":size", fetchSize.toString())
+
+            const res = await fetch(url, { signal })
+
+            if (!res.ok) {
+                const errorPayload = await res.json().catch(() => null);
+                throw new HttpError({
+                    status: res.status,
+                    payload: {
+                        code: errorPayload?.code || res.status,
+                        message: errorPayload?.message || res.statusText
+                    }
+                });
+            }
+
+            const data = (await res.json()).data as CursorPaginationResponseDataType<PostResponseDataType[]>
+            return data
+        },
+        getNextPageParam: (lastPage) => {
+            return lastPage.hasNext ? lastPage.nextCursor : undefined;
+        },
+        staleTime: 1000 * 60 * 2,
+        gcTime: 1000 * 60 * 5,
+        refetchOnWindowFocus: true
+    })
+}
