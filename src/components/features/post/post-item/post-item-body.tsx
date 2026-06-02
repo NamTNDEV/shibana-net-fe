@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { useState } from 'react';
 
-const renderTextWithHashtags = (content: string) => {
+export const renderTextWithHashtags = (content: string) => {
     if (!content) { return null; }
     const regex = /(#[\p{L}\p{N}_]+)/gu;
 

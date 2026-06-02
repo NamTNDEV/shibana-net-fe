@@ -71,7 +71,7 @@ export const AvatarPreview = forwardRef<AvatarPreviewRef, AvatarPreviewProps>(({
     }));
 
     return (
-        <div className="relative w-full h-[420px] overflow-hidden">
+        <div className="relative w-full h-105 overflow-hidden">
             <div className="absolute inset-0 flex items-center justify-center">
                 <Image
                     src={avatarUrl}
@@ -106,7 +106,7 @@ export const AvatarPreview = forwardRef<AvatarPreviewRef, AvatarPreviewProps>(({
                 />
             </div>
             <div className="absolute pointer-events-none w-full h-full flex items-center justify-center">
-                <div className="w-[300px] h-[300px] rounded-full shadow-[0_0_0_9999px_rgba(255,255,255,0.6)]" />
+                <div className="w-75 h-75 rounded-full shadow-[0_0_0_9999px_rgba(255,255,255,0.6)]" />
             </div>
         </div>
     )

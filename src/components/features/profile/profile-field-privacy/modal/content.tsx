@@ -1,11 +1,6 @@
 'use client'
 
 import { usePrivacyListQuery } from "@/queries/use-privacy-query";
-import { toast } from "sonner";
-import { HttpError } from "@/lib/http-errors";
-import { useRouter } from "next/navigation";
-import { ROUTES } from "@/constants/routes";
-import { useEffect } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PrivacyType } from "../../about/profile-about-item.type";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -19,30 +14,7 @@ type ProfileFieldPrivacyModalContentProps = {
 }
 
 export default function ProfileFieldPrivacyModalContent({ selectedPrivacy, setSelectedPrivacy }: ProfileFieldPrivacyModalContentProps) {
-    const router = useRouter();
-    const { data, error, isLoading, isError } = usePrivacyListQuery();
-
-    useEffect(() => {
-        if (!isError && !error) return;
-
-        if (error instanceof HttpError) {
-            toast.error(error.payload.message, {
-                position: "bottom-right",
-                richColors: true,
-                duration: 2000
-            });
-
-            if (error.payload.code === 401) router.push(ROUTES.AUTH.LOGIN);
-
-        } else {
-            toast.error("Lỗi hệ thống, vui lòng thử lại sau.", {
-                position: "bottom-right",
-                richColors: true,
-                duration: 2000
-            });
-        }
-    }, [isError, error, router])
-
+    const { data, isLoading } = usePrivacyListQuery();
     return (
         <div className="bg-white py-3 px-2">
             {
@@ -54,16 +26,19 @@ export default function ProfileFieldPrivacyModalContent({ selectedPrivacy, setSe
                     <RadioGroup
                         className="bg-white"
                         value={selectedPrivacy}
+                        onValueChange={(value) => {
+                            setSelectedPrivacy(value as PrivacyType);
+                        }}
                     >
                         {data.map((item) => (
                             <FieldLabel
                                 key={item}
                                 htmlFor={item.toString()}
-                                onClick={() => setSelectedPrivacy(item)}>
+                            >
                                 <Field orientation="horizontal" className="flex flex-row items-center! cursor-pointer">
                                     <FieldContent className="flex flex-row items-center gap-3">
                                         <div className={cn(
-                                            "size-[60px] rounded-full flex items-center justify-center",
+                                            "size-15 rounded-full flex items-center justify-center",
                                             selectedPrivacy === item ? "bg-primary" : "bg-gray-200"
                                         )}>
                                             {getPrivacyIconByType(item)}

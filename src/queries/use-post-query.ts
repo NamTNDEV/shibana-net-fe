@@ -9,7 +9,7 @@ const PAGE_SIZE = 10;
 export const usePostNewsfeedQuery = (isAllowFetch: boolean = true) => {
     return useInfiniteQuery({
         enabled: isAllowFetch,
-        queryKey: ["posts-newsfeed"],
+        queryKey: ["posts", "newsfeed", "pagination"],
         initialPageParam: 0,
         queryFn: async ({ pageParam }) => {
             const url = NEXT_SERVER_ROUTES.POSTS.GET_NEWSFEED
@@ -47,7 +47,7 @@ export const usePostNewsfeedQuery = (isAllowFetch: boolean = true) => {
 export const usePostNewsfeedCursorBasedQuery = (isAllowFetch: boolean = true, fetchSize: number = PAGE_SIZE) => {
     return useInfiniteQuery({
         enabled: isAllowFetch,
-        queryKey: ["posts-newsfeed-cursor-based"],
+        queryKey: ["posts", "newsfeed", "cursor-based"],
         initialPageParam: "",
         queryFn: async ({ pageParam, signal }) => {
             const url = NEXT_SERVER_ROUTES.POSTS.GET_NEWSFEED_CURSOR_BASED

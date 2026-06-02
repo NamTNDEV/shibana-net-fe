@@ -28,8 +28,8 @@ export default function ProfileFieldPrivacyModal({ defaultPrivacy, isOpen, setIs
 
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
-            <DialogContent className="p-0 min-w-screen sm:min-w-[548px] gap-0" showCloseButton={false}>
-                <DialogHeader className="relative flex items-center justify-center px-[60px] h-[60px] bg-white rounded-t-lg">
+            <DialogContent className="p-0 min-w-screen sm:min-w-137 gap-0" showCloseButton={false}>
+                <DialogHeader className="relative flex items-center justify-center px-15 h-15 bg-white rounded-t-lg">
                     <DialogTitle className="px-4 text-xl font-bold">Chọn đối tượng hiển thị</DialogTitle>
                     <div
                         className={
@@ -55,7 +55,7 @@ export default function ProfileFieldPrivacyModal({ defaultPrivacy, isOpen, setIs
                     <DialogClose asChild>
                         <Button type="button" className="bg-transparent text-primary hover:bg-secondary p-3">Huỷ</Button>
                     </DialogClose>
-                    <Button type="button" className="text-white px-9 w-[117px]" isLoading={isLoading} onClick={handleSave}>Lưu</Button>
+                    <Button type="button" className="text-white px-9 w-29.25" isLoading={isLoading} onClick={handleSave}>Lưu</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

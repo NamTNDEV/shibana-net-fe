@@ -1,18 +1,19 @@
 'use client';
 
 import { useAuthStore } from "@/stores/auth.store";
-import ProfileAvatarContainer from "../profile/header/avatar/profile-avatar-container";
 import { getInitialName } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/constants/routes";
 import { Clapperboard, Images } from "lucide-react";
+import ProfileAvatarContainer from "@/components/features/profile/header/avatar/profile-avatar-container";
+import PostCreationTrigger from "./post-creation-dialog";
 
-export default function PostCreationTrigger() {
+export default function PostCreationWidget() {
     const router = useRouter();
     const { authUser } = useAuthStore();
 
-    if (!authUser) return <PostCreationTriggerSkeleton />;
+    if (!authUser) return <PostCreationSkeleton />;
 
     const handleProfileAvatarClick = () => {
         router.push(ROUTES.USER.PROFILE.replace(":handle", authUser.username));
@@ -36,14 +37,7 @@ export default function PostCreationTrigger() {
                 />
             </Button>
 
-            <div
-                className="h-10 px-4 py-2 flex-1 rounded-full bg-muted hover:bg-secondary cursor-pointer flex items-center justify-start"
-                onClick={() => {
-                    alert("Post creation clicked");
-                }}
-            >
-                <p className="text-base">{authUser.firstName ? `${authUser.firstName} ơi, bạn đang nghĩ gì thế?` : "Bạn đang nghĩ gì thế?"}</p>
-            </div>
+            <PostCreationTrigger authUser={authUser} />
 
             <div className="flex items-center">
                 <div className="size-10 p-2 rounded-sm hover:bg-muted cursor-pointer flex items-center justify-center">
@@ -57,7 +51,7 @@ export default function PostCreationTrigger() {
     )
 }
 
-const PostCreationTriggerSkeleton = () => {
+const PostCreationSkeleton = () => {
     return (
         <div className="w-full bg-white rounded-lg shadow-sm p-3 px-4 flex items-center justify-between gap-2">
             <div className="size-10 bg-gray-200 animate-pulse rounded-full"></div>
