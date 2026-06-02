@@ -17,6 +17,7 @@ import { useAuthStore } from "@/stores/auth.store";
 import ProfileFieldPrivacyModalContent from "../../profile/profile-field-privacy/modal/content";
 import { PrivacyType } from "../../profile/about/profile-about-item.type";
 import { getPrivacyIconByType, getPrivacyTitleByType } from "../../profile/about/about.utils";
+import { renderTextWithHashtags } from "../post-item/post-item-body";
 
 type StepTypes = "MAIN" | "PRIVACY"
 type PostCreationFormProps = {
@@ -37,23 +38,18 @@ function PostCreationForm({ mode, initialData, onContentChange, onModalClose }: 
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        console.log("📝 Submitted content ~~ ", content);
+        console.log("🛡️ Selected privacy ~~ ", selectedPrivacy);
     }
 
     if (!user) return null
     return (
-        // <form onSubmit={handleSubmit} className="w-full">
         <form onSubmit={handleSubmit} className="w-full relative overflow-hidden">
-            {/* <div className={cn(
-                "w-[200%] flex transition-transform duration-300 ease-in-out",
-                step === "MAIN" ? "translate-x-0" : "-translate-x-1/2"
-            )}> */}
-            {/* Step 1: Main content */}
-            {/* <div className="w-1/2 flex flex-col max-h-[85vh]"> */}
             <div className={cn(
                 "w-full flex flex-col max-h-[85vh] transition-all duration-300 ease-in-out",
                 step === "MAIN"
-                    ? "relative translate-x-0 opacity-100" // Hiện: Chiếm không gian
-                    : "absolute top-0 left-0 -translate-x-full opacity-0 pointer-events-none" // Ẩn: Trở thành bóng ma trượt sang trái
+                    ? "relative translate-x-0 opacity-100"
+                    : "absolute top-0 left-0 -translate-x-full opacity-0 pointer-events-none"
             )}>
                 <DialogHeader className="relative flex items-center justify-center h-15 rounded-t-lg py-4">
                     <DialogTitle className="px-4 text-xl font-bold">Tạo bài viết</DialogTitle>
@@ -69,7 +65,6 @@ function PostCreationForm({ mode, initialData, onContentChange, onModalClose }: 
                 <Separator className="w-full bg-[#ced1d5] h-0.5" />
 
                 <div className="px-4 flex flex-col items-center flex-1 overflow-hidden">
-                    {/* TODO: Add user avatar and name here */}
                     <div className="w-full flex items-center justify-start gap-2 h-18 py-4">
                         <ProfileAvatarContainer
                             avatar={user.avatar}
@@ -94,28 +89,25 @@ function PostCreationForm({ mode, initialData, onContentChange, onModalClose }: 
                         </div>
                     </div>
 
-                    {/* TODO: Implement auto-resizing textarea and dynamic font size based on content length */}
                     <div className="grid w-full flex-1 mx-4 mt-2 overflow-y-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-300">
                         <div
                             aria-hidden="true"
                             className={cn(
-                                "min-h-32.5 col-start-1 row-start-1 w-full h-full p-0 m-0 pointer-events-none break-all whitespace-pre-wrap text-left",
+                                "col-start-1 row-start-1 w-full h-full p-0 m-0 pointer-events-none break-all whitespace-pre-wrap text-left font-sans leading-normal",
                                 "text-2xl!",
                                 content.length > BOLD_TEXT_LENGTH_BOUNDARY && "text-base!"
                             )}
                         >
-                            {content}
+                            {renderTextWithHashtags(content, false)}
                             {content.endsWith('\n') && <br />}
                         </div>
 
                         <Textarea
                             placeholder="__ ơi, bạn đang nghĩ gì thế?"
                             className={cn(
-                                "break-all whitespace-pre-wrap text-2xl! text-transparent caret-black text-left",
-                                "placeholder:text-2xl placeholder:text-gray-600",
-                                "w-full h-full p-0 m-0 bg-transparent border-none",
-                                "col-start-1 row-start-1 flex-1 resize-none rounded-none shadow-none overflow-hidden",
-                                "focus:ring-0 p-0 focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0",
+                                "col-start-1 row-start-1 w-full h-full p-0 m-0 resize-none outline-none bg-transparent border-none overflow-hidden break-all whitespace-pre-wrap text-left font-sans leading-normal",
+                                "text-2xl! text-transparent caret-black",
+                                "placeholder:text-gray-600 focus:ring-0 border-none focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0",
                                 content.length > BOLD_TEXT_LENGTH_BOUNDARY && "text-base!"
                             )}
                             value={content}
@@ -153,13 +145,11 @@ function PostCreationForm({ mode, initialData, onContentChange, onModalClose }: 
                 </DialogFooter>
             </div>
 
-            {/* Step 2: Privacy settings */}
-            {/* <div className="w-1/2 flex flex-col max-h-[70vh]"> */}
             <div className={cn(
                 "w-full flex flex-col max-h-[85vh] transition-all duration-300 ease-in-out",
                 step === "PRIVACY"
-                    ? "relative translate-x-0 opacity-100" // Hiện: Chiếm không gian
-                    : "absolute top-0 left-0 translate-x-full opacity-0 pointer-events-none" // Ẩn: Trở thành bóng ma trượt sang phải
+                    ? "relative translate-x-0 opacity-100"
+                    : "absolute top-0 left-0 translate-x-full opacity-0 pointer-events-none"
             )}>
                 <DialogHeader className="relative flex items-center justify-center h-15 rounded-t-lg shrink-0">
                     <div
@@ -188,7 +178,6 @@ function PostCreationForm({ mode, initialData, onContentChange, onModalClose }: 
                     </Button>
                 </DialogFooter>
             </div>
-            {/* </div> */}
         </form>)
 }
 

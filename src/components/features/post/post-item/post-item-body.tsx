@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { useState } from 'react';
 
-export const renderTextWithHashtags = (content: string) => {
+export const renderTextWithHashtags = (content: string, isEnableLink: boolean = true) => {
     if (!content) { return null; }
     const regex = /(#[\p{L}\p{N}_]+)/gu;
 
@@ -13,15 +13,23 @@ export const renderTextWithHashtags = (content: string) => {
 
     return matches.map((match, index) => {
         if (match.match(regex)) {
-            return (
-                <Link
-                    key={index}
-                    href={ROUTES.POST.HASHTAG.replace(":hashtag", match.toLowerCase().replace("#", ""))}
-                    className="text-blue-500 cursor-pointer hover:underline font-bold"
-                >
-                    {match}
-                </Link>
-            )
+            if (isEnableLink) {
+                return (
+                    <Link
+                        key={index}
+                        href={ROUTES.POST.HASHTAG.replace(":hashtag", match.toLowerCase().replace("#", ""))}
+                        className="text-yellow-500 cursor-pointer hover:underline font-bold"
+                    >
+                        {match}
+                    </Link>
+                )
+            } else {
+                return (
+                    <span key={index} className="bg-yellow-200 font-semibold">
+                        {match}
+                    </span>
+                )
+            }
         }
         return match;
     })
