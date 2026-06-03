@@ -7,7 +7,7 @@ import { ResponseDataType } from "@/types/response.type";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-export const useCreatePostMutation = () => {
+export const useCreatePostMutation = (onCreateSuccess: () => void) => {
     const queryClient = useQueryClient();
     const { authUser } = useAuthStore();
 
@@ -20,21 +20,25 @@ export const useCreatePostMutation = () => {
             return await response.json() as ResponseDataType<PostResponseDataType>;
         },
         onMutate: async (body: CreatePostRequestBodyType) => {
+            onCreateSuccess();
+
             await queryClient.cancelQueries({ queryKey: ["posts", "newsfeed", "cursor-based"] });
             const previousPosts = queryClient.getQueryData(["posts", "newsfeed", "cursor-based"]);
 
+            const fakeId = `optimistic-${crypto.randomUUID()}`;
+
             const optimisticPost: PostResponseDataType = {
-                id: `temp-id-${Date.now()}`,
+                id: fakeId,
                 content: body.content,
                 commentCount: 0,
                 privacy: body.privacy,
                 createdAt: new Date().toISOString(),
                 author: {
-                    id: authUser!.userId || "temp-user-id",
-                    username: authUser!.username || "temp-username",
+                    id: authUser!.userId || "",
+                    username: authUser!.username || "",
                     avatarUrl: authUser!.avatar || "",
-                    firstName: authUser!.firstName || "Temp",
-                    lastName: authUser!.lastName || "User",
+                    firstName: authUser!.firstName || "",
+                    lastName: authUser!.lastName || "",
                     avatarPositionX: authUser!.avatarPositionX || 0,
                     avatarPositionY: authUser!.avatarPositionY || 0,
                     avatarScale: authUser!.avatarScale || 1,
@@ -48,23 +52,27 @@ export const useCreatePostMutation = () => {
                 return newData
             });
 
-            return { previousPosts };
+            return { previousPosts, fakeId };
         },
-        onSuccess: (data) => {
+        onSuccess: (data, newPost, context) => {
             const createdPost = data.data;
             queryClient.setQueryData(["posts", "newsfeed", "cursor-based"], (oldData: any) => {
                 if (!oldData || !oldData.pages) return oldData;
                 const newData = JSON.parse(JSON.stringify(oldData));
 
                 newData.pages[0].payload = newData.pages[0].payload.map((post: any) => {
-                    return post.content === createdPost.content ? createdPost : post
+                    return post.id === context?.fakeId ? createdPost : post;
                 });
                 return newData;
             });
-            toast.success("Bài viết đã được đăng!", { position: "bottom-right" });
+            toast.success("Bài viết đã được đăng!", {
+                position: "bottom-right",
+                richColors: true,
+                duration: 3000,
+            })
         },
         onError: (err, newPost, context) => {
-            console.error("❌ Failed to create post:", err);
+            queryClient.setQueryData(["posts", "newsfeed", "cursor-based"], context?.previousPosts);
         },
     })
 }

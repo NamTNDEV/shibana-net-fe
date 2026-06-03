@@ -83,7 +83,7 @@ const PostFormMainStep = ({
                     </div>
                 </div>
 
-                <div className="grid w-full flex-1 mx-4 mt-2 overflow-y-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-300">
+                <div className="grid w-full flex-1 mx-4 mt-2 overflow-y-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-300 min-h-30">
                     <div
                         aria-hidden="true"
                         className={cn(

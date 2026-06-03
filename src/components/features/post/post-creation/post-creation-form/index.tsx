@@ -25,10 +25,16 @@ function PostCreationForm({ mode, initialData, onContentChange, onModalClose }: 
     const { authUser: user } = useAuthStore()
     const [step, setStep] = useState<StepTypes>("MAIN");
 
+    const handleCreateSuccess = () => {
+        setContent("");
+        onContentChange?.("");
+        onModalClose();
+    }
+
     const {
         mutate: createPost,
         isPending: isCreatingPost,
-    } = useCreatePostMutation()
+    } = useCreatePostMutation(handleCreateSuccess)
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -65,7 +71,3 @@ function PostCreationForm({ mode, initialData, onContentChange, onModalClose }: 
 }
 
 export default PostCreationForm;
-
-
-
-
