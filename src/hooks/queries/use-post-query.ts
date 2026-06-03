@@ -12,7 +12,7 @@ export const usePostNewsfeedQuery = (isAllowFetch: boolean = true) => {
         queryKey: ["posts", "newsfeed", "pagination"],
         initialPageParam: 0,
         queryFn: async ({ pageParam }) => {
-            const url = NEXT_SERVER_ROUTES.POSTS.GET_NEWSFEED
+            const url = NEXT_SERVER_ROUTES.POSTS.NEWSFEED
                 .replace(":page", pageParam.toString())
                 .replace(":size", PAGE_SIZE.toString());
 
@@ -50,7 +50,7 @@ export const usePostNewsfeedCursorBasedQuery = (isAllowFetch: boolean = true, fe
         queryKey: ["posts", "newsfeed", "cursor-based"],
         initialPageParam: "",
         queryFn: async ({ pageParam, signal }) => {
-            const url = NEXT_SERVER_ROUTES.POSTS.GET_NEWSFEED_CURSOR_BASED
+            const url = NEXT_SERVER_ROUTES.POSTS.NEWSFEED_CURSOR_BASED
                 .replace(":cursor", pageParam)
                 .replace(":size", fetchSize.toString())
 

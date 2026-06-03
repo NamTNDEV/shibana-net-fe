@@ -7,12 +7,13 @@ export async function GET(request: Request) {
     const cursor = searchParams.get("cursor");
     const size = Number(searchParams.get("size"));
     try {
-        const data = await postService.getNewsfeedCursorBased(size, cursor);
+        const response = await postService.getNewsfeedCursorBasedV02(size, cursor);
+
         return NextResponse.json(
             {
-                code: 200,
-                message: "Lấy danh sách bài viết thành công",
-                data
+                code: response.code,
+                message: response.message,
+                data: response.data,
             }
         )
     } catch (error) {

@@ -27,7 +27,7 @@ export default function PostListIntersectionObserverV02() {
 
         abortControllerRef.current = new AbortController()
         try {
-            const url = NEXT_SERVER_ROUTES.POSTS.GET_NEWSFEED_CURSOR_BASED
+            const url = NEXT_SERVER_ROUTES.POSTS.NEWSFEED_CURSOR_BASED
                 .replace(":size", FETCHING_SIZE.toString())
                 .replace(":cursor", cursorRef.current ?? "")
             const res = await fetch(url, { signal: abortControllerRef.current.signal })

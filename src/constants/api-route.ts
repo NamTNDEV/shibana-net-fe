@@ -33,18 +33,20 @@ export const API_ROUTES = {
         UNBLOCK_USER: "social/blocks/:blockeeId",
     },
     POSTS: {
-        GET_NEWSFEED: "posts/newsfeed?page=:page&size=:size",
-        GET_NEWSFEED_CURSOR_BASED: "posts/newsfeed?size=:size&cursor=:cursor",
+        _: "posts/",
+        NEWSFEED: "posts/newsfeed?page=:page&size=:size",
+        NEWSFEED_CURSOR_BASED: "posts/newsfeed?size=:size&cursor=:cursor",
     }
 } as const;
 
 export const NEXT_SERVER_ROUTES = {
     PRIVACIES: {
-        GET_LIST: "/api/privacies",
+        LIST: "/api/privacies",
     },
     POSTS: {
-        GET_NEWSFEED: "/api/posts/newsfeed?page=:page&size=:size",
-        GET_NEWSFEED_CURSOR_BASED: "/api/posts/newsfeed-cursor?size=:size&cursor=:cursor",
+        POST: "/api/posts",
+        NEWSFEED: "/api/posts/newsfeed?page=:page&size=:size",
+        NEWSFEED_CURSOR_BASED: "/api/posts/newsfeed-cursor?size=:size&cursor=:cursor",
     },
     USERS: {
         MY_ACCOUNT: "/api/users/my-account",

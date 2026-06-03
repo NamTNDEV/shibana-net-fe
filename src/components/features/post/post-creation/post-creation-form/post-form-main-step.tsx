@@ -22,6 +22,7 @@ type PostFormMainStepProps = {
     setStep: (step: StepTypes) => void
     setContent: (content: string) => void
     onContentChange?: (content: string) => void
+    isCreatingPost: boolean
 }
 
 const PostFormMainStep = ({
@@ -32,7 +33,8 @@ const PostFormMainStep = ({
     setContent,
     onModalClose,
     selectedPrivacy,
-    onContentChange
+    onContentChange,
+    isCreatingPost,
 }: PostFormMainStepProps) => {
     return (
         <div className={cn(
@@ -72,6 +74,7 @@ const PostFormMainStep = ({
                             className="text-sm! px-2 py-1 h-7"
                             onClick={() => setStep("PRIVACY")}
                             type="button"
+                            disabled={isCreatingPost}
                         >
                             <span className="flex items-center gap-1">
                                 {getPrivacyIconByType(selectedPrivacy, "size-3")} {getPrivacyTitleByType(selectedPrivacy)} ⏷
@@ -96,9 +99,9 @@ const PostFormMainStep = ({
                     <Textarea
                         placeholder="__ ơi, bạn đang nghĩ gì thế?"
                         className={cn(
-                            "col-start-1 row-start-1 w-full h-full p-0 m-0 resize-none outline-none bg-transparent border-none overflow-hidden break-all whitespace-pre-wrap text-left font-sans leading-normal",
+                            "col-start-1 row-start-1 w-full h-full p-0 m-0 resize-none outline-none bg-transparent border-none overflow-hidden break-all whitespace-pre-wrap text-left rounded-none font-sans leading-normal",
                             "text-2xl! text-transparent caret-black",
-                            "placeholder:text-gray-600 focus:ring-0 border-none focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0",
+                            "placeholder:text-gray-600 focus:ring-0 border-none focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0 focus:border",
                             content.length > BOLD_TEXT_LENGTH_BOUNDARY && "text-base!"
                         )}
                         value={content}
@@ -129,6 +132,8 @@ const PostFormMainStep = ({
                     <Button
                         type="submit"
                         className="text-white px-9 w-full"
+                        isLoading={isCreatingPost}
+                        disabled={content.trim().length === 0}
                     >
                         Lưu
                     </Button>

@@ -22,3 +22,9 @@ export type PostResponseDataType = {
     createdAt: string;
     commentCount: number;
 }
+
+// Request
+export type CreatePostRequestBodyType = {
+    content: string;
+    privacy: PrivacyType;
+}

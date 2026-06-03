@@ -8,7 +8,7 @@ export const usePrivacyListQuery = (isAllowFetch: boolean = true) => {
         enabled: isAllowFetch,
         queryKey: ["privacy-list"],
         queryFn: async (): Promise<PrivacyResponseDataType[]> => {
-            const res = await fetch(NEXT_SERVER_ROUTES.PRIVACIES.GET_LIST);
+            const res = await fetch(NEXT_SERVER_ROUTES.PRIVACIES.LIST);
             if (!res.ok) {
                 const errorPayload = await res.json().catch(() => null);
 

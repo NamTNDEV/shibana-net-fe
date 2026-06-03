@@ -5,6 +5,8 @@ import { useAuthStore } from "@/stores/auth.store";
 import { PrivacyType } from "../../../profile/about/profile-about-item.type";
 import PostFormMainStep from "./post-form-main-step";
 import PostFormPrivacyStep from "./post-form-privacy-step";
+import { useCreatePostMutation } from "@/hooks/mutations/use-create-post-mutation";
+import { CreatePostRequestBodyType } from "@/types/post.type";
 
 export type StepTypes = "MAIN" | "PRIVACY"
 type PostCreationFormProps = {
@@ -23,10 +25,19 @@ function PostCreationForm({ mode, initialData, onContentChange, onModalClose }: 
     const { authUser: user } = useAuthStore()
     const [step, setStep] = useState<StepTypes>("MAIN");
 
+    const {
+        mutate: createPost,
+        isPending: isCreatingPost,
+    } = useCreatePostMutation()
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log("📝 Submitted content ~~ ", content);
-        console.log("🛡️ Selected privacy ~~ ", selectedPrivacy);
+
+        const body: CreatePostRequestBodyType = {
+            content,
+            privacy: selectedPrivacy,
+        }
+        createPost(body)
     }
 
     if (!user) return null
@@ -41,6 +52,7 @@ function PostCreationForm({ mode, initialData, onContentChange, onModalClose }: 
                 onModalClose={onModalClose}
                 selectedPrivacy={selectedPrivacy}
                 setStep={setStep}
+                isCreatingPost={isCreatingPost}
             />
 
             <PostFormPrivacyStep
