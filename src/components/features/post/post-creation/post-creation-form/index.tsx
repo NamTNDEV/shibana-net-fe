@@ -12,15 +12,16 @@ export type StepTypes = "MAIN" | "PRIVACY"
 type PostCreationFormProps = {
     mode: "CREATE" | "EDIT";
     initialData?: string;
+    initialPrivacy?: PrivacyType;
     onModalClose: () => void;
     onContentChange?: (content: string) => void;
 }
 
 export const BOLD_TEXT_LENGTH_BOUNDARY = 84;
 
-function PostCreationForm({ mode, initialData, onContentChange, onModalClose }: PostCreationFormProps) {
+function PostCreationForm({ mode, initialData, initialPrivacy, onContentChange, onModalClose }: PostCreationFormProps) {
     const [content, setContent] = useState(initialData || "");
-    const [selectedPrivacy, setSelectedPrivacy] = useState<PrivacyType>("PUBLIC");
+    const [selectedPrivacy, setSelectedPrivacy] = useState<PrivacyType>(initialPrivacy || "PUBLIC");
 
     const { authUser: user } = useAuthStore()
     const [step, setStep] = useState<StepTypes>("MAIN");
@@ -38,6 +39,8 @@ function PostCreationForm({ mode, initialData, onContentChange, onModalClose }: 
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (!content.trim()) return;
 
         const body: CreatePostRequestBodyType = {
             content,
