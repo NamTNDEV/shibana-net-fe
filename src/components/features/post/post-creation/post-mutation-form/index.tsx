@@ -28,7 +28,6 @@ function PostMutationForm({ postId, mode = 'CREATE', initialData, initialPrivacy
     const [step, setStep] = useState<StepTypes>("MAIN");
 
     const handleMutationSuccess = () => {
-        setContent("");
         onContentChange?.("");
         onModalClose();
     }
