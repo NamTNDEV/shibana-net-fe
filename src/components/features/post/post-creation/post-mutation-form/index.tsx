@@ -5,12 +5,13 @@ import { useAuthStore } from "@/stores/auth.store";
 import { PrivacyType } from "../../../profile/about/profile-about-item.type";
 import PostFormMainStep from "./post-form-main-step";
 import PostFormPrivacyStep from "./post-form-privacy-step";
-import { useCreatePostMutation } from "@/hooks/mutations/use-create-post-mutation";
-import { CreatePostRequestBodyType } from "@/types/post.type";
+import { useCreatePostMutation, useEditPostMutation } from "@/hooks/tanstacks/mutations/use-post-mutation";
+import { CreatePostRequestBodyType, EditPostRequestBodyType } from "@/types/post.type";
 
 export type StepTypes = "MAIN" | "PRIVACY"
 type PostMutationFormProps = {
-    mode: "CREATE" | "EDIT";
+    postId?: string;
+    mode?: "CREATE" | "EDIT";
     initialData?: string;
     initialPrivacy?: PrivacyType;
     onModalClose: () => void;
@@ -19,14 +20,14 @@ type PostMutationFormProps = {
 
 export const BOLD_TEXT_LENGTH_BOUNDARY = 84;
 
-function PostMutationForm({ mode, initialData, initialPrivacy, onContentChange, onModalClose }: PostMutationFormProps) {
+function PostMutationForm({ postId, mode = 'CREATE', initialData, initialPrivacy, onContentChange, onModalClose }: PostMutationFormProps) {
     const [content, setContent] = useState(initialData || "");
     const [selectedPrivacy, setSelectedPrivacy] = useState<PrivacyType>(initialPrivacy || "PUBLIC");
 
     const { authUser: user } = useAuthStore()
     const [step, setStep] = useState<StepTypes>("MAIN");
 
-    const handleCreateSuccess = () => {
+    const handleMutationSuccess = () => {
         setContent("");
         onContentChange?.("");
         onModalClose();
@@ -35,24 +36,45 @@ function PostMutationForm({ mode, initialData, initialPrivacy, onContentChange, 
     const {
         mutate: createPost,
         isPending: isCreatingPost,
-    } = useCreatePostMutation(handleCreateSuccess)
+    } = useCreatePostMutation(handleMutationSuccess)
+
+    const {
+        mutate: editPost,
+        isPending: isEditingPost,
+    } = useEditPostMutation(handleMutationSuccess)
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
         if (!content.trim()) return;
 
-        const body: CreatePostRequestBodyType = {
-            content,
-            privacy: selectedPrivacy,
+
+        if (mode === "CREATE") {
+            const body: CreatePostRequestBodyType = {
+                content,
+                privacy: selectedPrivacy,
+            }
+            createPost(body);
+        } else {
+            if (!postId) {
+                console.error("Post ID is required for editing a post.");
+                return;
+            }
+            const body: EditPostRequestBodyType = {
+                id: postId,
+                content,
+                privacy: selectedPrivacy,
+            }
+            editPost(body);
         }
-        createPost(body)
     }
 
     if (!user) return null
+    const isProcessing = mode === "CREATE" ? isCreatingPost : isEditingPost;
     return (
         <form onSubmit={handleSubmit} className="w-full relative overflow-hidden">
             <PostFormMainStep
+                mode={mode}
                 user={user}
                 step={step}
                 content={content}
@@ -61,7 +83,7 @@ function PostMutationForm({ mode, initialData, initialPrivacy, onContentChange, 
                 onModalClose={onModalClose}
                 selectedPrivacy={selectedPrivacy}
                 setStep={setStep}
-                isCreatingPost={isCreatingPost}
+                isProcessing={isProcessing}
             />
 
             <PostFormPrivacyStep

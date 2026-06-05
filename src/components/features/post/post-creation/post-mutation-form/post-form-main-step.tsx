@@ -14,6 +14,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Separator } from "@/components/ui/separator"
 
 type PostFormMainStepProps = {
+    mode: "CREATE" | "EDIT"
     content: string
     step: StepTypes
     selectedPrivacy: PrivacyType
@@ -22,10 +23,11 @@ type PostFormMainStepProps = {
     setStep: (step: StepTypes) => void
     setContent: (content: string) => void
     onContentChange?: (content: string) => void
-    isCreatingPost: boolean
+    isProcessing: boolean
 }
 
 const PostFormMainStep = ({
+    mode = "CREATE",
     user,
     step,
     content,
@@ -34,7 +36,7 @@ const PostFormMainStep = ({
     onModalClose,
     selectedPrivacy,
     onContentChange,
-    isCreatingPost,
+    isProcessing,
 }: PostFormMainStepProps) => {
     return (
         <div className={cn(
@@ -74,7 +76,7 @@ const PostFormMainStep = ({
                             className="text-sm! px-2 py-1 h-7"
                             onClick={() => setStep("PRIVACY")}
                             type="button"
-                            disabled={isCreatingPost}
+                            disabled={isProcessing}
                         >
                             <span className="flex items-center gap-1">
                                 {getPrivacyIconByType(selectedPrivacy, "size-3")} {getPrivacyTitleByType(selectedPrivacy)} ⏷
@@ -132,10 +134,14 @@ const PostFormMainStep = ({
                     <Button
                         type="submit"
                         className="text-white px-9 w-full"
-                        isLoading={isCreatingPost}
+                        isLoading={isProcessing}
                         disabled={content.trim().length === 0}
                     >
-                        Lưu
+                        {
+                            mode === "CREATE" ?
+                                isProcessing ? "Đang đăng..." : "Đăng bài" :
+                                isProcessing ? "Đang cập nhật..." : "Cập nhật bài viết"
+                        }
                     </Button>
                 </div>
             </DialogFooter>

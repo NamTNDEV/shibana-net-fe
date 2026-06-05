@@ -34,6 +34,7 @@ export const API_ROUTES = {
     },
     POSTS: {
         _: "posts/",
+        DETAIL: "posts/:postId",
         NEWSFEED: "posts/newsfeed?page=:page&size=:size",
         NEWSFEED_CURSOR_BASED: "posts/newsfeed?size=:size&cursor=:cursor",
     }
@@ -45,6 +46,7 @@ export const NEXT_SERVER_ROUTES = {
     },
     POSTS: {
         POST: "/api/posts",
+        POST_DETAIL: "/api/posts/:postId",
         NEWSFEED: "/api/posts/newsfeed?page=:page&size=:size",
         NEWSFEED_CURSOR_BASED: "/api/posts/newsfeed-cursor?size=:size&cursor=:cursor",
     },

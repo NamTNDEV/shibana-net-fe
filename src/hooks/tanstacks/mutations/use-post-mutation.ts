@@ -2,7 +2,7 @@
 
 import { NEXT_SERVER_ROUTES } from "@/constants/api-route";
 import { useAuthStore } from "@/stores/auth.store";
-import { CreatePostRequestBodyType, PostResponseDataType } from "@/types/post.type";
+import { CreatePostRequestBodyType, EditPostRequestBodyType, PostResponseDataType } from "@/types/post.type";
 import { ResponseDataType } from "@/types/response.type";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -72,6 +72,58 @@ export const useCreatePostMutation = (onCreateSuccess: () => void) => {
             })
         },
         onError: (err, newPost, context) => {
+            queryClient.setQueryData(["posts", "newsfeed", "cursor-based"], context?.previousPosts);
+        },
+    })
+}
+
+export const useEditPostMutation = (onEditSuccess: () => void) => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async (body: EditPostRequestBodyType) => {
+            const response = await fetch(NEXT_SERVER_ROUTES.POSTS.POST_DETAIL.replace(":postId", body.id), {
+                method: "PUT",
+                body: JSON.stringify(body),
+            });
+            return await response.json() as ResponseDataType<null>;
+        },
+        onMutate: async (body: EditPostRequestBodyType) => {
+            onEditSuccess();
+            await queryClient.cancelQueries({ queryKey: ["posts", "newsfeed", "cursor-based"] });
+            const previousPosts = queryClient.getQueryData(["posts", "newsfeed", "cursor-based"]);
+
+            queryClient.setQueryData(["posts", "newsfeed", "cursor-based"], (oldData: any) => {
+                if (!oldData || !oldData.pages) return oldData;
+                const newData = JSON.parse(JSON.stringify(oldData));
+
+                newData.pages = newData.pages.map((page: any) => {
+                    page.payload = page.payload.map((post: any) => {
+                        if (post.id === body.id) {
+                            return {
+                                ...post,
+                                content: body.content,
+                                privacy: body.privacy,
+                            };
+                        }
+                        return post;
+                    });
+                    return page;
+                });
+                return newData;
+            });
+
+            return { previousPosts };
+        },
+        onSuccess: () => {
+            toast.success("Bài viết đã được cập nhật!", {
+                position: "bottom-right",
+                richColors: true,
+                duration: 3000,
+            })
+        },
+        onError: (err, newPost, context) => {
+            console.error("❌ Failed to edit post:", err);
             queryClient.setQueryData(["posts", "newsfeed", "cursor-based"], context?.previousPosts);
         },
     })

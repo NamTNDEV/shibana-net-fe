@@ -4,7 +4,7 @@ import { useCallback, useRef } from "react"
 import PostItem from "../post-item"
 import PostItemSkeleton from "../post-item-skeleton"
 import { Button } from "@/components/ui/button"
-import { usePostNewsfeedCursorBasedQuery } from "@/hooks/queries/use-post-query"
+import { usePostNewsfeedCursorBasedQuery } from "@/hooks/tanstacks/queries/use-post-query"
 
 export default function PostListTanstackQuery() {
     const intersectionObserverRef = useRef<IntersectionObserver | null>(null)

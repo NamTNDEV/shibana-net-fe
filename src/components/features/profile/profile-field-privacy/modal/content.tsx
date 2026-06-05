@@ -1,6 +1,6 @@
 'use client'
 
-import { usePrivacyListQuery } from "@/hooks/queries/use-privacy-query";
+import { usePrivacyListQuery } from "@/hooks/tanstacks/queries/use-privacy-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PrivacyType } from "../../about/profile-about-item.type";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";

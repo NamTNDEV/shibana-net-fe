@@ -28,3 +28,9 @@ export type CreatePostRequestBodyType = {
     content: string;
     privacy: PrivacyType;
 }
+
+export type EditPostRequestBodyType = {
+    id: string;
+    content: string;
+    privacy: PrivacyType;
+}

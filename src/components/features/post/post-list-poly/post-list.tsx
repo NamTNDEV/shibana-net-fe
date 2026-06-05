@@ -1,6 +1,6 @@
 'use client'
 import PostItem from "../post-item"
-import { usePostNewsfeedQuery } from "@/hooks/queries/use-post-query";
+import { usePostNewsfeedQuery } from "@/hooks/tanstacks/queries/use-post-query";
 import { useCallback, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";

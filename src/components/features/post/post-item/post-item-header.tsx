@@ -1,6 +1,6 @@
 'use client';
 
-import { PostAuthorResponseDataType } from "@/types/post.type";
+import { PostAuthorResponseDataType, PostResponseDataType } from "@/types/post.type";
 import { PrivacyType } from "../../profile/about/profile-about-item.type";
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/constants/routes";
@@ -15,18 +15,16 @@ import {
     Dialog,
     DialogContent,
 } from "@/components/ui/dialog"
-import PostCreationForm from "../post-creation/post-creation-form";
 import { useAuthStore } from "@/stores/auth.store";
+import PostMutationForm from "../post-creation/post-mutation-form";
 
 export type PostHeaderProps = {
-    author: PostAuthorResponseDataType;
-    createdAt: string;
-    privacy: PrivacyType;
-    content: string;
+    post: PostResponseDataType
 }
 
-export default function PostHeader({ author, createdAt, privacy, content }: PostHeaderProps) {
+export default function PostHeader({ post }: PostHeaderProps) {
     const router = useRouter();
+    const { author, createdAt, privacy, content, id: postId } = post;
 
     const handleProfileAvatarClick = () => {
         router.push(ROUTES.USER.PROFILE.replace(":handle", author.username));
@@ -61,10 +59,7 @@ export default function PostHeader({ author, createdAt, privacy, content }: Post
                 </div>
             </div>
 
-            <HeaderActionsButton
-                content={content}
-                privacy={privacy}
-                author={author} />
+            <HeaderActionsButton post={post} />
         </div>
     )
 }
@@ -82,12 +77,6 @@ type HeaderActionItemProps = {
     actionType: PostItemActionType;
     description?: string;
     onActionTypeChange?: (actionType: PostItemActionType) => void;
-}
-
-type HeaderActionsButtonProps = {
-    content: string;
-    privacy: PrivacyType;
-    author: PostAuthorResponseDataType;
 }
 
 const actionGroupsItems: ActionItemGroupType[] = [
@@ -140,11 +129,15 @@ const actionGroupsItems: ActionItemGroupType[] = [
     },
 ]
 
+type HeaderActionsButtonProps = {
+    post: PostResponseDataType
+}
+
 const publicActions = ["PIN", "VIEW_HISTORY"];
 const onGoingDevelopmentActions = ["PIN", "VIEW_HISTORY", "EDIT_PRIVACY", "STORE", "DELETE"];
 
 
-const HeaderActionsButton = ({ content, privacy, author }: HeaderActionsButtonProps) => {
+const HeaderActionsButton = ({ post }: HeaderActionsButtonProps) => {
     const { authUser } = useAuthStore();
 
     const [openDialog, setOpenDialog] = useState(false);
@@ -160,7 +153,7 @@ const HeaderActionsButton = ({ content, privacy, author }: HeaderActionsButtonPr
         setSelectedAction(null);
     }
 
-    const renderedActions = authUser?.userId === author.id
+    const renderedActions = authUser?.userId === post.author.id
         ? actionGroupsItems
         : actionGroupsItems.map(group => ({
             ...group,
@@ -191,11 +184,12 @@ const HeaderActionsButton = ({ content, privacy, author }: HeaderActionsButtonPr
             <Dialog open={openDialog} onOpenChange={setOpenDialog}>
                 <DialogContent className="p-0 gap-0 bg-white max-w-125 overflow-hidden" showCloseButton={false}>
                     {selectedAction === "EDIT_POST" && (
-                        <PostCreationForm
+                        <PostMutationForm
+                            postId={post.id}
                             mode="EDIT"
                             onModalClose={handleDialogClose}
-                            initialData={content}
-                            initialPrivacy={privacy}
+                            initialData={post.content}
+                            initialPrivacy={post.privacy}
                         />
                     )}
                 </DialogContent>

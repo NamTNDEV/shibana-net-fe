@@ -14,7 +14,7 @@ type PostItemProps = {
 export default function PostItem({ displayMode, post }: PostItemProps) {
     return (
         <div className="w-full bg-white rounded-lg shadow-sm flex flex-col">
-            <PostHeader author={post.author} createdAt={post.createdAt} privacy={post.privacy} content={post.content} />
+            <PostHeader post={post} />
 
             <PostBody content={post.content} />
             <MediaGrid mediaList={[]} />
