@@ -1,3 +1,4 @@
+import GlobalPostEditModal from "@/components/providers/global-post-edit-modal";
 import PostCreationWidget from "@/components/features/post/post-creation/post-creation-widget";
 import PostListTanstackQuery from "@/components/features/post/post-list-poly/post-list-tanstack-query";
 import ReelsCarousel from "@/components/features/reels/reels-carousel";
@@ -8,6 +9,8 @@ export default function NewsfeedContainer() {
             <PostCreationWidget />
             <ReelsCarousel />
             <PostListTanstackQuery />
+
+            <GlobalPostEditModal />
         </div>
     )
 }

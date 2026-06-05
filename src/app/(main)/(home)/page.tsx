@@ -2,8 +2,6 @@ import NewsfeedContainer from "@/components/layouts/containers/newsfeed-containe
 
 export default function HomePage() {
     return (
-        <>
-            <NewsfeedContainer />
-        </>
+        <NewsfeedContainer />
     )
 }

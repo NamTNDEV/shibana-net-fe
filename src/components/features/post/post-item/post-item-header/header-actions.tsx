@@ -6,23 +6,17 @@ import { Fragment, useState } from "react";
 import { actionGroupsItems, onGoingDevelopmentActions, publicActions } from "./header-actions.constants";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Ellipsis } from "lucide-react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import PostMutationForm from "../../post-creation/post-mutation-form";
+import { usePostModalStore } from "@/stores/post-edit-modal.store";
 
 export const HeaderActionsButton = ({ post }: HeaderActionsButtonProps) => {
     const { authUser } = useAuthStore();
+    const { openEditModal } = usePostModalStore();
 
-    const [openDialog, setOpenDialog] = useState(false);
     const [selectedAction, setSelectedAction] = useState<PostItemActionType | null>(null);
 
     const handleActionItemClick = (actionType: PostItemActionType) => {
         setSelectedAction(actionType);
-        setOpenDialog(true);
-    }
-
-    const handleDialogClose = () => {
-        setOpenDialog(false);
-        setSelectedAction(null);
+        openEditModal(post.id);
     }
 
     const renderedActions = authUser?.userId === post.author.id
@@ -52,20 +46,6 @@ export const HeaderActionsButton = ({ post }: HeaderActionsButtonProps) => {
                     }
                 </DropdownMenuContent>
             </DropdownMenu>
-
-            <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-                <DialogContent className="p-0 gap-0 bg-white max-w-125 overflow-hidden" showCloseButton={false}>
-                    {selectedAction === "EDIT_POST" && (
-                        <PostMutationForm
-                            postId={post.id}
-                            mode="EDIT"
-                            onModalClose={handleDialogClose}
-                            initialData={post.content}
-                            initialPrivacy={post.privacy}
-                        />
-                    )}
-                </DialogContent>
-            </Dialog>
         </>
     )
 }
@@ -85,3 +65,4 @@ const HeaderActionItem = ({ icon: Icon, title, description, actionType, onAction
         </DropdownMenuItem >
     )
 }
+
