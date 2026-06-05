@@ -5,9 +5,9 @@ import {
     DialogContent,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import PostCreationForm from "./post-creation-form";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import PostMutationForm from "./post-mutation-form";
 
 type PostCreationDialogProps = {
     authUser: {
@@ -43,7 +43,7 @@ function PostCreationDialog({ authUser }: PostCreationDialogProps) {
                 </div>
             </DialogTrigger>
             <DialogContent className="p-0 gap-0 bg-white max-w-125 overflow-hidden" showCloseButton={false}>
-                <PostCreationForm mode="CREATE" onContentChange={handleContentChange} initialData={content} onModalClose={handleModalClose} />
+                <PostMutationForm mode="CREATE" onContentChange={handleContentChange} initialData={content} onModalClose={handleModalClose} />
             </DialogContent>
         </Dialog>
     )

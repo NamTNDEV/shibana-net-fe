@@ -9,7 +9,7 @@ import { useCreatePostMutation } from "@/hooks/mutations/use-create-post-mutatio
 import { CreatePostRequestBodyType } from "@/types/post.type";
 
 export type StepTypes = "MAIN" | "PRIVACY"
-type PostCreationFormProps = {
+type PostMutationFormProps = {
     mode: "CREATE" | "EDIT";
     initialData?: string;
     initialPrivacy?: PrivacyType;
@@ -19,7 +19,7 @@ type PostCreationFormProps = {
 
 export const BOLD_TEXT_LENGTH_BOUNDARY = 84;
 
-function PostCreationForm({ mode, initialData, initialPrivacy, onContentChange, onModalClose }: PostCreationFormProps) {
+function PostMutationForm({ mode, initialData, initialPrivacy, onContentChange, onModalClose }: PostMutationFormProps) {
     const [content, setContent] = useState(initialData || "");
     const [selectedPrivacy, setSelectedPrivacy] = useState<PrivacyType>(initialPrivacy || "PUBLIC");
 
@@ -73,4 +73,4 @@ function PostCreationForm({ mode, initialData, initialPrivacy, onContentChange, 
         </form>)
 }
 
-export default PostCreationForm;
+export default PostMutationForm;
