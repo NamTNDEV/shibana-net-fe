@@ -4,7 +4,7 @@ import PostHeader from "./post-item-header";
 import PostActions from "./post-item-actions";
 import MediaGrid from "./post-item-medias";
 
-export type DisplayMode = "NEWSFEED" | "PREVIEW" | "DETAIL";
+export type DisplayMode = "NEWSFEED" | "MODAL_DETAIL";
 
 type PostItemProps = {
     post: PostResponseDataType;
@@ -19,7 +19,10 @@ export default function PostItem({ displayMode, post }: PostItemProps) {
             <PostBody content={post.content} />
             <MediaGrid mediaList={[]} />
 
-            <PostActions commentCount={post.commentCount} />
+            <PostActions
+                postId={post.id}
+                commentCount={post.commentCount}
+            />
         </div>
     )
 }

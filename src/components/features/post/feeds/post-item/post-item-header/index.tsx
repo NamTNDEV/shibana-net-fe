@@ -3,11 +3,11 @@
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/constants/routes";
 import { Button } from "@/components/ui/button";
-import ProfileAvatarContainer from "../../../profile/header/avatar/profile-avatar-container";
 import { formatDate, getInitialName } from "@/lib/utils";
-import { getPrivacyIconByType } from "../../../profile/about/about.utils";
 import { PostResponseDataType } from "@/types/post.type";
 import { HeaderActionsButton } from "./header-actions";
+import ProfileAvatarContainer from "@/components/features/profile/header/avatar/profile-avatar-container";
+import { getPrivacyIconByType } from "@/components/features/profile/about/about.utils";
 
 export type PostHeaderProps = {
     post: PostResponseDataType

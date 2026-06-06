@@ -9,9 +9,9 @@ import { Images, X } from "lucide-react"
 import { cn, getInitialName } from "@/lib/utils"
 import ProfileAvatarContainer from "@/components/features/profile/header/avatar/profile-avatar-container"
 import { getPrivacyIconByType, getPrivacyTitleByType } from "@/components/features/profile/about/about.utils"
-import { renderTextWithHashtags } from "../../post-item/post-item-body"
 import { Textarea } from "@/components/ui/textarea"
 import { Separator } from "@/components/ui/separator"
+import { renderTextWithHashtags } from "@/components/features/post/feeds/post-item/post-item-body"
 
 type PostFormMainStepProps = {
     mode: "CREATE" | "EDIT"

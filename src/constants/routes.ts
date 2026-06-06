@@ -19,6 +19,7 @@ export const ROUTES = {
     },
     POST: {
         HASHTAG: "/hashtag/:hashtag",
+        DETAIL: "/posts/:postId",
     },
 } as const;
 

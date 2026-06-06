@@ -35,5 +35,9 @@ export const postService = {
         const omittedBody = omit(body, ["id"]);
         const response = await httpClientV02.put<PostResponseDataType>(API_ROUTES.POSTS.DETAIL.replace(":postId", postId), { body: omittedBody });
         return response;
+    },
+    getPostDetailById: async (postId: string) => {
+        const response = await httpClientV02.get<PostResponseDataType>(API_ROUTES.POSTS.DETAIL.replace(":postId", postId));
+        return response;
     }
 }
