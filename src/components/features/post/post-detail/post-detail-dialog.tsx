@@ -6,6 +6,7 @@ import { Link as LinkIcon, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import PostItem from "../feeds/post-item";
 import { PostResponseDataType } from "@/types/post.type";
+import CommentSection from "../comments/comment-section";
 
 type PostDetailDialogProps = {
     post: PostResponseDataType | null;
@@ -50,13 +51,11 @@ export default function PostDetailDialog({ post }: PostDetailDialogProps) {
                 </DialogHeader>
 
                 {/* --- BODY --- */}
-                <div className="flex-1 flex flex-col justify-start overflow-y-auto max-h-[80vh]">
+                <div className="flex-1 flex flex-col justify-start overflow-y-auto max-h-[80vh] min-h-[80vh]">
                     {post && <PostItem displayMode="MODAL_DETAIL" post={post} />}
                     {!post && renderPostNotFound()}
 
-                    <div className="w-full flex flex-col items-center gap-1 bg-accent/50 p-4">
-                        Comment section (coming soon)
-                    </div>
+                    {post && <CommentSection postId={post.id} />}
                 </div>
 
                 {/* --- FOOTER --- */}
