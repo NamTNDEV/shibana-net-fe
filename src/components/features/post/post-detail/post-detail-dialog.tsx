@@ -35,10 +35,10 @@ export default function PostDetailDialog({ post }: PostDetailDialogProps) {
 
     return (
         <Dialog defaultOpen={true} onOpenChange={handleOpenChange}>
-            <DialogContent className="p-0 gap-0 max-w-175! w-full flex flex-col mb-4" showCloseButton={false}>
+            <DialogContent className="p-0 gap-0 max-w-175! w-full flex flex-col mb-4 bg-white rounded-lg shadow-lg md:-ml-2" showCloseButton={false}>
 
                 {/* --- HEADER --- */}
-                <DialogHeader className="h-15 relative flex items-center justify-center rounded-t-lg px-4 shrink-0 border-b border-gray-300">
+                <DialogHeader className="h-15 relative flex items-center justify-center rounded-t-lg px-4 shrink-0 border-b border-gray-300 shadow-sm">
                     <DialogTitle className="px-4 text-xl font-bold">Bài viết {post ? `của ${post.author.firstName}` : ""} </DialogTitle>
                     <div
                         className="absolute w-9 h-9 flex items-center justify-center bg-secondary rounded-full hover:cursor-pointer hover:opacity-80 top-1/2 -translate-y-1/2 right-4"
@@ -50,13 +50,17 @@ export default function PostDetailDialog({ post }: PostDetailDialogProps) {
                 </DialogHeader>
 
                 {/* --- BODY --- */}
-                <div className="flex-1 flex items-center justify-center overflow-y-auto">
+                <div className="flex-1 flex flex-col justify-start overflow-y-auto max-h-[80vh]">
                     {post && <PostItem displayMode="MODAL_DETAIL" post={post} />}
                     {!post && renderPostNotFound()}
+
+                    <div className="w-full flex flex-col items-center gap-1 bg-accent/50 p-4">
+                        Comment section (coming soon)
+                    </div>
                 </div>
 
                 {/* --- FOOTER --- */}
-                <DialogFooter className="rounded-b-lg p-4 pt-3 shrink-0">
+                <DialogFooter className="rounded-b-lg p-4 pt-3 shrink-0 border-t border-gray-300">
                     <div className="w-full">
                         {post && <Button type="submit" className="text-white px-9 w-full"> Chia sẻ </Button>}
                         {!post && (

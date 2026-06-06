@@ -37,7 +37,12 @@ export const postService = {
         return response;
     },
     getPostDetailById: async (postId: string) => {
-        const response = await httpClientV02.get<PostResponseDataType>(API_ROUTES.POSTS.DETAIL.replace(":postId", postId));
-        return response;
+        try {
+            const response = await httpClientV02.get<PostResponseDataType>(API_ROUTES.POSTS.DETAIL.replace(":postId", postId));
+            return response.data;
+        } catch (error) {
+            console.error(`🚨 Error fetching post detail for postId ${postId} ~ `, error);
+            return null;
+        }
     }
 }

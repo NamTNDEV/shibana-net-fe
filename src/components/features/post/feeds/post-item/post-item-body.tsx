@@ -4,6 +4,7 @@ import { ROUTES } from '@/constants/routes';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { useState } from 'react';
+import { DisplayMode } from '.';
 
 export const renderTextWithHashtags = (content: string, isEnableLink: boolean = true) => {
     if (!content) { return null; }
@@ -37,15 +38,17 @@ export const renderTextWithHashtags = (content: string, isEnableLink: boolean = 
 
 type PostBodyProps = {
     content: string;
+    displayMode: DisplayMode;
 }
 
 const TRUNCATE_LIMIT = 100;
 
-export default function PostBody({ content }: PostBodyProps) {
+export default function PostBody({ content, displayMode }: PostBodyProps) {
     const [isExpanded, setIsExpanded] = useState(false);
     const isLongContent = content.length > TRUNCATE_LIMIT;
 
-    const displayedContent = isLongContent && !isExpanded ? content.slice(0, TRUNCATE_LIMIT) + "..." : content;
+    const isTruncatingMode = displayMode === "NEWSFEED" && isLongContent && !isExpanded;
+    const displayedContent = isTruncatingMode ? content.slice(0, TRUNCATE_LIMIT) + "..." : content;
 
     return (
         <div className="px-3">
@@ -54,7 +57,7 @@ export default function PostBody({ content }: PostBodyProps) {
                 content.length < 100 && "text-2xl",
             )}>
                 {renderTextWithHashtags(displayedContent)}{' '}
-                {isLongContent && !isExpanded && (
+                {isTruncatingMode && (
                     <span className="cursor-pointer hover:underline font-bold" onClick={() => setIsExpanded(true)}>
                         Xem thêm
                     </span>
