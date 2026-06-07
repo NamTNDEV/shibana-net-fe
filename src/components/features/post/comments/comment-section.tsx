@@ -1,12 +1,44 @@
 import { FileText } from "lucide-react";
 import { useState } from "react";
+import CommentList from "./comment-list";
 
 type CommentSectionProps = {
     postId: string;
 };
 
+export const MOCK_COMMENT_LIST = Array.from({ length: 3 }, (_, index) => ({
+    id: crypto.randomUUID(),
+    content: `Bình luận số ${index + 1}`,
+    replyCounts: Math.floor(Math.random() * 10),
+    level: 0,
+}));
+
+export type CommentType = typeof MOCK_COMMENT_LIST[number];
+
+export const fakeFetchingRepliesCommentList = (commentId: string, fetchingCommentNumber: number) => {
+    const comment = MOCK_COMMENT_LIST.find(c => c.id === commentId);
+    if (!comment) {
+        return Promise.resolve([]);
+    }
+    return new Promise<CommentType[]>(resolve => {
+        setTimeout(() => {
+            resolve(Array.from({ length: fetchingCommentNumber }, (_, index) => {
+                const res = {
+                    id: crypto.randomUUID(),
+                    content: `Phản hồi ${index + 1} cho bình luận ${commentId}`,
+                    replyCounts: Math.floor(Math.random() * 10),
+                    level: comment.level + 1,
+                }
+                MOCK_COMMENT_LIST.push(res);
+                return res;
+            }));
+        }, 0);
+    }
+    )
+};
+
 function CommentSection({ postId }: CommentSectionProps) {
-    const [comments, setComments] = useState([]);
+    const [comments, setComments] = useState(MOCK_COMMENT_LIST);
 
     if (comments.length === 0) {
         return (
@@ -21,8 +53,8 @@ function CommentSection({ postId }: CommentSectionProps) {
     }
 
     return (
-        <div className="w-full h-full flex flex-col items-center gap-1 bg-accent/50 p-4 mb-2">
-            CommentSection for post {postId}
+        <div className="w-full h-full">
+            <CommentList commentList={comments} />
         </div>
     )
 }
