@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
+@plugin 'tailwind-scrollbar';
 
 /* Tailwind v4 content sources (ensure arbitrary classes like h-[72px] are generated) */
 @source "../**/*.{js,jsx,ts,tsx,mdx}";

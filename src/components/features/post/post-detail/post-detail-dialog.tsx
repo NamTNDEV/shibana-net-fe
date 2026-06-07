@@ -7,6 +7,8 @@ import { useRouter } from "next/navigation";
 import PostItem from "../feeds/post-item";
 import { PostResponseDataType } from "@/types/post.type";
 import CommentSection from "../comments/comment-section";
+import CommentInput from "../comments/comment-input";
+import CommentInputSkeleton from "../comments/skeleton/comment-input-skeleton";
 
 type PostDetailDialogProps = {
     post: PostResponseDataType | null;
@@ -36,7 +38,7 @@ export default function PostDetailDialog({ post }: PostDetailDialogProps) {
 
     return (
         <Dialog defaultOpen={true} onOpenChange={handleOpenChange}>
-            <DialogContent className="p-0 gap-0 max-w-175! w-full flex flex-col mb-4 bg-white rounded-lg shadow-lg md:-ml-2" showCloseButton={false}>
+            <DialogContent className="p-0 gap-0 max-w-175! w-full min-h-[94vh] max-h-[94vh] flex flex-col mb-4 bg-white rounded-lg shadow-lg md:-ml-2" showCloseButton={false}>
 
                 {/* --- HEADER --- */}
                 <DialogHeader className="h-15 relative flex items-center justify-center rounded-t-lg px-4 shrink-0 border-b border-gray-300 shadow-sm">
@@ -51,7 +53,7 @@ export default function PostDetailDialog({ post }: PostDetailDialogProps) {
                 </DialogHeader>
 
                 {/* --- BODY --- */}
-                <div className="flex-1 flex flex-col justify-start overflow-y-auto max-h-[80vh] min-h-[80vh]">
+                <div className="flex-1 flex flex-col justify-start overflow-y-auto">
                     {post && <PostItem displayMode="MODAL_DETAIL" post={post} />}
                     {!post && renderPostNotFound()}
 
@@ -59,14 +61,11 @@ export default function PostDetailDialog({ post }: PostDetailDialogProps) {
                 </div>
 
                 {/* --- FOOTER --- */}
-                <DialogFooter className="rounded-b-lg p-4 pt-3 shrink-0 border-t border-gray-300">
+                <DialogFooter className="rounded-b-lg p-4 pt-3 border-t border-gray-300">
                     <div className="w-full">
-                        {post && <Button type="submit" className="text-white px-9 w-full"> Chia sẻ </Button>}
+                        {post && <CommentInput postId={post.id} />}
                         {!post && (
-                            <div className="w-full flex items-center gap-1.5">
-                                <div className="size-8 rounded-full bg-gray-300 animate-pulse"></div>
-                                <div className="flex-1 h-8 bg-gray-300 rounded-full animate-pulse"></div>
-                            </div>
+                            <CommentInputSkeleton />
                         )}
                     </div>
                 </DialogFooter>
