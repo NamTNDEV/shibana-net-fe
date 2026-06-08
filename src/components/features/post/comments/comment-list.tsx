@@ -9,14 +9,16 @@ import { cn } from "@/lib/utils";
 type CommentListPropsType = {
     commentList: CommentType[];
     siblingCommentCount?: number;
+    lastSiblingItemRef?: React.RefObject<HTMLDivElement | null>;
 };
 
 
-function CommentList({ commentList, siblingCommentCount }: CommentListPropsType) {
+function CommentList({ commentList, siblingCommentCount, lastSiblingItemRef }: CommentListPropsType) {
     const { authUser } = useAuthStore();
     const isAncestorCmtList = commentList.some(c => c.level === 0);
     if (!authUser) return null;
-
+    console.log("Rendering comment list with sibling count: ", siblingCommentCount);
+    console.log("Comment list length: ", commentList.length);
     return (
         <div
             className={cn(
@@ -25,15 +27,18 @@ function CommentList({ commentList, siblingCommentCount }: CommentListPropsType)
                 !isAncestorCmtList && "mt-1",
             )}
         >
-            {commentList.map((comment) => (
-                <Fragment key={comment.id}>
-                    <CommentItem
-                        comment={comment}
-                        author={authUser}
-                        isLastSibling={siblingCommentCount === commentList.length}
-                    />
-                </Fragment>
-            ))}
+            {commentList.map((comment, index) => {
+                return (
+                    <Fragment key={comment.id}>
+                        <CommentItem
+                            comment={comment}
+                            author={authUser}
+                            isLastSibling={siblingCommentCount === index + 1}
+                            lastSiblingItemRef={lastSiblingItemRef}
+                        />
+                    </Fragment>
+                )
+            })}
         </div>
     )
 }
