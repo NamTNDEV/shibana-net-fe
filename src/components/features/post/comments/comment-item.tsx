@@ -1,23 +1,34 @@
 import { MyAccountMetadataResponseDataType } from "@/types/user.type";
 import ProfileAvatarContainer from "../../profile/header/avatar/profile-avatar-container";
-import { cn, getInitialName } from "@/lib/utils";
+import { getInitialName } from "@/lib/utils";
 import { CommentType, fakeFetchingRepliesCommentList } from "./comment-section";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import CommentList from "./comment-list";
 
 type CommentItemProps = {
     comment: CommentType;
     author: MyAccountMetadataResponseDataType
     isLastSibling?: boolean;
-    lastSiblingItemRef?: React.RefObject<HTMLDivElement | null>;
 };
 
 const FETCHING_COMMENT_NUMBER = 1;
 function CommentItem({ comment, author, isLastSibling }: CommentItemProps) {
     const [xHeight, setXHeight] = useState(0);
     const [replies, setReplies] = useState<CommentType[]>([]);
+    const [nodeRef, setNodeRef] = useState<HTMLDivElement | null>(null);
     const [unfetchedReplyCounts, setUnfetchedReplyCounts] = useState(comment.replyCounts);
 
+    useEffect(() => {
+        if (!nodeRef) return;
+
+        const observer = new ResizeObserver(() => {
+            setXHeight(nodeRef.offsetHeight - 16);
+        });
+
+        observer.observe(nodeRef);
+
+        return () => observer.disconnect(); // ✅ Cleanup đúng cách
+    }, [nodeRef]);
 
     const handleClickViewReplies = async () => {
         const replies = await fakeFetchingRepliesCommentList(comment.id, FETCHING_COMMENT_NUMBER);
@@ -26,9 +37,7 @@ function CommentItem({ comment, author, isLastSibling }: CommentItemProps) {
     }
 
     const lastReplyRef = useCallback((node: HTMLDivElement | null) => {
-        if (node && isLastSibling) {
-            setXHeight(node.offsetHeight - 16);
-        }
+        if (isLastSibling) setNodeRef(node);
     }, [isLastSibling]);
 
     return (

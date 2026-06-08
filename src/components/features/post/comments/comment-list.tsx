@@ -13,12 +13,10 @@ type CommentListPropsType = {
 };
 
 
-function CommentList({ commentList, siblingCommentCount, lastSiblingItemRef }: CommentListPropsType) {
+function CommentList({ commentList, siblingCommentCount }: CommentListPropsType) {
     const { authUser } = useAuthStore();
     const isAncestorCmtList = commentList.some(c => c.level === 0);
     if (!authUser) return null;
-    console.log("Rendering comment list with sibling count: ", siblingCommentCount);
-    console.log("Comment list length: ", commentList.length);
     return (
         <div
             className={cn(
@@ -34,7 +32,6 @@ function CommentList({ commentList, siblingCommentCount, lastSiblingItemRef }: C
                             comment={comment}
                             author={authUser}
                             isLastSibling={siblingCommentCount === index + 1}
-                            lastSiblingItemRef={lastSiblingItemRef}
                         />
                     </Fragment>
                 )
