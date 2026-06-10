@@ -1,6 +1,6 @@
 import { API_ROUTES } from "@/constants/api-route";
 import { httpClientV02 } from "@/lib/http-client-v02";
-import { CommentResponseDataType, CreateRootCommentRequestBodyType } from "@/types/post.type";
+import { CommentResponseDataType, CreateRootCommentRequestBodyType, EditCommentRequestBodyType } from "@/types/post.type";
 import { CursorPaginationResponseDataType } from "@/types/response.type";
 
 export const commentService = {
@@ -19,11 +19,10 @@ export const commentService = {
         });
         return response;
     },
-    // editPost: async (postId: string, body: EditPostRequestBodyType) => {
-    //     const omittedBody = omit(body, ["id"]);
-    //     const response = await httpClientV02.put<PostResponseDataType>(API_ROUTES.POSTS.DETAIL.replace(":postId", postId), { body: omittedBody });
-    //     return response;
-    // },
+    editComment: async (id: string, body: EditCommentRequestBodyType) => {
+        const response = await httpClientV02.put<CommentResponseDataType>(API_ROUTES.COMMENTS.UPDATE_COMMENT.replace(":id", id), { body });
+        return response;
+    },
     // getPostDetailById: async (postId: string) => {
     //     try {
     //         const response = await httpClientV02.get<PostResponseDataType>(API_ROUTES.POSTS.DETAIL.replace(":postId", postId));

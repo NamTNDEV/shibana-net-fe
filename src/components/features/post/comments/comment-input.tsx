@@ -29,7 +29,9 @@ function CommentInput({ postId }: CommentInputProps) {
         }
     };
 
-    const handleSuccess = () => { }
+    const handleSuccess = () => {
+        setCommentContent("");
+    }
 
     const {
         mutate: createComment,

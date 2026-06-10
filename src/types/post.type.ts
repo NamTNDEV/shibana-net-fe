@@ -45,6 +45,7 @@ export type EditPostRequestBodyType = {
 export type CommentResponseDataType = {
     id: string;
     parentId: string | null;
+    postId: string;
     level: number;
     content: string;
     createdAt: string;
@@ -58,8 +59,6 @@ export type CreateRootCommentRequestBodyType = {
     content: string;
 }
 
-// export type EditCommentRequestBodyType = {
-//     id: string;
-//     content: string;
-//     privacy: PrivacyType;
-// }
+export type EditCommentRequestBodyType = {
+    newContent: string;
+}

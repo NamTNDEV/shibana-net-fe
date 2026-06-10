@@ -56,8 +56,8 @@ export const NEXT_SERVER_ROUTES = {
         NEWSFEED_CURSOR_BASED: "/api/posts/newsfeed-cursor?size=:size&cursor=:cursor",
     },
     COMMENTS: {
-        COMMENT_LIST: "/api/comments/:postId?size=:size&cursor=:cursor",
-        CREATE_COMMENT: "/api/comments/:postId",
+        COMMENT_LIST: "/api/posts/:postId/comments?size=:size&cursor=:cursor",
+        CREATE_COMMENT: "/api/posts/:postId/comments",
         UPDATE_COMMENT: "/api/comments/:id",
     },
     USERS: {
