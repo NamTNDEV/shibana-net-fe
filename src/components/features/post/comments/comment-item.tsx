@@ -8,12 +8,11 @@ import { CommentResponseDataType } from "@/types/post.type";
 
 type CommentItemProps = {
     comment: CommentResponseDataType;
-    author: MyAccountMetadataResponseDataType
     isLastSibling?: boolean;
 };
 
 const FETCHING_COMMENT_NUMBER = 1;
-function CommentItem({ comment, author, isLastSibling }: CommentItemProps) {
+function CommentItem({ comment, isLastSibling }: CommentItemProps) {
     const [xHeight, setXHeight] = useState(0);
     const [replies, setReplies] = useState<CommentResponseDataType[]>([]);
     const [nodeRef, setNodeRef] = useState<HTMLDivElement | null>(null);
@@ -46,11 +45,11 @@ function CommentItem({ comment, author, isLastSibling }: CommentItemProps) {
             <div className="relative shrink-0 mt-0.5 flex flex-col gap-1">
                 <div>
                     <ProfileAvatarContainer
-                        avatar={author.avatar}
-                        initialName={getInitialName(author?.lastName, author?.firstName)}
-                        avatarScale={author?.avatarScale || 1}
-                        avatarPositionX={author?.avatarPositionX || 0}
-                        avatarPositionY={author?.avatarPositionY || 0}
+                        avatar={comment.author.avatarUrl}
+                        initialName={getInitialName(comment.author.lastName, comment.author.firstName)}
+                        avatarScale={comment.author.avatarScale || 1}
+                        avatarPositionX={comment.author.avatarPositionX || 0}
+                        avatarPositionY={comment.author.avatarPositionY || 0}
                         containerSize={32}
                     />
                 </div>
@@ -74,7 +73,7 @@ function CommentItem({ comment, author, isLastSibling }: CommentItemProps) {
                 className="relative flex flex-col"
             >
                 <div className="flex flex-col flex-1 py-2 px-3 bg-gray-100 rounded-xl w-fit">
-                    <span className="font-semibold text-[13px]">{author?.firstName} {author?.lastName}</span>
+                    <span className="font-semibold text-[13px]">{comment.author.firstName} {comment.author.lastName}</span>
                     <div className="text-[15px]">{comment.content}</div>
                 </div>
 

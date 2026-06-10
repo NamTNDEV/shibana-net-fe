@@ -15,9 +15,7 @@ type CommentListPropsType = {
 
 
 function CommentList({ commentList, siblingCommentCount }: CommentListPropsType) {
-    const { authUser } = useAuthStore();
     const isAncestorCmtList = commentList.some(c => c.level === 0);
-    if (!authUser) return null;
 
     if (commentList.length === 0) {
         return (
@@ -44,7 +42,6 @@ function CommentList({ commentList, siblingCommentCount }: CommentListPropsType)
                     <Fragment key={comment.id}>
                         <CommentItem
                             comment={comment}
-                            author={authUser}
                             isLastSibling={siblingCommentCount === index + 1}
                         />
                     </Fragment>
