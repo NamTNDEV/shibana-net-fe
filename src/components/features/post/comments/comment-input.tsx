@@ -8,6 +8,8 @@ import { useAuthStore } from "@/stores/auth.store";
 import CommentInputSkeleton from "./skeleton/comment-input-skeleton";
 import { Send } from "lucide-react";
 import { useState } from "react";
+import { useCreateRootCommentMutation } from "@/hooks/tanstacks/mutations/use-comment-mutation";
+import { CreateRootCommentRequestBodyType } from "@/types/post.type";
 
 type CommentInputProps = {
     postId: string;
@@ -27,9 +29,23 @@ function CommentInput({ postId }: CommentInputProps) {
         }
     };
 
+    const handleSuccess = () => { }
+
+    const {
+        mutate: createComment,
+        isPending: isCreatingComment,
+    } = useCreateRootCommentMutation(handleSuccess)
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log("Submitting comment:", commentContent);
+        if (!commentContent.trim()) return;
+        const body: CreateRootCommentRequestBodyType = {
+            content: commentContent,
+        }
+        createComment({
+            body,
+            postId,
+        })
     }
 
     if (!authUser) {
@@ -70,7 +86,7 @@ function CommentInput({ postId }: CommentInputProps) {
                     <Button
                         type="submit"
                         className="size-9 ml-auto rounded-full bg-transparent hover:bg-gray-200 text-primary disabled:text-gray-600"
-                        disabled={commentContent.trim() === ""}
+                        disabled={isCreatingComment || commentContent.trim() === ""}
                     >
                         <Send className="text-8" />
                     </Button>

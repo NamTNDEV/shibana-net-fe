@@ -1,4 +1,3 @@
-import { FileText } from "lucide-react";
 import { useState } from "react";
 import CommentList from "./comment-list";
 import { useCommentQuery } from "@/hooks/tanstacks/queries/use-comment-query";
@@ -50,20 +49,7 @@ function CommentSection({ postId }: CommentSectionProps) {
         isLoading: isFirstFetching,
     } = useCommentQuery({ postId });
 
-    if (comments.length === 0) {
-        return (
-            <div className="w-full h-full flex flex-col items-center justify-center gap-5 p-6 mb-2">
-                <FileText className="size-28" />
-                <div className="w-full max-w-125 flex flex-col items-center">
-                    <h3 className="text-xl font-semibold">Chưa có bình luận nào</h3>
-                    <span className="text-gray-500 text-center text-lg">Hãy là người đầu tiên bình luận.</span>
-                </div>
-            </div>
-        )
-    }
-
     const commentList = data?.pages.flatMap(page => page.payload) ?? [];
-    console.log("commentList", commentList)
     return (
         <div className="w-full h-full">
             <CommentList commentList={commentList} />

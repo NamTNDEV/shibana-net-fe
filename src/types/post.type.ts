@@ -52,3 +52,14 @@ export type CommentResponseDataType = {
     isEdited: boolean;
     author: AuthorResponseDataType;
 }
+
+// Request
+export type CreateRootCommentRequestBodyType = {
+    content: string;
+}
+
+// export type EditCommentRequestBodyType = {
+//     id: string;
+//     content: string;
+//     privacy: PrivacyType;
+// }

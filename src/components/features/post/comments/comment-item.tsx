@@ -1,6 +1,6 @@
 import { MyAccountMetadataResponseDataType } from "@/types/user.type";
 import ProfileAvatarContainer from "../../profile/header/avatar/profile-avatar-container";
-import { getInitialName } from "@/lib/utils";
+import { formatDate, getInitialName } from "@/lib/utils";
 import { CommentType, fakeFetchingRepliesCommentList } from "./comment-section";
 import { useCallback, useEffect, useState } from "react";
 import CommentList from "./comment-list";
@@ -79,7 +79,7 @@ function CommentItem({ comment, author, isLastSibling }: CommentItemProps) {
                 </div>
 
                 <div className="flex items-center gap-4 ml-1 text-[12px] text-gray-500 font-semibold">
-                    <span>46 phút</span>
+                    <span>{formatDate(comment.createdAt)}</span>
                     <span>Thích</span>
                     <span>Trả lời</span>
                 </div>
