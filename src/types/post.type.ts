@@ -2,8 +2,7 @@
 
 import { PrivacyType } from "@/components/features/profile/about/profile-about-item.type";
 
-// Response
-export type PostAuthorResponseDataType = {
+export type AuthorResponseDataType = {
     id: string;
     username: string;
     firstName: string;
@@ -14,10 +13,14 @@ export type PostAuthorResponseDataType = {
     avatarPositionY: number | null;
 }
 
+/**
+ * POST TYPES
+ */
+// Response
 export type PostResponseDataType = {
     id: string;
     content: string;
-    author: PostAuthorResponseDataType;
+    author: AuthorResponseDataType;
     privacy: PrivacyType;
     createdAt: string;
     commentCount: number;
@@ -33,4 +36,19 @@ export type EditPostRequestBodyType = {
     id: string;
     content: string;
     privacy: PrivacyType;
+}
+
+/**
+ * COMMENT TYPES
+ */
+// Response
+export type CommentResponseDataType = {
+    id: string;
+    parentId: string | null;
+    level: number;
+    content: string;
+    createdAt: string;
+    replyCount: number;
+    isEdited: boolean;
+    author: AuthorResponseDataType;
 }

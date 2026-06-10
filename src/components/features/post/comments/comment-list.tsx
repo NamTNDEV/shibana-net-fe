@@ -3,11 +3,11 @@
 import { useAuthStore } from "@/stores/auth.store";
 import { Fragment } from "react/jsx-runtime";
 import CommentItem from "./comment-item";
-import { CommentType } from "./comment-section";
 import { cn } from "@/lib/utils";
+import { CommentResponseDataType } from "@/types/post.type";
 
 type CommentListPropsType = {
-    commentList: CommentType[];
+    commentList: CommentResponseDataType[];
     siblingCommentCount?: number;
     lastSiblingItemRef?: React.RefObject<HTMLDivElement | null>;
 };

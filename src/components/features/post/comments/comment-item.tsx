@@ -4,9 +4,10 @@ import { getInitialName } from "@/lib/utils";
 import { CommentType, fakeFetchingRepliesCommentList } from "./comment-section";
 import { useCallback, useEffect, useState } from "react";
 import CommentList from "./comment-list";
+import { CommentResponseDataType } from "@/types/post.type";
 
 type CommentItemProps = {
-    comment: CommentType;
+    comment: CommentResponseDataType;
     author: MyAccountMetadataResponseDataType
     isLastSibling?: boolean;
 };
@@ -14,9 +15,9 @@ type CommentItemProps = {
 const FETCHING_COMMENT_NUMBER = 1;
 function CommentItem({ comment, author, isLastSibling }: CommentItemProps) {
     const [xHeight, setXHeight] = useState(0);
-    const [replies, setReplies] = useState<CommentType[]>([]);
+    const [replies, setReplies] = useState<CommentResponseDataType[]>([]);
     const [nodeRef, setNodeRef] = useState<HTMLDivElement | null>(null);
-    const [unfetchedReplyCounts, setUnfetchedReplyCounts] = useState(comment.replyCounts);
+    const [unfetchedReplyCounts, setUnfetchedReplyCounts] = useState(comment.replyCount);
 
     useEffect(() => {
         if (!nodeRef) return;
@@ -30,11 +31,11 @@ function CommentItem({ comment, author, isLastSibling }: CommentItemProps) {
         return () => observer.disconnect(); // ✅ Cleanup đúng cách
     }, [nodeRef]);
 
-    const handleClickViewReplies = async () => {
-        const replies = await fakeFetchingRepliesCommentList(comment.id, FETCHING_COMMENT_NUMBER);
-        setReplies((prev) => [...prev, ...replies]);
-        setUnfetchedReplyCounts(prev => prev - replies.length);
-    }
+    // const handleClickViewReplies = async () => {
+    //     const replies = await fakeFetchingRepliesCommentList(comment.id, FETCHING_COMMENT_NUMBER);
+    //     setReplies((prev) => [...prev, ...replies]);
+    //     setUnfetchedReplyCounts(prev => prev - replies.length);
+    // }
 
     const lastReplyRef = useCallback((node: HTMLDivElement | null) => {
         if (isLastSibling) setNodeRef(node);
@@ -87,7 +88,7 @@ function CommentItem({ comment, author, isLastSibling }: CommentItemProps) {
                     replies.length > 0 && (
                         <CommentList
                             commentList={replies}
-                            siblingCommentCount={comment.replyCounts}
+                            siblingCommentCount={comment.replyCount}
                         />
                     )
                 }
@@ -96,7 +97,7 @@ function CommentItem({ comment, author, isLastSibling }: CommentItemProps) {
                     unfetchedReplyCounts > 0 && (
                         <div
                             className="ml-1.5 h-8 flex items-center cursor-pointer relative"
-                            onClick={handleClickViewReplies}
+                        // onClick={handleClickViewReplies}
                         >
                             <span className="text-sm font-semibold text-gray-500">Xem {unfetchedReplyCounts} phản hồi</span>
                         </div>

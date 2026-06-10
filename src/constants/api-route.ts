@@ -37,7 +37,10 @@ export const API_ROUTES = {
         DETAIL: "posts/:postId",
         NEWSFEED: "posts/newsfeed?page=:page&size=:size",
         NEWSFEED_CURSOR_BASED: "posts/newsfeed?size=:size&cursor=:cursor",
-    }
+    },
+    COMMENTS: {
+        COMMENT_LIST: "posts/:postId/comments?size=:size&cursor=:cursor",
+    },
 } as const;
 
 export const NEXT_SERVER_ROUTES = {
@@ -49,6 +52,9 @@ export const NEXT_SERVER_ROUTES = {
         POST_DETAIL: "/api/posts/:postId",
         NEWSFEED: "/api/posts/newsfeed?page=:page&size=:size",
         NEWSFEED_CURSOR_BASED: "/api/posts/newsfeed-cursor?size=:size&cursor=:cursor",
+    },
+    COMMENTS: {
+        COMMENT_LIST: "/api/comments/:postId?size=:size&cursor=:cursor",
     },
     USERS: {
         MY_ACCOUNT: "/api/users/my-account",
