@@ -1,6 +1,5 @@
 'use client';
 
-import { useAuthStore } from "@/stores/auth.store";
 import { Fragment } from "react/jsx-runtime";
 import CommentItem from "./comment-item";
 import { cn } from "@/lib/utils";

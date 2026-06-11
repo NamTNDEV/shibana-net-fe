@@ -4,7 +4,7 @@ import { CommentResponseDataType } from "@/types/post.type";
 import { CursorPaginationResponseDataType } from "@/types/response.type";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 3;
 
 type UseCommentQueryOptions = {
     isAllowFetch?: boolean
