@@ -7,6 +7,7 @@ import CommentActions from "./comment-actions";
 import CommentUpdateForm from "./comment-update-form";
 import { useAuthStore } from "@/stores/auth.store";
 import { useEditCommentMutation } from "@/hooks/tanstacks/mutations/use-comment-mutation";
+import { useRepliesCommentQuery } from "@/hooks/tanstacks/queries/use-comment-query";
 
 
 type CommentItemProps = {
@@ -36,11 +37,26 @@ function CommentItem({ comment, isLastSibling }: CommentItemProps) {
         return () => observer.disconnect(); // ✅ Cleanup đúng cách
     }, [nodeRef]);
 
-    // const handleClickViewReplies = async () => {
-    //     const replies = await fakeFetchingRepliesCommentList(comment.id, FETCHING_COMMENT_NUMBER);
-    //     setReplies((prev) => [...prev, ...replies]);
-    //     setUnfetchedReplyCounts(prev => prev - replies.length);
-    // }
+    const {
+        data,
+        isError,
+        fetchNextPage,
+        hasNextPage,
+        isFetchingNextPage,
+        isLoading: isFirstFetching,
+    } = useRepliesCommentQuery({
+        commentId: comment.id,
+        isAllowFetch: false,
+    })
+
+    const handleClickViewReplies = async () => {
+        const res = await fetchNextPage();
+        if (res.data && res.data.pages) {
+            const newReplies = res.data.pages.flatMap(page => page.payload);
+            setReplies((prev) => [...prev, ...newReplies]);
+            setUnfetchedReplyCounts(prev => prev - newReplies.length);
+        }
+    }
 
     const lastReplyRef = useCallback((node: HTMLDivElement | null) => {
         if (isLastSibling) setNodeRef(node);
@@ -72,6 +88,14 @@ function CommentItem({ comment, isLastSibling }: CommentItemProps) {
         editCommentMutate({ commentId: comment.id, postId: comment.postId, body });
     };
     // ---- o0o -----
+
+    if (isFirstFetching) return (
+        <div className="w-full h-full flex flex-col items-center justify-center gap-5 p-6 mb-2">
+            <div className="w-full max-w-125 flex flex-col items-center">
+                <h3 className="text-xl font-semibold">Đang tải bình luận...</h3>
+            </div>
+        </div>
+    )
 
     return (
         <div className="flex items-stretch gap-1.5 mr-4" ref={isLastSibling ? lastReplyRef : null}>
@@ -152,9 +176,9 @@ function CommentItem({ comment, isLastSibling }: CommentItemProps) {
                     unfetchedReplyCounts > 0 && (
                         <div
                             className="ml-1.5 h-8 flex items-center cursor-pointer relative"
-                        // onClick={handleClickViewReplies}
+                            onClick={handleClickViewReplies}
                         >
-                            <span className="text-sm font-semibold text-gray-500">Xem {unfetchedReplyCounts} phản hồi</span>
+                            <span className="text-sm font-semibold text-gray-500">Xem {unfetchedReplyCounts} phản hồi khác</span>
                         </div>
                     )
                 }

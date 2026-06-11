@@ -53,7 +53,7 @@ export default function PostDetailDialog({ post }: PostDetailDialogProps) {
                 </DialogHeader>
 
                 {/* --- BODY --- */}
-                <div className="flex-1 flex flex-col justify-start overflow-y-auto">
+                <div className="flex-1 flex flex-col justify-start overflow-y-auto mb-4">
                     {post && <PostItem displayMode="MODAL_DETAIL" post={post} />}
                     {!post && renderPostNotFound()}
 

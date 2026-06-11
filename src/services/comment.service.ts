@@ -20,16 +20,17 @@ export const commentService = {
         return response;
     },
     editComment: async (id: string, body: EditCommentRequestBodyType) => {
-        const response = await httpClientV02.put<CommentResponseDataType>(API_ROUTES.COMMENTS.UPDATE_COMMENT.replace(":id", id), { body });
+        const response = await httpClientV02.put<CommentResponseDataType>(API_ROUTES.COMMENTS.UPDATE_COMMENT.replace(":commentId", id), { body });
         return response;
     },
-    // getPostDetailById: async (postId: string) => {
-    //     try {
-    //         const response = await httpClientV02.get<PostResponseDataType>(API_ROUTES.POSTS.DETAIL.replace(":postId", postId));
-    //         return response.data;
-    //     } catch (error) {
-    //         console.error(`🚨 Error fetching post detail for postId ${postId} ~ `, error);
-    //         return null;
-    //     }
-    // }
+
+    // Comment's Reply:
+    getRepliesCommentList: async (commentId: string, size: number = 10, cursor: string | null = null) => {
+        const response = await httpClientV02.get<CursorPaginationResponseDataType<CommentResponseDataType[]>>(API_ROUTES.COMMENTS.REPLY_COMMENT_LIST
+            .replace(":commentId", commentId)
+            .replace(":size", size.toString())
+            .replace("&cursor=:cursor", cursor ? `&cursor=${cursor}` : "")
+        );
+        return response;
+    },
 }

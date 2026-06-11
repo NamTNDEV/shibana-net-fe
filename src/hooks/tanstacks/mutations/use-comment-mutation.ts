@@ -87,7 +87,7 @@ export const useEditCommentMutation = (onEditSuccess: () => void) => {
 
     return useMutation({
         mutationFn: async ({ body, commentId, postId }: { body: EditCommentRequestBodyType, commentId: string, postId: string }) => {
-            const response = await fetch(NEXT_SERVER_ROUTES.COMMENTS.UPDATE_COMMENT.replace(":id", commentId), {
+            const response = await fetch(NEXT_SERVER_ROUTES.COMMENTS.UPDATE_COMMENT.replace(":commentId", commentId), {
                 method: "PUT",
                 body: JSON.stringify(body),
             });

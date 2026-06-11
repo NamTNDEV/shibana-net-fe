@@ -3,14 +3,14 @@ import { commentService } from "@/services/comment.service";
 import { NextResponse } from "next/server";
 
 type RouteParams = {
-    params: Promise<{ id: string }>;
+    params: Promise<{ commentId: string }>;
 };
 
 export async function PUT(request: Request, { params }: RouteParams) {
-    const { id } = await params;
+    const { commentId } = await params;
     const body = await request.json();
     try {
-        const response = await commentService.editComment(id, body);
+        const response = await commentService.editComment(commentId, body);
 
         return NextResponse.json(
             {
