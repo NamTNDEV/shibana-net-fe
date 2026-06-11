@@ -6,17 +6,17 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 
 const PAGE_SIZE = 10;
 
-type UseCommentQueryOptions = {
+type UseRootCommentQueryOptions = {
     isAllowFetch?: boolean
     fetchSize?: number
     postId: string
 }
 
-type UseRepliesCommentQueryOptions = Omit<UseCommentQueryOptions, "postId"> & {
+type UseRepliesCommentQueryOptions = Omit<UseRootCommentQueryOptions, "postId"> & {
     commentId: string
 }
 
-export const useCommentQuery = ({ isAllowFetch = true, fetchSize = PAGE_SIZE, postId }: UseCommentQueryOptions) => {
+export const useRootCommentQuery = ({ isAllowFetch = true, fetchSize = PAGE_SIZE, postId }: UseRootCommentQueryOptions) => {
     return useInfiniteQuery({
         enabled: isAllowFetch,
         queryKey: ["comments", "list", "cursor-based", postId],

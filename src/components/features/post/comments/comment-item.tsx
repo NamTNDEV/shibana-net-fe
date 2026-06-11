@@ -19,9 +19,7 @@ function CommentItem({ comment, isLastSibling }: CommentItemProps) {
     const { authUser } = useAuthStore();
 
     const [xHeight, setXHeight] = useState(0);
-    const [replies, setReplies] = useState<CommentResponseDataType[]>([]);
     const [nodeRef, setNodeRef] = useState<HTMLDivElement | null>(null);
-    const [unfetchedReplyCounts, setUnfetchedReplyCounts] = useState(comment.replyCount);
 
     const [isEditingMode, setIsEditingMode] = useState(false);
 
@@ -49,12 +47,12 @@ function CommentItem({ comment, isLastSibling }: CommentItemProps) {
         isAllowFetch: false,
     })
 
+    const fetchedReplies = data?.pages.flatMap(page => page.payload) ?? [];
+    const unfetchedReplyCounts = Math.max(0, comment.replyCount - fetchedReplies.length);
+
     const handleClickViewReplies = async () => {
-        const res = await fetchNextPage();
-        if (res.data && res.data.pages) {
-            const newReplies = res.data.pages.flatMap(page => page.payload);
-            setReplies((prev) => [...prev, ...newReplies]);
-            setUnfetchedReplyCounts(prev => prev - newReplies.length);
+        if (!isFetchingNextPage) {
+            fetchNextPage();
         }
     }
 
@@ -121,7 +119,7 @@ function CommentItem({ comment, isLastSibling }: CommentItemProps) {
                     <div className="absolute w-[calc(100%-6px)] h-[calc(100%-50px)] translate-x-3.5 top-9 border-l-2 border-b-2 border-gray-200 rounded-bl-xl"></div>
                 )}
 
-                {replies.length > 0 && unfetchedReplyCounts === 0 && (
+                {fetchedReplies.length > 0 && unfetchedReplyCounts === 0 && (
                     <div className="absolute w-[calc(100%-8px)] h-[calc(100%-50px)] translate-x-3.5 top-9 border-l-2 border-b-2 border-gray-200 rounded-bl-xl"></div>
                 )}
             </div>
@@ -164,9 +162,9 @@ function CommentItem({ comment, isLastSibling }: CommentItemProps) {
                     )
                 }
                 {
-                    replies.length > 0 && (
+                    fetchedReplies.length > 0 && (
                         <CommentList
-                            commentList={replies}
+                            commentList={fetchedReplies}
                             siblingCommentCount={comment.replyCount}
                         />
                     )

@@ -1,6 +1,7 @@
 import { useCallback, useRef } from "react";
 import CommentList from "./comment-list";
-import { useCommentQuery } from "@/hooks/tanstacks/queries/use-comment-query";
+import { useRootCommentQuery } from "@/hooks/tanstacks/queries/use-comment-query";
+import CommentListSkeleton from "./skeleton/comment-list-skeleton";
 
 type CommentSectionProps = {
     postId: string;
@@ -15,7 +16,7 @@ function CommentSection({ postId }: CommentSectionProps) {
         hasNextPage,
         isFetchingNextPage,
         isLoading: isFirstFetching,
-    } = useCommentQuery({ postId });
+    } = useRootCommentQuery({ postId });
 
     const lastPostElementAppearedCallback = useCallback((node: HTMLDivElement | null) => {
         if (intersectionObserverRef.current) intersectionObserverRef.current.disconnect();
@@ -33,11 +34,7 @@ function CommentSection({ postId }: CommentSectionProps) {
     const commentList = data?.pages.flatMap(page => page.payload) ?? [];
 
     if (isFirstFetching) return (
-        <div className="w-full h-full flex flex-col items-center justify-center gap-5 p-6 mb-2">
-            <div className="w-full max-w-125 flex flex-col items-center">
-                <h3 className="text-xl font-semibold">Đang tải bình luận...</h3>
-            </div>
-        </div>
+        <CommentListSkeleton />
     )
 
     return (
