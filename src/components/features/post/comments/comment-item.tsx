@@ -8,6 +8,7 @@ import CommentUpdateForm from "./comment-update-form";
 import { useAuthStore } from "@/stores/auth.store";
 import { useEditCommentMutation } from "@/hooks/tanstacks/mutations/use-comment-mutation";
 import { useRepliesCommentQuery } from "@/hooks/tanstacks/queries/use-comment-query";
+import { LoaderCircle } from "lucide-react";
 
 
 type CommentItemProps = {
@@ -87,14 +88,6 @@ function CommentItem({ comment, isLastSibling }: CommentItemProps) {
     };
     // ---- o0o -----
 
-    if (isFirstFetching) return (
-        <div className="w-full h-full flex flex-col items-center justify-center gap-5 p-6 mb-2">
-            <div className="w-full max-w-125 flex flex-col items-center">
-                <h3 className="text-xl font-semibold">Đang tải bình luận...</h3>
-            </div>
-        </div>
-    )
-
     return (
         <div className="flex items-stretch gap-1.5 mr-4" ref={isLastSibling ? lastReplyRef : null}>
             <div className="relative shrink-0 mt-0.5 flex flex-col gap-1">
@@ -173,10 +166,13 @@ function CommentItem({ comment, isLastSibling }: CommentItemProps) {
                 {
                     unfetchedReplyCounts > 0 && (
                         <div
-                            className="ml-1.5 h-8 flex items-center cursor-pointer relative"
+                            className="ml-1.5 h-8 flex items-center cursor-pointer relative gap-1"
                             onClick={handleClickViewReplies}
                         >
                             <span className="text-sm font-semibold text-gray-500">Xem {unfetchedReplyCounts} phản hồi khác</span>
+                            {
+                                isFetchingNextPage && <LoaderCircle className="animate-spin size-4 text-gray-500" />
+                            }
                         </div>
                     )
                 }

@@ -4,7 +4,8 @@ import { CommentResponseDataType } from "@/types/post.type";
 import { CursorPaginationResponseDataType } from "@/types/response.type";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
-const PAGE_SIZE = 10;
+const ROOT_COMMENT_SIZE = 3;
+const REPLIES_COMMENT_SIZE = 1;
 
 type UseRootCommentQueryOptions = {
     isAllowFetch?: boolean
@@ -16,7 +17,7 @@ type UseRepliesCommentQueryOptions = Omit<UseRootCommentQueryOptions, "postId"> 
     commentId: string
 }
 
-export const useRootCommentQuery = ({ isAllowFetch = true, fetchSize = PAGE_SIZE, postId }: UseRootCommentQueryOptions) => {
+export const useRootCommentQuery = ({ isAllowFetch = true, fetchSize = ROOT_COMMENT_SIZE, postId }: UseRootCommentQueryOptions) => {
     return useInfiniteQuery({
         enabled: isAllowFetch,
         queryKey: ["comments", "list", "cursor-based", postId],
@@ -52,7 +53,7 @@ export const useRootCommentQuery = ({ isAllowFetch = true, fetchSize = PAGE_SIZE
     })
 }
 
-export const useRepliesCommentQuery = ({ isAllowFetch = true, fetchSize = PAGE_SIZE, commentId }: UseRepliesCommentQueryOptions) => {
+export const useRepliesCommentQuery = ({ isAllowFetch = true, fetchSize = REPLIES_COMMENT_SIZE, commentId }: UseRepliesCommentQueryOptions) => {
     return useInfiniteQuery({
         enabled: isAllowFetch,
         queryKey: ["comments", "replies", "cursor-based", commentId],

@@ -33,15 +33,21 @@ function CommentSection({ postId }: CommentSectionProps) {
 
     const commentList = data?.pages.flatMap(page => page.payload) ?? [];
 
-    if (isFirstFetching) return (
-        <CommentListSkeleton />
-    )
+    if (isFirstFetching) {
+        return (
+            <CommentListSkeleton />
+        )
+    }
 
     return (
         <div className="w-full h-full">
             <CommentList commentList={commentList} />
             {!isError && hasNextPage && (
                 <div ref={lastPostElementAppearedCallback} />
+            )}
+
+            {isFetchingNextPage && (
+                <CommentListSkeleton />
             )}
         </div>
     )
