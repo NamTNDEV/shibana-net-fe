@@ -30,7 +30,7 @@ export const useCreatePostMutation = (onCreateSuccess: () => void) => {
             const optimisticPost: PostResponseDataType = {
                 id: fakeId,
                 content: body.content,
-                commentCount: 0,
+                commentCounts: 0,
                 privacy: body.privacy,
                 createdAt: new Date().toISOString(),
                 author: {
@@ -92,7 +92,6 @@ export const useEditPostMutation = (onEditSuccess: () => void) => {
             onEditSuccess();
             await queryClient.cancelQueries({ queryKey: ["posts", "newsfeed", "cursor-based"] });
             const previousPosts = queryClient.getQueryData(["posts", "newsfeed", "cursor-based"]);
-
             queryClient.setQueryData(["posts", "newsfeed", "cursor-based"], (oldData: any) => {
                 if (!oldData || !oldData.pages) return oldData;
                 const newData = JSON.parse(JSON.stringify(oldData));

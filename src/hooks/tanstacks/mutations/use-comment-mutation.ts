@@ -2,7 +2,7 @@
 
 import { NEXT_SERVER_ROUTES } from "@/constants/api-route";
 import { useAuthStore } from "@/stores/auth.store";
-import { CommentResponseDataType, CreateRootCommentRequestBodyType, CreatePostRequestBodyType, EditPostRequestBodyType, PostResponseDataType, EditCommentRequestBodyType } from "@/types/post.type";
+import { CommentResponseDataType, CreateRootCommentRequestBodyType, CreatePostRequestBodyType, EditPostRequestBodyType, PostResponseDataType, EditCommentRequestBodyType, CreateReplyCommentRequestBodyType } from "@/types/post.type";
 import { ResponseDataType } from "@/types/response.type";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -78,6 +78,38 @@ export const useCreateRootCommentMutation = (onCreateSuccess: () => void) => {
         },
         onError: (err, newComment, context) => {
             queryClient.setQueryData(["comments", "list", "cursor-based", newComment.postId], context?.previousComments);
+        },
+    })
+}
+
+export const useCreateReplyCommentMutation = (onCreateSuccess: (newReply: CommentResponseDataType) => void) => {
+    return useMutation({
+        mutationFn: async ({ body, commentTargetId }: { body: CreateReplyCommentRequestBodyType, commentTargetId: string }) => {
+            const response = await fetch(NEXT_SERVER_ROUTES.COMMENTS.CREATE_REPLY_COMMENT
+                .replace(":commentId", commentTargetId),
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(body),
+                });
+
+            if (!response.ok) {
+                throw new Error("Lỗi khi tạo phản hồi");
+            }
+
+            return await response.json() as ResponseDataType<CommentResponseDataType>;
+        },
+        onSuccess: (data, newComment, context) => {
+            const createdComment = data.data;
+            onCreateSuccess(createdComment);
+            toast.success("Bình luận đã được đăng!", {
+                position: "bottom-right",
+                richColors: true,
+                duration: 3000,
+            })
+        },
+        onError: (err, newComment, context) => {
+            console.error("Lỗi tạo reply:", err);
         },
     })
 }

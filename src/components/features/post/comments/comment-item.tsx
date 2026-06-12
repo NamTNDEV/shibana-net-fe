@@ -1,5 +1,5 @@
 import ProfileAvatarContainer from "../../profile/header/avatar/profile-avatar-container";
-import { formatDate, getInitialName } from "@/lib/utils";
+import { cn, formatDate, getInitialName } from "@/lib/utils";
 import { useCallback, useEffect, useState } from "react";
 import CommentList from "./comment-list";
 import { CommentResponseDataType, EditCommentRequestBodyType } from "@/types/post.type";
@@ -9,32 +9,41 @@ import { useAuthStore } from "@/stores/auth.store";
 import { useEditCommentMutation } from "@/hooks/tanstacks/mutations/use-comment-mutation";
 import { useRepliesCommentQuery } from "@/hooks/tanstacks/queries/use-comment-query";
 import { LoaderCircle } from "lucide-react";
-
+import CommentInput from "./comment-input";
 
 type CommentItemProps = {
     comment: CommentResponseDataType;
     isLastSibling?: boolean;
 };
 
+const calculateSiblingCommentCount = (commentReplyCount: number, fetchedReplies: CommentResponseDataType[]) => {
+    const childFetchedReplyCount = fetchedReplies.reduce((acc, reply) => acc + reply.replyCount, 0);
+    return Math.max(0, commentReplyCount - childFetchedReplyCount);
+}
+
+const calculateUnfetchedReplyCounts = (commentReplyCount: number, fetchedReplies: CommentResponseDataType[]) => {
+    const fetchedReplyCount = fetchedReplies.length;
+    const childFetchedReplyCount = fetchedReplies.reduce((acc, reply) => acc + reply.replyCount, 0);
+    return Math.max(0, commentReplyCount - fetchedReplyCount - childFetchedReplyCount);
+}
+
+const makeFinalDisplayReplies = (deduplicatedFetchedReplies: CommentResponseDataType[], localNewReplies: CommentResponseDataType[]) => {
+    return [...deduplicatedFetchedReplies, ...localNewReplies];
+}
+
 function CommentItem({ comment, isLastSibling }: CommentItemProps) {
     const { authUser } = useAuthStore();
 
     const [xHeight, setXHeight] = useState(0);
+    const [inputHeight, setInputHeight] = useState(0);
+
     const [nodeRef, setNodeRef] = useState<HTMLDivElement | null>(null);
+    const [replyInputNodeRef, setReplyInputNodeRef] = useState<HTMLDivElement | null>(null);
 
     const [isEditingMode, setIsEditingMode] = useState(false);
+    const [isReplyingMode, setIsReplyingMode] = useState(false);
 
-    useEffect(() => {
-        if (!nodeRef) return;
-
-        const observer = new ResizeObserver(() => {
-            setXHeight(nodeRef.offsetHeight - 16);
-        });
-
-        observer.observe(nodeRef);
-
-        return () => observer.disconnect(); // ✅ Cleanup đúng cách
-    }, [nodeRef]);
+    const [localNewReplies, setLocalNewReplies] = useState<CommentResponseDataType[]>([]);
 
     const {
         data,
@@ -49,7 +58,10 @@ function CommentItem({ comment, isLastSibling }: CommentItemProps) {
     })
 
     const fetchedReplies = data?.pages.flatMap(page => page.payload) ?? [];
-    const unfetchedReplyCounts = Math.max(0, comment.replyCount - fetchedReplies.length);
+    const localReplyIdsSet = new Set(localNewReplies.map(reply => reply.id));
+    const deduplicatedFetchedReplies = fetchedReplies.filter((reply) => !localReplyIdsSet.has(reply.id));
+    const finalDisplayReplies = makeFinalDisplayReplies(deduplicatedFetchedReplies, localNewReplies);
+    const unfetchedReplyCounts = calculateUnfetchedReplyCounts(comment.replyCount, fetchedReplies);
 
     const handleClickViewReplies = async () => {
         if (!isFetchingNextPage) {
@@ -57,10 +69,42 @@ function CommentItem({ comment, isLastSibling }: CommentItemProps) {
         }
     }
 
-    const lastReplyRef = useCallback((node: HTMLDivElement | null) => {
-        if (isLastSibling) setNodeRef(node);
-    }, [isLastSibling]);
+    useEffect(() => {
+        if (!nodeRef) return;
 
+        const observer = new ResizeObserver(() => {
+            setXHeight(nodeRef.offsetHeight - 18);
+        });
+
+        observer.observe(nodeRef);
+
+        return () => observer.disconnect(); // ✅ Cleanup đúng cách
+    }, [nodeRef]);
+
+    useEffect(() => {
+        if (!replyInputNodeRef) return;
+
+        const observer = new ResizeObserver(() => {
+            setInputHeight(replyInputNodeRef.offsetHeight - 44);
+        });
+
+        observer.observe(replyInputNodeRef);
+
+        return () => observer.disconnect(); // ✅ Cleanup đúng cách
+    }, [replyInputNodeRef]);
+
+    const lastReplyCallbackRef = useCallback((node: HTMLDivElement | null) => {
+        if (isLastSibling || isReplyingMode) setNodeRef(node);
+    }, [isLastSibling, isReplyingMode]);
+
+    const replyInputCallbackRef = useCallback((node: HTMLDivElement | null) => {
+        if (isReplyingMode) setReplyInputNodeRef(node);
+    }, [isReplyingMode]);
+
+    const handleReplyCreatedSuccessfully = (newReply: CommentResponseDataType) => {
+        setIsReplyingMode(false);
+        setLocalNewReplies((prevReplies) => [...prevReplies, newReply]);
+    }
 
     /**
      * Edit Comment's content:
@@ -86,10 +130,10 @@ function CommentItem({ comment, isLastSibling }: CommentItemProps) {
         }
         editCommentMutate({ commentId: comment.id, postId: comment.postId, body });
     };
-    // ---- o0o -----
 
+    // ---- o0o -----
     return (
-        <div className="flex items-stretch gap-1.5 mr-4" ref={isLastSibling ? lastReplyRef : null}>
+        <div className="flex items-stretch gap-1.5 mr-4" ref={(isLastSibling || isReplyingMode) ? lastReplyCallbackRef : null}>
             <div className="relative shrink-0 mt-0.5 flex flex-col gap-1">
                 <div>
                     <ProfileAvatarContainer
@@ -112,7 +156,7 @@ function CommentItem({ comment, isLastSibling }: CommentItemProps) {
                     <div className="absolute w-[calc(100%-6px)] h-[calc(100%-50px)] translate-x-3.5 top-9 border-l-2 border-b-2 border-gray-200 rounded-bl-xl"></div>
                 )}
 
-                {fetchedReplies.length > 0 && unfetchedReplyCounts === 0 && (
+                {finalDisplayReplies.length > 0 && unfetchedReplyCounts === 0 && (
                     <div className="absolute w-[calc(100%-8px)] h-[calc(100%-50px)] translate-x-3.5 top-9 border-l-2 border-b-2 border-gray-200 rounded-bl-xl"></div>
                 )}
             </div>
@@ -149,16 +193,23 @@ function CommentItem({ comment, isLastSibling }: CommentItemProps) {
                             <div className="flex items-center gap-4 ml-1 text-[12px] text-gray-500 font-semibold">
                                 <span>{formatDate(comment.createdAt)}</span>
                                 <span>Thích</span>
-                                <span>Trả lời</span>
+                                <span
+                                    className="cursor-pointer hover:underline"
+                                    onClick={() => {
+                                        setIsReplyingMode(true)
+                                    }}
+                                >
+                                    Trả lời
+                                </span>
                             </div>
                         </>
                     )
                 }
                 {
-                    fetchedReplies.length > 0 && (
+                    finalDisplayReplies.length > 0 && (
                         <CommentList
-                            commentList={fetchedReplies}
-                            siblingCommentCount={comment.replyCount}
+                            commentList={finalDisplayReplies}
+                            siblingCommentCount={calculateSiblingCommentCount(comment.replyCount + localReplyIdsSet.size, finalDisplayReplies)}
                         />
                     )
                 }
@@ -166,9 +217,15 @@ function CommentItem({ comment, isLastSibling }: CommentItemProps) {
                 {
                     unfetchedReplyCounts > 0 && (
                         <div
-                            className="ml-1.5 h-8 flex items-center cursor-pointer relative gap-1"
+                            className={cn(
+                                "ml-1.5 h-8 flex items-center cursor-pointer relative gap-1",
+                                isReplyingMode ? "relative" : ""
+                            )}
                             onClick={handleClickViewReplies}
                         >
+                            {isReplyingMode && (
+                                <div className="absolute w-5.5 h-5 -left-7.5 -top-1 border-l-2 border-b-2 rounded-bl-xl border-gray-200 z-10" />
+                            )}
                             <span className="text-sm font-semibold text-gray-500">Xem {unfetchedReplyCounts} phản hồi khác</span>
                             {
                                 isFetchingNextPage && <LoaderCircle className="animate-spin size-4 text-gray-500" />
@@ -176,6 +233,35 @@ function CommentItem({ comment, isLastSibling }: CommentItemProps) {
                         </div>
                     )
                 }
+
+                {isReplyingMode && (
+                    <div className="relative flex items-start gap-1.5 mt-2 mb-1" ref={replyInputCallbackRef}>
+                        {xHeight > 0 && (
+                            <div
+                                className="absolute w-5.5 -left-6 border-l-2 border-gray-200 z-20"
+                                style={{
+                                    height: xHeight - inputHeight - 70,
+                                    top: -xHeight + inputHeight + 68
+                                }}
+                            />
+                        )}
+                        <div className="absolute w-5.5 h-5 -left-6 -top-1 border-l-2 border-b-2 rounded-bl-xl border-gray-200 z-10" />
+                        <CommentInput
+                            targetId={comment.id}
+                            type="reply"
+                            onReplyCreatedSuccessfully={handleReplyCreatedSuccessfully}
+                        />
+                        <div
+                            className="absolute w-6.5 bottom-2.5 -left-6 rounded-bl-xl border-l-2 border-b-2 border-white z-0"
+                            style={{ height: 72 }}
+                        />
+                        <div
+                            className="absolute w-6 -left-6 rounded-bl-xl border-l-2 border-b-2 border-white z-0"
+                            style={{ height: inputHeight }}
+                        />
+                    </div>
+                )}
+
                 {
                     isLastSibling && xHeight > 0 && (
                         <div
@@ -184,9 +270,10 @@ function CommentItem({ comment, isLastSibling }: CommentItemProps) {
                         />
                     )
                 }
+
             </div>
             {!isEditingMode && <div className="size-8 shrink-0 h-full" />}
-        </div>
+        </div >
     )
 }
 

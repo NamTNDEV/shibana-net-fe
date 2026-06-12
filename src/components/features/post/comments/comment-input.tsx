@@ -8,16 +8,20 @@ import { useAuthStore } from "@/stores/auth.store";
 import CommentInputSkeleton from "./skeleton/comment-input-skeleton";
 import { Send } from "lucide-react";
 import { useState } from "react";
-import { useCreateRootCommentMutation } from "@/hooks/tanstacks/mutations/use-comment-mutation";
-import { CreateRootCommentRequestBodyType } from "@/types/post.type";
+import { useCreateReplyCommentMutation, useCreateRootCommentMutation } from "@/hooks/tanstacks/mutations/use-comment-mutation";
+import { CommentResponseDataType, CreateReplyCommentRequestBodyType, CreateRootCommentRequestBodyType } from "@/types/post.type";
 
 type CommentInputProps = {
-    postId: string;
+    targetId: string;
+    type?: "root" | "reply";
+    onReplyCreatedSuccessfully?: (newReply: CommentResponseDataType) => void;
 }
 
-function CommentInput({ postId }: CommentInputProps) {
+function CommentInput({ targetId, type = "root", onReplyCreatedSuccessfully }: CommentInputProps) {
     const { authUser } = useAuthStore();
+
     const [commentContent, setCommentContent] = useState("");
+    const [isFocussing, setIsFocussing] = useState(false);
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (e.key === "Enter" && !e.shiftKey) {
@@ -33,21 +37,49 @@ function CommentInput({ postId }: CommentInputProps) {
         setCommentContent("");
     }
 
+    const handleCreateReplySuccess = (newReply: CommentResponseDataType) => {
+        if (!onReplyCreatedSuccessfully) {
+            console.warn("onReplyCreatedSuccessfully is not provided. The new reply will not be added to the local state.");
+            return;
+        }
+        setCommentContent("");
+        onReplyCreatedSuccessfully(newReply);
+    }
+
     const {
         mutate: createComment,
         isPending: isCreatingComment,
     } = useCreateRootCommentMutation(handleSuccess)
 
+    const {
+        mutate: createReplyComment,
+        isPending: isCreatingReplyComment,
+    } = useCreateReplyCommentMutation(handleCreateReplySuccess)
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (!commentContent.trim()) return;
-        const body: CreateRootCommentRequestBodyType = {
-            content: commentContent,
+        // --- Create Root Comment ---
+        if (type === "root") {
+            const body: CreateRootCommentRequestBodyType = {
+                content: commentContent,
+            }
+            createComment({
+                body,
+                postId: targetId,
+            })
         }
-        createComment({
-            body,
-            postId,
-        })
+
+        // --- Create Reply Comment ---
+        if (type === "reply") {
+            const body: CreateReplyCommentRequestBodyType = {
+                content: commentContent,
+            }
+            createReplyComment({
+                body,
+                commentTargetId: targetId,
+            })
+        }
     }
 
     if (!authUser) {
@@ -69,30 +101,43 @@ function CommentInput({ postId }: CommentInputProps) {
                 />
             </div>
 
-            <form className="w-full flex flex-col gap-0 bg-gray-100 rounded-lg" onSubmit={handleSubmit}>
+            <form
+                className={cn(
+                    "w-full flex flex-col gap-0 bg-gray-100 rounded-lg",
+                    !isFocussing && !commentContent && "rounded-full"
+                )}
+                onSubmit={handleSubmit}
+            >
                 <Textarea
                     placeholder="Viết bình luận..."
                     value={commentContent}
                     onChange={(e) => setCommentContent(e.target.value)}
+                    onFocus={() => setIsFocussing(true)}
+                    onBlur={() => setIsFocussing(false)}
                     onKeyDown={handleKeyDown}
                     className={cn(
-                        "w-full px-3 pt-2 m-0 resize-none flex-1 min-h-9 max-h-[50vh] overflow-auto",
+                        "h-4 w-full px-3 pt-2 m-0 resize-none flex-1 min-h-9 max-h-[50vh] overflow-auto",
                         "outline-none border-none shadow-none bg-gray-100",
                         "leading-normal break-all whitespace-pre-wrap text-left",
                         "focus:ring-0 focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0 focus:border",
-                        "scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent"
+                        "scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent",
+                        !isFocussing && !commentContent && "rounded-full bg-gray-100"
                     )}
-                    autoFocus
+                    autoFocus={type === "root"}
                 />
-                <div className="flex items-center gap-2 shrink-0 p-2 pt-0" >
-                    <Button
-                        type="submit"
-                        className="size-9 ml-auto rounded-full bg-transparent hover:bg-gray-200 text-primary disabled:text-gray-600"
-                        disabled={isCreatingComment || commentContent.trim() === ""}
-                    >
-                        <Send className="text-8" />
-                    </Button>
-                </div>
+                {
+                    (isFocussing || commentContent) && (
+                        <div className="flex items-center gap-2 shrink-0 p-2 pt-0" >
+                            <Button
+                                type="submit"
+                                className="size-9 ml-auto rounded-full bg-transparent hover:bg-gray-200 text-primary disabled:text-gray-600"
+                                disabled={isCreatingReplyComment || isCreatingComment || commentContent.trim() === ""}
+                            >
+                                <Send className="text-8" />
+                            </Button>
+                        </div>
+                    )
+                }
             </form>
         </div>
     )

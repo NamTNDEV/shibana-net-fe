@@ -43,6 +43,7 @@ export const API_ROUTES = {
         CREATE_COMMENT: "posts/:postId/comments",
         UPDATE_COMMENT: "posts/comments/:commentId",
         REPLY_COMMENT_LIST: "posts/comments/:commentId/replies?size=:size&cursor=:cursor",
+        CREATE_REPLY_COMMENT: "posts/comments/:commentId/replies",
     },
 } as const;
 
@@ -61,6 +62,7 @@ export const NEXT_SERVER_ROUTES = {
         CREATE_COMMENT: "/api/posts/:postId/comments",
         UPDATE_COMMENT: "/api/comments/:commentId",
         REPLY_COMMENT_LIST: "/api/comments/:commentId/replies?size=:size&cursor=:cursor",
+        CREATE_REPLY_COMMENT: "/api/comments/:commentId/replies",
     },
     USERS: {
         MY_ACCOUNT: "/api/users/my-account",

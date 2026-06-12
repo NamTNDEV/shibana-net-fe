@@ -23,7 +23,7 @@ export type PostResponseDataType = {
     author: AuthorResponseDataType;
     privacy: PrivacyType;
     createdAt: string;
-    commentCount: number;
+    commentCounts: number;
 }
 
 // Request
@@ -61,4 +61,8 @@ export type CreateRootCommentRequestBodyType = {
 
 export type EditCommentRequestBodyType = {
     newContent: string;
+}
+
+export type CreateReplyCommentRequestBodyType = {
+    content: string;
 }

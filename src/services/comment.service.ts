@@ -1,6 +1,6 @@
 import { API_ROUTES } from "@/constants/api-route";
 import { httpClientV02 } from "@/lib/http-client-v02";
-import { CommentResponseDataType, CreateRootCommentRequestBodyType, EditCommentRequestBodyType } from "@/types/post.type";
+import { CommentResponseDataType, CreateReplyCommentRequestBodyType, CreateRootCommentRequestBodyType, EditCommentRequestBodyType } from "@/types/post.type";
 import { CursorPaginationResponseDataType } from "@/types/response.type";
 
 export const commentService = {
@@ -33,4 +33,11 @@ export const commentService = {
         );
         return response;
     },
+    createReplyComment: async (body: CreateReplyCommentRequestBodyType, commentId: string) => {
+        console.log("Creating reply comment with body:", body, "for commentId:", commentId);
+        const response = await httpClientV02.post<CommentResponseDataType>(API_ROUTES.COMMENTS.CREATE_REPLY_COMMENT.replace(":commentId", commentId), {
+            body
+        });
+        return response;
+    }
 }

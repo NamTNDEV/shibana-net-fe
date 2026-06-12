@@ -25,7 +25,7 @@ export default function PostItem({ displayMode, post }: PostItemProps) {
 
             <PostActions
                 postId={post.id}
-                commentCount={post.commentCount}
+                commentCount={post.commentCounts}
                 displayMode={displayMode}
             />
         </div>
