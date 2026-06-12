@@ -247,7 +247,8 @@ function CommentItem({ comment, isLastSibling }: CommentItemProps) {
                         )}
                         <div className="absolute w-5.5 h-5 -left-6 -top-1 border-l-2 border-b-2 rounded-bl-xl border-gray-200 z-10" />
                         <CommentInput
-                            targetId={comment.id}
+                            postId={comment.postId}
+                            replyTargetId={comment.id}
                             type="reply"
                             onReplyCreatedSuccessfully={handleReplyCreatedSuccessfully}
                         />

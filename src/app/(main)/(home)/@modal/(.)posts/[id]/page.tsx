@@ -11,7 +11,9 @@ async function PostDetailParallelPage({
     const { id } = await params;
     const response = await postService.getPostDetailById(id);
     return (
-        <PostDetailDialog post={response} />
+        <>
+            <PostDetailDialog post={response} />
+        </>
     );
 }
 

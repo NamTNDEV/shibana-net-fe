@@ -63,7 +63,7 @@ export default function PostDetailDialog({ post }: PostDetailDialogProps) {
                 {/* --- FOOTER --- */}
                 <DialogFooter className="rounded-b-lg p-4 pt-3 border-t border-gray-300">
                     <div className="w-full">
-                        {post && <CommentInput targetId={post.id} />}
+                        {post && <CommentInput postId={post.id} />}
                         {!post && (
                             <CommentInputSkeleton />
                         )}

@@ -10,14 +10,17 @@ import { Send } from "lucide-react";
 import { useState } from "react";
 import { useCreateReplyCommentMutation, useCreateRootCommentMutation } from "@/hooks/tanstacks/mutations/use-comment-mutation";
 import { CommentResponseDataType, CreateReplyCommentRequestBodyType, CreateRootCommentRequestBodyType } from "@/types/post.type";
+import { usePostStatsStore } from "@/stores/post-stats.store";
 
 type CommentInputProps = {
-    targetId: string;
+    postId: string;
+    replyTargetId?: string;
     type?: "root" | "reply";
     onReplyCreatedSuccessfully?: (newReply: CommentResponseDataType) => void;
 }
 
-function CommentInput({ targetId, type = "root", onReplyCreatedSuccessfully }: CommentInputProps) {
+function CommentInput({ postId, replyTargetId, type = "root", onReplyCreatedSuccessfully }: CommentInputProps) {
+    const { adjustCommentCount } = usePostStatsStore();
     const { authUser } = useAuthStore();
 
     const [commentContent, setCommentContent] = useState("");
@@ -35,6 +38,7 @@ function CommentInput({ targetId, type = "root", onReplyCreatedSuccessfully }: C
 
     const handleSuccess = () => {
         setCommentContent("");
+        adjustCommentCount(postId, 1);
     }
 
     const handleCreateReplySuccess = (newReply: CommentResponseDataType) => {
@@ -42,6 +46,7 @@ function CommentInput({ targetId, type = "root", onReplyCreatedSuccessfully }: C
             console.warn("onReplyCreatedSuccessfully is not provided. The new reply will not be added to the local state.");
             return;
         }
+        adjustCommentCount(postId, 1);
         setCommentContent("");
         onReplyCreatedSuccessfully(newReply);
     }
@@ -66,18 +71,19 @@ function CommentInput({ targetId, type = "root", onReplyCreatedSuccessfully }: C
             }
             createComment({
                 body,
-                postId: targetId,
+                postId: postId,
             })
         }
 
         // --- Create Reply Comment ---
         if (type === "reply") {
+            if (!replyTargetId) return console.error("replyTargetId is required when type is 'reply'");
             const body: CreateReplyCommentRequestBodyType = {
                 content: commentContent,
             }
             createReplyComment({
                 body,
-                commentTargetId: targetId,
+                commentTargetId: replyTargetId,
             })
         }
     }
