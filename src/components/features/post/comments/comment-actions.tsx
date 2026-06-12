@@ -1,14 +1,14 @@
 'use client'
 import { Ellipsis } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { SetStateAction } from "react";
 
 type CommentActionsProps = {
     onEditingModeStart: () => void;
+    onDeleteProcess: () => void;
     isOwner?: boolean;
 }
 
-function CommentActions({ onEditingModeStart, isOwner }: CommentActionsProps) {
+function CommentActions({ onEditingModeStart, onDeleteProcess, isOwner }: CommentActionsProps) {
     return (
         <DropdownMenu modal={true}>
             <DropdownMenuTrigger asChild>
@@ -33,6 +33,7 @@ function CommentActions({ onEditingModeStart, isOwner }: CommentActionsProps) {
                             {/* Delete */}
                             <DropdownMenuItem
                                 className="flex items-center gap-3 p-2 cursor-pointer hover:bg-gray-200!"
+                                onClick={onDeleteProcess}
                             >
                                 <div>
                                     <h3 className="text-base font-medium">Xoá</h3>

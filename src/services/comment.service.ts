@@ -23,6 +23,10 @@ export const commentService = {
         const response = await httpClientV02.put<CommentResponseDataType>(API_ROUTES.COMMENTS.UPDATE_COMMENT.replace(":commentId", id), { body });
         return response;
     },
+    deleteComment: async (id: string) => {
+        const response = await httpClientV02.delete<void>(API_ROUTES.COMMENTS.DELETE_COMMENT.replace(":commentId", id));
+        return response;
+    },
 
     // Comment's Reply:
     getRepliesCommentList: async (commentId: string, size: number = 10, cursor: string | null = null) => {

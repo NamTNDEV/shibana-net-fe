@@ -6,10 +6,11 @@ import { CommentResponseDataType, EditCommentRequestBodyType } from "@/types/pos
 import CommentActions from "./comment-actions";
 import CommentUpdateForm from "./comment-update-form";
 import { useAuthStore } from "@/stores/auth.store";
-import { useEditCommentMutation } from "@/hooks/tanstacks/mutations/use-comment-mutation";
+import { useDeleteCommentMutation, useEditCommentMutation } from "@/hooks/tanstacks/mutations/use-comment-mutation";
 import { useRepliesCommentQuery } from "@/hooks/tanstacks/queries/use-comment-query";
 import { LoaderCircle } from "lucide-react";
 import CommentInput from "./comment-input";
+import { usePostStatsStore } from "@/stores/post-stats.store";
 
 type CommentItemProps = {
     comment: CommentResponseDataType;
@@ -32,6 +33,7 @@ const makeFinalDisplayReplies = (deduplicatedFetchedReplies: CommentResponseData
 }
 
 function CommentItem({ comment, isLastSibling }: CommentItemProps) {
+    const { adjustCommentCount } = usePostStatsStore()
     const { authUser } = useAuthStore();
 
     const [xHeight, setXHeight] = useState(0);
@@ -101,11 +103,6 @@ function CommentItem({ comment, isLastSibling }: CommentItemProps) {
         if (isReplyingMode) setReplyInputNodeRef(node);
     }, [isReplyingMode]);
 
-    const handleReplyCreatedSuccessfully = (newReply: CommentResponseDataType) => {
-        setIsReplyingMode(false);
-        setLocalNewReplies((prevReplies) => [...prevReplies, newReply]);
-    }
-
     /**
      * Edit Comment's content:
      */
@@ -130,8 +127,37 @@ function CommentItem({ comment, isLastSibling }: CommentItemProps) {
         }
         editCommentMutate({ commentId: comment.id, postId: comment.postId, body });
     };
-
     // ---- o0o -----
+
+    /**
+         * Delete Comment's content:
+         */
+    const handleDeleteSuccess = (deletedCommentId: string) => {
+        setLocalNewReplies(prev => prev.filter(c => c.id !== deletedCommentId));
+        const estimatedDeletedCount = 1 + fetchedReplies.length;
+        adjustCommentCount(comment.postId, -estimatedDeletedCount);
+    }
+
+    const targetQueryKey = comment.level === 0
+        ? ["comments", "list", "cursor-based", comment.postId]
+        : ["comments", "replies", "cursor-based", comment.parentId];
+
+    const {
+        mutate: deleteCommentMutate,
+        isPending: isDeletingComment,
+    } = useDeleteCommentMutation({ onDeleteSuccess: handleDeleteSuccess, targetQueryKey });
+
+
+    const handleDeleteSubmit = () => {
+        deleteCommentMutate({ commentId: comment.id });
+    };
+
+    const handleReplyCreatedSuccessfully = (newReply: CommentResponseDataType) => {
+        setIsReplyingMode(false);
+        setLocalNewReplies((prevReplies) => [...prevReplies, newReply]);
+    }
+    // ---- o0o -----
+
     return (
         <div className="flex items-stretch gap-1.5 mr-4" ref={(isLastSibling || isReplyingMode) ? lastReplyCallbackRef : null}>
             <div className="relative shrink-0 mt-0.5 flex flex-col gap-1">
@@ -188,20 +214,33 @@ function CommentItem({ comment, isLastSibling }: CommentItemProps) {
                                 <CommentActions
                                     isOwner={authUser?.userId === comment.author.id}
                                     onEditingModeStart={() => handleEditingModeChange(true)}
+                                    onDeleteProcess={handleDeleteSubmit}
                                 />
                             </div>
-                            <div className="flex items-center gap-4 ml-1 text-[12px] text-gray-500 font-semibold">
-                                <span>{formatDate(comment.createdAt)}</span>
-                                <span>Thích</span>
-                                <span
-                                    className="cursor-pointer hover:underline"
-                                    onClick={() => {
-                                        setIsReplyingMode(true)
-                                    }}
-                                >
-                                    Trả lời
-                                </span>
-                            </div>
+                            {!isEditingComment ?
+                                (<div className="flex items-center gap-4 ml-1 text-[12px] text-gray-500 font-semibold">
+                                    <span>{formatDate(comment.createdAt)}</span>
+                                    <span>Thích</span>
+                                    <span
+                                        className="cursor-pointer hover:underline"
+                                        onClick={() => {
+                                            setIsReplyingMode(true)
+                                        }}
+                                    >
+                                        Trả lời
+                                    </span>
+                                    {comment.isEdited && (
+                                        <span
+                                            className="cursor-pointer hover:underline"
+                                        >
+                                            Đã chỉnh sửa
+                                        </span>
+                                    )}
+                                </div>) :
+                                (<div className="flex items-center gap-4 ml-1 text-[12px] text-gray-500 font-semibold">
+                                    <span>Đang cập nhật...</span>
+                                </div>)
+                            }
                         </>
                     )
                 }

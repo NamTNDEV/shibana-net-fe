@@ -26,3 +26,23 @@ export async function PUT(request: Request, { params }: RouteParams) {
         return NextResponse.json({ code: 500, message: "Lỗi hệ thống, vui lòng thử lại sau." }, { status: 500 });
     }
 }
+
+export async function DELETE(request: Request, { params }: RouteParams) {
+    const { commentId } = await params;
+    try {
+        const response = await commentService.deleteComment(commentId);
+
+        return NextResponse.json(
+            {
+                code: response.code,
+                message: response.message,
+                data: response.data,
+            }
+        )
+    } catch (error) {
+        if (error instanceof HttpError) {
+            return NextResponse.json(error.payload, { status: error.status });
+        }
+        return NextResponse.json({ code: 500, message: "Lỗi hệ thống, vui lòng thử lại sau." }, { status: 500 });
+    }
+}

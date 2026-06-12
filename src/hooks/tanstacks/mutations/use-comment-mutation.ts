@@ -3,8 +3,8 @@
 import { NEXT_SERVER_ROUTES } from "@/constants/api-route";
 import { useAuthStore } from "@/stores/auth.store";
 import { CommentResponseDataType, CreateRootCommentRequestBodyType, CreatePostRequestBodyType, EditPostRequestBodyType, PostResponseDataType, EditCommentRequestBodyType, CreateReplyCommentRequestBodyType } from "@/types/post.type";
-import { ResponseDataType } from "@/types/response.type";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { CursorPaginationResponseDataType, ResponseDataType } from "@/types/response.type";
+import { InfiniteData, QueryKey, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 export const useCreateRootCommentMutation = (onCreateSuccess: () => void) => {
@@ -160,6 +160,66 @@ export const useEditCommentMutation = (onEditSuccess: () => void) => {
         onError: (err, newComment, context) => {
             console.error("❌ Failed to edit comment:", err);
             queryClient.setQueryData(["comments", "list", "cursor-based", newComment.postId], context?.previousComments);
+        },
+    })
+}
+
+type UseDeleteCommentOptions = {
+    onDeleteSuccess?: (deletedCommentId: string) => void;
+    targetQueryKey: QueryKey;
+};
+
+export const useDeleteCommentMutation = ({ onDeleteSuccess, targetQueryKey }: UseDeleteCommentOptions) => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async ({ commentId }: { commentId: string }) => {
+            const response = await fetch(NEXT_SERVER_ROUTES.COMMENTS.DELETE_COMMENT
+                .replace(":commentId", commentId),
+                {
+                    method: "DELETE",
+                });
+
+            if (!response.ok) {
+                throw new Error("Lỗi khi xoá bình luận");
+            }
+
+            return commentId;
+        },
+        onMutate: async ({ commentId }) => {
+            // Dừng mọi thao tác fetch đang dở dang
+            await queryClient.cancelQueries({ queryKey: targetQueryKey });
+
+            // Chụp lại data cũ để lát lỡ lỗi thì cứu nét
+            const previousData = queryClient.getQueryData<
+                InfiniteData<CursorPaginationResponseDataType<CommentResponseDataType[]>>
+            >(targetQueryKey);
+
+            // Lọc bỏ commentId ra khỏi Cache
+            queryClient.setQueryData<InfiniteData<CursorPaginationResponseDataType<CommentResponseDataType[]>>>(
+                targetQueryKey,
+                (oldData) => {
+                    if (!oldData || !oldData.pages) return oldData;
+                    return {
+                        ...oldData,
+                        pages: oldData.pages.map((page) => ({
+                            ...page,
+                            payload: page.payload.filter((c) => c.id !== commentId), // ✂️ Cắt bỏ!
+                        })),
+                    };
+                }
+            );
+
+            return { previousData };
+        },
+        onSuccess: (deletedCommentId) => {
+            if (onDeleteSuccess) {
+                onDeleteSuccess(deletedCommentId);
+            }
+            toast.success("Bình luận đã được xóa!", { position: "bottom-right", richColors: true, duration: 3000 });
+        },
+        onError: (err, newComment, context) => {
+            console.error("❌ Failed to delete comment:", err);
         },
     })
 }

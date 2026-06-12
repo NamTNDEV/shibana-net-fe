@@ -10,10 +10,11 @@ type CommentListPropsType = {
     commentList: CommentResponseDataType[];
     siblingCommentCount?: number;
     lastSiblingItemRef?: React.RefObject<HTMLDivElement | null>;
+    onChildDeleted?: (deletedCount: number) => void; // 🚀 THÊM CÁI NÀY
 };
 
 
-function CommentList({ commentList, siblingCommentCount }: CommentListPropsType) {
+function CommentList({ commentList, siblingCommentCount, onChildDeleted }: CommentListPropsType) {
     const isAncestorCmtList = commentList.some(c => c.level === 0);
 
     if (commentList.length === 0) {
