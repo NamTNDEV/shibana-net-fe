@@ -114,7 +114,12 @@ export const useCreateReplyCommentMutation = (onCreateSuccess: (newReply: Commen
     })
 }
 
-export const useEditCommentMutation = (onEditSuccess: () => void) => {
+type UseEditCommentOptionsType = {
+    onEditSuccess: () => void;
+    targetQueryKey: QueryKey;
+}
+
+export const useEditCommentMutation = ({ onEditSuccess, targetQueryKey }: UseEditCommentOptionsType) => {
     const queryClient = useQueryClient();
 
     return useMutation({
@@ -127,9 +132,9 @@ export const useEditCommentMutation = (onEditSuccess: () => void) => {
         },
         onMutate: async ({ body, commentId, postId }: { body: EditCommentRequestBodyType, commentId: string, postId: string }) => {
             onEditSuccess();
-            await queryClient.cancelQueries({ queryKey: ["comments", "list", "cursor-based", postId] });
-            const previousComments = queryClient.getQueryData(["comments", "list", "cursor-based", postId]);
-            queryClient.setQueryData(["comments", "list", "cursor-based", postId], (oldData: any) => {
+            await queryClient.cancelQueries({ queryKey: targetQueryKey });
+            const previousComments = queryClient.getQueryData(targetQueryKey);
+            queryClient.setQueryData(targetQueryKey, (oldData: any) => {
                 if (!oldData || !oldData.pages) return oldData;
                 const newData = JSON.parse(JSON.stringify(oldData));
 
@@ -159,7 +164,7 @@ export const useEditCommentMutation = (onEditSuccess: () => void) => {
         },
         onError: (err, newComment, context) => {
             console.error("❌ Failed to edit comment:", err);
-            queryClient.setQueryData(["comments", "list", "cursor-based", newComment.postId], context?.previousComments);
+            queryClient.setQueryData(targetQueryKey, context?.previousComments);
         },
     })
 }

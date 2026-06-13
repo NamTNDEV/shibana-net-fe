@@ -103,6 +103,10 @@ function CommentItem({ comment, isLastSibling }: CommentItemProps) {
         if (isReplyingMode) setReplyInputNodeRef(node);
     }, [isReplyingMode]);
 
+    const targetQueryKey = comment.level === 0
+        ? ["comments", "list", "cursor-based", comment.postId]
+        : ["comments", "replies", "cursor-based", comment.parentId];
+
     /**
      * Edit Comment's content:
      */
@@ -117,7 +121,7 @@ function CommentItem({ comment, isLastSibling }: CommentItemProps) {
     const {
         mutate: editCommentMutate,
         isPending: isEditingComment,
-    } = useEditCommentMutation(handleEditingSuccess)
+    } = useEditCommentMutation({ onEditSuccess: handleEditingSuccess, targetQueryKey });
 
 
     const handleEditingSubmit = (e: React.FormEvent, newContent: string) => {
@@ -137,10 +141,6 @@ function CommentItem({ comment, isLastSibling }: CommentItemProps) {
         const estimatedDeletedCount = 1 + fetchedReplies.length;
         adjustCommentCount(comment.postId, -estimatedDeletedCount);
     }
-
-    const targetQueryKey = comment.level === 0
-        ? ["comments", "list", "cursor-based", comment.postId]
-        : ["comments", "replies", "cursor-based", comment.parentId];
 
     const {
         mutate: deleteCommentMutate,
