@@ -3,11 +3,12 @@
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/constants/routes";
 import { Button } from "@/components/ui/button";
-import { formatDate, getInitialName } from "@/lib/utils";
+import { getInitialName } from "@/lib/utils";
 import { PostResponseDataType } from "@/types/post.type";
 import { HeaderActionsButton } from "./header-actions";
 import ProfileAvatarContainer from "@/components/features/profile/header/avatar/profile-avatar-container";
 import { getPrivacyIconByType } from "@/components/features/profile/about/about.utils";
+import { formatSocialTimeCustom } from "@/lib/time";
 
 export type PostHeaderProps = {
     post: PostResponseDataType
@@ -43,7 +44,7 @@ export default function PostHeader({ post }: PostHeaderProps) {
                 <div className="flex flex-col">
                     <span className="text-[15px] font-semibold cursor-pointer hover:underline" onClick={handleProfileAvatarClick}>{`${author.lastName} ${author.firstName}`}</span>
                     <div className="flex items-center gap-1">
-                        <span className="text-xs text-gray-500 hover:cursor-pointer hover:underline">{formatDate(createdAt, "dd/MM/yyyy HH:mm")}</span>
+                        <span className="text-xs text-gray-500 hover:cursor-pointer hover:underline">{formatSocialTimeCustom(createdAt)}</span>
                         <span className="text-[10px] text-gray-500">•</span>
                         <span className="text-xs text-gray-500">{getPrivacyIconByType(privacy, "size-3")}</span>
                     </div>

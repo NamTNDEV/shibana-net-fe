@@ -11,6 +11,7 @@ import { useRepliesCommentQuery } from "@/hooks/tanstacks/queries/use-comment-qu
 import { LoaderCircle } from "lucide-react";
 import CommentInput from "./comment-input";
 import { usePostStatsStore } from "@/stores/post-stats.store";
+import { formatSocialTimeCustom } from "@/lib/time";
 
 type CommentItemProps = {
     comment: CommentResponseDataType;
@@ -241,7 +242,7 @@ function CommentItem({ comment, isLastSibling, onChildDeleted, onChildEdited }: 
                             </div>
                             {!isEditingComment ?
                                 (<div className="flex items-center gap-4 ml-1 text-[12px] text-gray-500 font-semibold">
-                                    <span>{formatDate(comment.createdAt)}</span>
+                                    <span>{formatSocialTimeCustom(comment.createdAt)}</span>
                                     <span>Thích</span>
                                     <span
                                         className="cursor-pointer hover:underline"
