@@ -15,6 +15,7 @@ import { usePostStatsStore } from "@/stores/post-stats.store";
 type CommentItemProps = {
     comment: CommentResponseDataType;
     isLastSibling?: boolean;
+    onChildDeleted?: (deletedCount: number) => void;
 };
 
 const calculateSiblingCommentCount = (commentReplyCount: number, fetchedReplies: CommentResponseDataType[]) => {
@@ -32,7 +33,7 @@ const makeFinalDisplayReplies = (deduplicatedFetchedReplies: CommentResponseData
     return [...deduplicatedFetchedReplies, ...localNewReplies];
 }
 
-function CommentItem({ comment, isLastSibling }: CommentItemProps) {
+function CommentItem({ comment, isLastSibling, onChildDeleted }: CommentItemProps) {
     const { adjustCommentCount } = usePostStatsStore()
     const { authUser } = useAuthStore();
 
@@ -46,6 +47,7 @@ function CommentItem({ comment, isLastSibling }: CommentItemProps) {
     const [isReplyingMode, setIsReplyingMode] = useState(false);
 
     const [localNewReplies, setLocalNewReplies] = useState<CommentResponseDataType[]>([]);
+    const [localReplyCount, setLocalReplyCount] = useState(comment.replyCount);
 
     const {
         data,
@@ -63,13 +65,17 @@ function CommentItem({ comment, isLastSibling }: CommentItemProps) {
     const localReplyIdsSet = new Set(localNewReplies.map(reply => reply.id));
     const deduplicatedFetchedReplies = fetchedReplies.filter((reply) => !localReplyIdsSet.has(reply.id));
     const finalDisplayReplies = makeFinalDisplayReplies(deduplicatedFetchedReplies, localNewReplies);
-    const unfetchedReplyCounts = calculateUnfetchedReplyCounts(comment.replyCount, fetchedReplies);
+    const unfetchedReplyCounts = calculateUnfetchedReplyCounts(localReplyCount, fetchedReplies);
 
     const handleClickViewReplies = async () => {
         if (!isFetchingNextPage) {
             fetchNextPage();
         }
     }
+
+    // useEffect(() => {
+    //     setLocalReplyCount(comment.replyCount);
+    // }, [comment.replyCount]);
 
     useEffect(() => {
         if (!nodeRef) return;
@@ -80,7 +86,7 @@ function CommentItem({ comment, isLastSibling }: CommentItemProps) {
 
         observer.observe(nodeRef);
 
-        return () => observer.disconnect(); // ✅ Cleanup đúng cách
+        return () => observer.disconnect();
     }, [nodeRef]);
 
     useEffect(() => {
@@ -92,7 +98,7 @@ function CommentItem({ comment, isLastSibling }: CommentItemProps) {
 
         observer.observe(replyInputNodeRef);
 
-        return () => observer.disconnect(); // ✅ Cleanup đúng cách
+        return () => observer.disconnect();
     }, [replyInputNodeRef]);
 
     const lastReplyCallbackRef = useCallback((node: HTMLDivElement | null) => {
@@ -131,24 +137,30 @@ function CommentItem({ comment, isLastSibling }: CommentItemProps) {
         }
         editCommentMutate({ commentId: comment.id, postId: comment.postId, body });
     };
-    // ---- o0o -----
 
     /**
-         * Delete Comment's content:
-         */
-    const handleDeleteSuccess = (deletedCommentId: string) => {
-        setLocalNewReplies(prev => prev.filter(c => c.id !== deletedCommentId));
-        const estimatedDeletedCount = 1 + fetchedReplies.length;
-        adjustCommentCount(comment.postId, -estimatedDeletedCount);
-    }
+        * Delete Comment's content:
+    */
+    const handleChildDeleted = useCallback((deletedCount: number) => {
+        setLocalReplyCount(prev => Math.max(0, prev - deletedCount));
+        if (onChildDeleted) {
+            onChildDeleted(deletedCount);
+        }
+    }, [onChildDeleted]);
 
     const {
         mutate: deleteCommentMutate,
         isPending: isDeletingComment,
-    } = useDeleteCommentMutation({ onDeleteSuccess: handleDeleteSuccess, targetQueryKey });
+    } = useDeleteCommentMutation({ targetQueryKey });
 
 
     const handleDeleteSubmit = () => {
+        const actualDeletedCount = 1 + localReplyCount;
+        setLocalNewReplies(prev => prev.filter(c => c.id !== comment.id));
+        adjustCommentCount(comment.postId, -actualDeletedCount);
+        if (onChildDeleted) {
+            onChildDeleted(actualDeletedCount);
+        }
         deleteCommentMutate({ commentId: comment.id });
     };
 
@@ -156,7 +168,6 @@ function CommentItem({ comment, isLastSibling }: CommentItemProps) {
         setIsReplyingMode(false);
         setLocalNewReplies((prevReplies) => [...prevReplies, newReply]);
     }
-    // ---- o0o -----
 
     return (
         <div className="flex items-stretch gap-1.5 mr-4" ref={(isLastSibling || isReplyingMode) ? lastReplyCallbackRef : null}>
@@ -248,7 +259,8 @@ function CommentItem({ comment, isLastSibling }: CommentItemProps) {
                     finalDisplayReplies.length > 0 && (
                         <CommentList
                             commentList={finalDisplayReplies}
-                            siblingCommentCount={calculateSiblingCommentCount(comment.replyCount + localReplyIdsSet.size, finalDisplayReplies)}
+                            hasMoreReplies={unfetchedReplyCounts > 0}
+                            onChildDeleted={handleChildDeleted}
                         />
                     )
                 }

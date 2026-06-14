@@ -8,13 +8,13 @@ import { FileText } from "lucide-react";
 
 type CommentListPropsType = {
     commentList: CommentResponseDataType[];
-    siblingCommentCount?: number;
+    hasMoreReplies?: boolean;
     lastSiblingItemRef?: React.RefObject<HTMLDivElement | null>;
-    onChildDeleted?: (deletedCount: number) => void; // 🚀 THÊM CÁI NÀY
+    onChildDeleted?: (deletedCount: number) => void;
 };
 
 
-function CommentList({ commentList, siblingCommentCount, onChildDeleted }: CommentListPropsType) {
+function CommentList({ commentList, hasMoreReplies = false, onChildDeleted }: CommentListPropsType) {
     const isAncestorCmtList = commentList.some(c => c.level === 0);
 
     if (commentList.length === 0) {
@@ -42,7 +42,8 @@ function CommentList({ commentList, siblingCommentCount, onChildDeleted }: Comme
                     <Fragment key={comment.id}>
                         <CommentItem
                             comment={comment}
-                            isLastSibling={siblingCommentCount === index + 1}
+                            isLastSibling={index === commentList.length - 1 && !hasMoreReplies}
+                            onChildDeleted={onChildDeleted}
                         />
                     </Fragment>
                 )
