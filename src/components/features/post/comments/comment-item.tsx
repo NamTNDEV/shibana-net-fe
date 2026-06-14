@@ -15,13 +15,9 @@ import { usePostStatsStore } from "@/stores/post-stats.store";
 type CommentItemProps = {
     comment: CommentResponseDataType;
     isLastSibling?: boolean;
-    onChildDeleted?: (deletedCount: number) => void;
+    onChildDeleted?: (deletedCount: number, deletedCommentId: string) => void;
+    onChildEdited?: (editedCommentId: string, newContent: string) => void;
 };
-
-const calculateSiblingCommentCount = (commentReplyCount: number, fetchedReplies: CommentResponseDataType[]) => {
-    const childFetchedReplyCount = fetchedReplies.reduce((acc, reply) => acc + reply.replyCount, 0);
-    return Math.max(0, commentReplyCount - childFetchedReplyCount);
-}
 
 const calculateUnfetchedReplyCounts = (commentReplyCount: number, fetchedReplies: CommentResponseDataType[]) => {
     const fetchedReplyCount = fetchedReplies.length;
@@ -33,7 +29,7 @@ const makeFinalDisplayReplies = (deduplicatedFetchedReplies: CommentResponseData
     return [...deduplicatedFetchedReplies, ...localNewReplies];
 }
 
-function CommentItem({ comment, isLastSibling, onChildDeleted }: CommentItemProps) {
+function CommentItem({ comment, isLastSibling, onChildDeleted, onChildEdited }: CommentItemProps) {
     const { adjustCommentCount } = usePostStatsStore()
     const { authUser } = useAuthStore();
 
@@ -72,10 +68,6 @@ function CommentItem({ comment, isLastSibling, onChildDeleted }: CommentItemProp
             fetchNextPage();
         }
     }
-
-    // useEffect(() => {
-    //     setLocalReplyCount(comment.replyCount);
-    // }, [comment.replyCount]);
 
     useEffect(() => {
         if (!nodeRef) return;
@@ -116,6 +108,19 @@ function CommentItem({ comment, isLastSibling, onChildDeleted }: CommentItemProp
     /**
      * Edit Comment's content:
      */
+
+    const handleChildEdited = useCallback((editedCommentId: string, newContent: string) => {
+        setLocalNewReplies(prev => prev.map(c =>
+            c.id === editedCommentId
+                ? { ...c, content: newContent, isEdited: true }
+                : c
+        ));
+
+        if (onChildEdited) {
+            onChildEdited(editedCommentId, newContent);
+        }
+    }, [onChildEdited]);
+
     const handleEditingSuccess = () => {
         setIsEditingMode(false);
     }
@@ -129,22 +134,28 @@ function CommentItem({ comment, isLastSibling, onChildDeleted }: CommentItemProp
         isPending: isEditingComment,
     } = useEditCommentMutation({ onEditSuccess: handleEditingSuccess, targetQueryKey });
 
-
     const handleEditingSubmit = (e: React.FormEvent, newContent: string) => {
         e.preventDefault();
-        const body: EditCommentRequestBodyType = {
-            newContent: newContent.trim(),
-        }
+        const trimmedContent = newContent.trim();
+        const body: EditCommentRequestBodyType = { newContent: trimmedContent };
+
         editCommentMutate({ commentId: comment.id, postId: comment.postId, body });
+
+        if (onChildEdited) {
+            onChildEdited(comment.id, trimmedContent);
+        }
     };
 
     /**
         * Delete Comment's content:
     */
-    const handleChildDeleted = useCallback((deletedCount: number) => {
+    const handleChildDeleted = useCallback((deletedCount: number, deletedCommentId: string) => {
         setLocalReplyCount(prev => Math.max(0, prev - deletedCount));
+
+        setLocalNewReplies(prev => prev.filter(c => c.id !== deletedCommentId));
+
         if (onChildDeleted) {
-            onChildDeleted(deletedCount);
+            onChildDeleted(deletedCount, deletedCommentId);
         }
     }, [onChildDeleted]);
 
@@ -159,7 +170,7 @@ function CommentItem({ comment, isLastSibling, onChildDeleted }: CommentItemProp
         setLocalNewReplies(prev => prev.filter(c => c.id !== comment.id));
         adjustCommentCount(comment.postId, -actualDeletedCount);
         if (onChildDeleted) {
-            onChildDeleted(actualDeletedCount);
+            onChildDeleted(actualDeletedCount, comment.id);
         }
         deleteCommentMutate({ commentId: comment.id });
     };
@@ -261,6 +272,7 @@ function CommentItem({ comment, isLastSibling, onChildDeleted }: CommentItemProp
                             commentList={finalDisplayReplies}
                             hasMoreReplies={unfetchedReplyCounts > 0}
                             onChildDeleted={handleChildDeleted}
+                            onChildEdited={handleChildEdited}
                         />
                     )
                 }

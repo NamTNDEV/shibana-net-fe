@@ -10,11 +10,12 @@ type CommentListPropsType = {
     commentList: CommentResponseDataType[];
     hasMoreReplies?: boolean;
     lastSiblingItemRef?: React.RefObject<HTMLDivElement | null>;
-    onChildDeleted?: (deletedCount: number) => void;
+    onChildDeleted?: (deletedCount: number, deletedCommentId: string) => void;
+    onChildEdited?: (editedCommentId: string, newContent: string) => void;
 };
 
 
-function CommentList({ commentList, hasMoreReplies = false, onChildDeleted }: CommentListPropsType) {
+function CommentList({ commentList, hasMoreReplies = false, onChildDeleted, onChildEdited }: CommentListPropsType) {
     const isAncestorCmtList = commentList.some(c => c.level === 0);
 
     if (commentList.length === 0) {
@@ -44,6 +45,7 @@ function CommentList({ commentList, hasMoreReplies = false, onChildDeleted }: Co
                             comment={comment}
                             isLastSibling={index === commentList.length - 1 && !hasMoreReplies}
                             onChildDeleted={onChildDeleted}
+                            onChildEdited={onChildEdited}
                         />
                     </Fragment>
                 )
