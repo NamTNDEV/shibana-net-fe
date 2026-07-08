@@ -1,7 +1,7 @@
 import { PostResponseDataType } from "@/types/post.type";
 import PostBody from "./post-item-body";
 import PostHeader from "./post-item-header";
-import PostActions from "./post-item-actions";
+import PostFooter from "./post-item-footer";
 import MediaGrid from "./post-item-medias";
 import { cn } from "@/lib/utils";
 
@@ -15,7 +15,7 @@ type PostItemProps = {
 export default function PostItem({ displayMode, post }: PostItemProps) {
     return (
         <div className={cn(
-            "w-full bg-white flex flex-col",
+            "w-full bg-white flex flex-col mb-1",
             displayMode === "NEWSFEED" && "rounded-lg shadow-sm "
         )}>
             <PostHeader post={post} />
@@ -23,9 +23,12 @@ export default function PostItem({ displayMode, post }: PostItemProps) {
             <PostBody content={post.content} displayMode={displayMode} />
             <MediaGrid mediaList={[]} />
 
-            <PostActions
+            <PostFooter
                 postId={post.id}
                 commentCount={post.commentCounts}
+                reactionCounts={post.reactionCounts}
+                topReactions={post.topReactions}
+                requesterReactionType={post.requesterReactionType}
                 displayMode={displayMode}
             />
         </div>

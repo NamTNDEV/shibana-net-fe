@@ -1,6 +1,7 @@
 // Request
 
 import { PrivacyType } from "@/components/features/profile/about/profile-about-item.type";
+import { ReactionType } from "@/constants/reaction-type";
 
 export type AuthorResponseDataType = {
     id: string;
@@ -20,10 +21,14 @@ export type AuthorResponseDataType = {
 export type PostResponseDataType = {
     id: string;
     content: string;
+    createdAt: string;
     author: AuthorResponseDataType;
     privacy: PrivacyType;
-    createdAt: string;
+
     commentCounts: number;
+    reactionCounts: number;
+    topReactions: ReactionType[];
+    requesterReactionType: ReactionType | null;
 }
 
 // Request

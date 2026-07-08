@@ -6,13 +6,13 @@ import { MessageCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-type PostCommentStatsProps = {
+type CommentButtonProps = {
     postId: string;
     commentCount: number;
     displayMode: "NEWSFEED" | "MODAL_DETAIL";
 }
 
-function PostCommentStats({ postId, commentCount: initialCount, displayMode }: PostCommentStatsProps) {
+function CommentButton({ postId, commentCount: initialCount, displayMode }: CommentButtonProps) {
     const router = useRouter();
     const initCommentCount = usePostStatsStore(state => state.initCommentCount);
     const currentCount = usePostStatsStore(state => state.commentCounts[postId]);
@@ -37,4 +37,4 @@ function PostCommentStats({ postId, commentCount: initialCount, displayMode }: P
     )
 }
 
-export default PostCommentStats;
+export default CommentButton;

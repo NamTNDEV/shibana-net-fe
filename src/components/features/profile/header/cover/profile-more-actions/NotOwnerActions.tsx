@@ -8,7 +8,7 @@ export type NotOwnerActionsPropsType = {
 export const NotOwnerActions = ({ userId }: NotOwnerActionsPropsType) => {
     return (
         <DropdownMenuContent className="mt-6 mr-3 md:mt-3 p-2" align="center">
-            <DropdownMenuItem className="w-[92vw] md:w-md:w-82 p-0 hover:bg-gray-300! ">
+            <DropdownMenuItem className="w-[92vw] md:w-82 p-0 hover:bg-gray-300! ">
                 <BlockUserButton blockeeId={userId} />
             </DropdownMenuItem>
         </DropdownMenuContent >
