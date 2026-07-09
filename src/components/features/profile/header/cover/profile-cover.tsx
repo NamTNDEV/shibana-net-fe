@@ -11,6 +11,7 @@ import { updateCoverImageAction, uploadCoverImageAction } from "@/actions/profil
 import { toast } from "sonner";
 import { UpdateCoverImageRequestBodyType } from "@/types/profile.type";
 import { useRouter } from "next/navigation";
+import { PlaceholderImage } from "@/assets";
 
 type ProfileCoverProps = {
     coverUrl?: string;
@@ -20,7 +21,6 @@ type ProfileCoverProps = {
 };
 
 const DEFAULT_IMAGE_POSITION_Y = 50;
-const DEFAULT_COVER_URL = "/placeholder-image.png";
 
 export default function ProfileCover({ coverUrl: initialCoverUrl, altText = "Cover Photo", userId, coverPositionY: initialCoverPositionY }: ProfileCoverProps) {
     const router = useRouter();
@@ -140,7 +140,7 @@ export default function ProfileCover({ coverUrl: initialCoverUrl, altText = "Cov
         <div className="relative w-full bg-white flex justify-center">
             <div className="absolute inset-x-0 top-0 h-[240px] md:h-[310px] lg:h-[465px] overflow-hidden pointer-events-none z-0">
                 <Image
-                    src={displayCoverUrl ?? DEFAULT_COVER_URL}
+                    src={displayCoverUrl ?? PlaceholderImage}
                     alt="Ambient Background"
                     fill
                     className="object-cover blur-[100px] scale-110"
@@ -158,7 +158,7 @@ export default function ProfileCover({ coverUrl: initialCoverUrl, altText = "Cov
                 ref={containerCoverRef}
             >
                 <Image
-                    src={displayCoverUrl ?? DEFAULT_COVER_URL}
+                    src={displayCoverUrl ?? PlaceholderImage}
                     alt={altText}
                     fill
                     className={cn(
@@ -189,7 +189,7 @@ export default function ProfileCover({ coverUrl: initialCoverUrl, altText = "Cov
                 )}
 
                 {isEditingCover && !isDragging && (
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-fit w-1/2 max-w-[450px] bg-black/50 px-3 py-2 flex items-center gap-2 rounded-md">
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-fit w-1/2 max-w-112.5 bg-black/50 px-3 py-2 flex items-center gap-2 rounded-md">
                         <Move className="size-5 text-white" />
                         <span className="text-white text-[15px] font-semibold">Kéo hoặc dùng các phím mũi tên để đặt lại vị trí ảnh bìa.</span>
                     </div>
@@ -197,7 +197,7 @@ export default function ProfileCover({ coverUrl: initialCoverUrl, altText = "Cov
             </div>
 
             {isEditingCover && (
-                <div className="absolute top-0 left-0 h-[60px] w-full bg-black/50 px-4 py-3 z-40">
+                <div className="absolute top-0 left-0 h-15 w-full bg-black/50 px-4 py-3 z-40">
                     <div className="h-full w-full flex justify-between items-center">
                         <div className="flex items-center gap-3">
                             <Earth className="size-5 text-white" />
