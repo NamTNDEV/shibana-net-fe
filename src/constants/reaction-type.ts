@@ -1,6 +1,6 @@
 export const REACTION_TYPES = {
     LIKE: "LIKE",
-    LOVE: "LOVE",
+    HEART: "HEART",
     HAHA: "HAHA",
     WOW: "WOW",
     SAD: "SAD",
