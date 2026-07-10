@@ -17,19 +17,27 @@ export function ReactionButton({ displayMode, reactionCounts, requesterReactionT
     const [showSelector, setShowSelector] = useState(false);
     const [selectedReaction, setSelectedReaction] = useState<ReactionType | null>(requesterReactionType);
 
-    const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const openTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     const handleMouseEnter = () => {
-        hoverTimeoutRef.current = setTimeout(() => {
+        if (closeTimeoutRef.current) {
+            clearTimeout(closeTimeoutRef.current);
+        }
+
+        openTimeoutRef.current = setTimeout(() => {
             setShowSelector(true);
         }, 400);
     };
 
     const handleMouseLeave = () => {
-        if (hoverTimeoutRef.current) {
-            clearTimeout(hoverTimeoutRef.current);
+        if (openTimeoutRef.current) {
+            clearTimeout(openTimeoutRef.current);
         }
-        setShowSelector(false);
+
+        closeTimeoutRef.current = setTimeout(() => {
+            setShowSelector(false);
+        }, 400);
     };
 
     const handleReactionSelect = (type: ReactionType) => {
