@@ -17,6 +17,8 @@ export function ReactionButton({ displayMode, reactionCounts, requesterReactionT
     const [showSelector, setShowSelector] = useState(false);
     const [selectedReaction, setSelectedReaction] = useState<ReactionType | null>(requesterReactionType);
 
+    const [animateTrigger, setAnimateTrigger] = useState(0);
+
     const openTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -40,9 +42,14 @@ export function ReactionButton({ displayMode, reactionCounts, requesterReactionT
         }, 400);
     };
 
-    const handleReactionSelect = (type: ReactionType) => {
-        console.log("User đã chọn:", type);
-        setSelectedReaction(type);
+    const handleReactionSelect = (type: ReactionType, isDirectClick?: boolean) => {
+        setAnimateTrigger((prev) => prev + 1);
+
+        if (isDirectClick && selectedReaction) {
+            setSelectedReaction(null);
+        } else {
+            setSelectedReaction(type);
+        }
         setShowSelector(false);
     };
 
@@ -62,15 +69,19 @@ export function ReactionButton({ displayMode, reactionCounts, requesterReactionT
                     displayMode === "NEWSFEED" && "rounded-bl-lg",
                     selectedReaction && "text-primary"
                 )}
-                onClick={() => {
-                    console.log("Click nút Like trực tiếp");
-                }}
+                onClick={() => handleReactionSelect("LIKE", true)}
             >
-                <ReactionIcon
-                    className="size-5"
-                    type={selectedReaction || "LIKE"}
-                    variant={selectedReaction ? "button-solid" : "button-outline"}
-                />
+                <div
+                    key={animateTrigger}
+                    className={cn(animateTrigger > 0 && selectedReaction && "animate-reaction-pop")}
+                >
+                    <ReactionIcon
+                        className="size-5"
+                        type={selectedReaction || "LIKE"}
+                        variant={selectedReaction ? "button-solid" : "button-outline"}
+                    />
+                </div>
+
                 <span className="font-medium text-sm text-muted-foreground">
                     {reactionCounts ? reactionCounts : "Thích"}
                 </span>
