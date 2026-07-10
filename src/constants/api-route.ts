@@ -46,6 +46,9 @@ export const API_ROUTES = {
         CREATE_REPLY_COMMENT: "posts/comments/:commentId/replies",
         DELETE_COMMENT: "posts/comments/:commentId",
     },
+    REACTIONS: {
+        TOGGLE_REACTION: "posts/reactions",
+    }
 } as const;
 
 export const NEXT_SERVER_ROUTES = {
@@ -69,4 +72,7 @@ export const NEXT_SERVER_ROUTES = {
     USERS: {
         MY_ACCOUNT: "/api/users/my-account",
     },
+    REACTIONS: {
+        TOGGLE_REACTION: "/api/reactions",
+    }
 } as const;

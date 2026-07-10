@@ -33,6 +33,9 @@ export const useCreatePostMutation = (onCreateSuccess: () => void) => {
                 commentCounts: 0,
                 privacy: body.privacy,
                 createdAt: new Date().toISOString(),
+                reactionCounts: 0,
+                topReactions: [],
+                requesterReactionType: null,
                 author: {
                     id: authUser!.userId || "",
                     username: authUser!.username || "",

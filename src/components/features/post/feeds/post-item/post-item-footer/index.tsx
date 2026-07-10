@@ -2,12 +2,13 @@ import { ReactionType } from "@/constants/reaction-type";
 import { DisplayMode } from "..";
 import { PostActionButtons } from "./actions-buttons";
 import { ReactionStats } from "@/components/features/reaction/reaction-stats";
+import { TopReactionResponseDataType } from "@/types/post.type";
 
 export type PostFooterProps = {
     postId: string;
     commentCount: number;
     reactionCounts: number;
-    topReactions: ReactionType[];
+    topReactions: TopReactionResponseDataType[];
     requesterReactionType: ReactionType | null;
     displayMode: DisplayMode;
 }

@@ -6,7 +6,14 @@ export type PostActionButtonsProps = Omit<PostFooterProps, "topReactions">
 export function PostActionButtons({ postId, commentCount, reactionCounts, requesterReactionType, displayMode }: PostActionButtonsProps) {
     return (
         <div className="flex items-center h-full">
-            <ReactionButton displayMode={displayMode} reactionCounts={reactionCounts} requesterReactionType={requesterReactionType} />
+            <ReactionButton
+                targetType="POST"
+                targetId={postId}
+                displayMode={displayMode}
+                reactionCounts={reactionCounts}
+                requesterReactionType={requesterReactionType}
+                queryKey={["posts", "newsfeed", "cursor-based"]}
+            />
             <CommentButton postId={postId} commentCount={commentCount} displayMode={displayMode} />
         </div>
     )

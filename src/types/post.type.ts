@@ -27,7 +27,7 @@ export type PostResponseDataType = {
 
     commentCounts: number;
     reactionCounts: number;
-    topReactions: ReactionType[];
+    topReactions: Record<ReactionType, number> | null;
     requesterReactionType: ReactionType | null;
 }
 
