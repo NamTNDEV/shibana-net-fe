@@ -2,26 +2,18 @@
 
 import { cn } from "@/lib/utils";
 import ReactionIcon from "./reaction-icon";
-import type { TopReactionResponseDataType } from "@/types/post.type";
 import { ReactionType } from "@/constants/reaction-type";
 
 export type ReactionStatsProps = {
-    topReactions: TopReactionResponseDataType[];
+    topReactions: Record<ReactionType, number> | null;
 }
 
-const mapping = (topReactions: TopReactionResponseDataType[]) => {
-    const result: ReactionType[] = [];
-    for (const reactionTypeString of Object.keys(topReactions)) {
-        const reactionType = reactionTypeString as ReactionType;
-        result.push(reactionType);
-    }
-
-    return result;
+const mapping = (topReactions: Record<ReactionType, number>) => {
+    return Object.keys(topReactions).slice(0, 3) as ReactionType[];
 }
 
 export function ReactionStats({ topReactions }: ReactionStatsProps) {
-    if (!topReactions || topReactions.length === 0) return null;
-    mapping(topReactions);
+    if (!topReactions) return null;
     return (
         <div className="flex items-center px-3 py-2 cursor-pointer group">
             <div className="flex items-center">

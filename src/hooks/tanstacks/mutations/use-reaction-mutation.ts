@@ -62,16 +62,48 @@ export const useToggleReactionMutation = ({ targetId, targetType, queryKey }: Us
 }
 
 const handleOptimisticUpdateReaction = (item: PostResponseDataType, newReactionType: ReactionType) => {
-    const isRemoveReaction = item.requesterReactionType === newReactionType;
-    if (isRemoveReaction && (!item.topReactions || !item.topReactions)) return;
-
-    // --- Update requester reaction type ---
-    item.requesterReactionType = isRemoveReaction ? null : newReactionType;
-
-    // --- Update reaction counts ---
-    item.reactionCounts = Math.max(0, item.reactionCounts + (isRemoveReaction ? -1 : 1));
+    const oldReactionType = item.requesterReactionType;
+    const isRemoving = oldReactionType === newReactionType;
+    const isUpdating = !isRemoving && oldReactionType !== null;
 
     // --- Update top reactions ---
+    if (!item.topReactions) item.topReactions = {} as Record<ReactionType, number>;
+    if (isRemoving) {
+        if (item.topReactions[oldReactionType] && item.topReactions[oldReactionType] > 0) {
+            item.topReactions[oldReactionType] -= 1;
+            if (item.topReactions[oldReactionType] === 0) {
+                delete item.topReactions[oldReactionType];
+            }
+        }
+    }
 
+    if (isUpdating) {
+        if (item.topReactions[oldReactionType] && item.topReactions[oldReactionType] > 0) {
+            item.topReactions[oldReactionType] -= 1;
+            if (item.topReactions[oldReactionType] === 0) {
+                delete item.topReactions[oldReactionType];
+            }
+        }
+        if (!item.topReactions[newReactionType]) {
+            item.topReactions[newReactionType] = 0;
+        }
+        item.topReactions[newReactionType] += 1;
+    }
+
+    if (!isRemoving && !isUpdating) {
+        if (!item.topReactions[newReactionType]) {
+            item.topReactions[newReactionType] = 0;
+        }
+        item.topReactions[newReactionType] += 1;
+    }
+    item.topReactions = Object.fromEntries(
+        Object.entries(item.topReactions)
+            .sort(([, countA], [, countB]) => countB - countA)
+    ) as Record<ReactionType, number>;
+
+    // --- Update requester reaction type ---
+    item.requesterReactionType = isRemoving ? null : newReactionType;
+    // --- Update reaction counts ---
+    item.reactionCounts = Math.max(0, item.reactionCounts + (isRemoving ? -1 : isUpdating ? 0 : 1));
 
 };
