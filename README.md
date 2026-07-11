@@ -1,6 +1,6 @@
 <div align="center">
   <a href="https://github.com/NamTNDEV/shibana-net-fe">
-    <img src="public/icon.png" alt="ShibaNa Net Logo" width="100" height="100">
+    <img src="public/icon.webp" alt="ShibaNa Net Logo" width="100" height="100">
   </a>
 
   <h1 align="center">ShibaNa Net (Frontend)</h1>
