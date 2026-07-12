@@ -31,7 +31,6 @@ export const authService = {
             const payload = await response.json();
             return payload.data;
         } catch (error) {
-            console.error("authService.refreshToken::", error);
             return null;
         }
     }

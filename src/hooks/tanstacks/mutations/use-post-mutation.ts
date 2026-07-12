@@ -1,6 +1,7 @@
 'use client';
 
 import { NEXT_SERVER_ROUTES } from "@/constants/api-route";
+import { ReactionType } from "@/constants/reaction-type";
 import { useAuthStore } from "@/stores/auth.store";
 import { CreatePostRequestBodyType, EditPostRequestBodyType, PostResponseDataType } from "@/types/post.type";
 import { ResponseDataType } from "@/types/response.type";
@@ -34,7 +35,7 @@ export const useCreatePostMutation = (onCreateSuccess: () => void) => {
                 privacy: body.privacy,
                 createdAt: new Date().toISOString(),
                 reactionCounts: 0,
-                topReactions: [],
+                topReactions: {} as Record<ReactionType, number>,
                 requesterReactionType: null,
                 author: {
                     id: authUser!.userId || "",

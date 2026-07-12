@@ -56,7 +56,7 @@ export async function loginAction(body: LoginRequestBodyType): Promise<ActionRes
     }
 }
 
-export async function logoutAction(): Promise<ActionResponseDataType<void>> {
+export async function logoutAction(): Promise<void> {
     try {
         await authService.logout();
     } catch (error) {
@@ -70,5 +70,4 @@ export async function logoutAction(): Promise<ActionResponseDataType<void>> {
         await deleteCookies("accessToken");
         await deleteCookies("refreshToken");
     }
-    redirect(ROUTES.AUTH.LOGIN);
 }

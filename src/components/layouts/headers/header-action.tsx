@@ -16,14 +16,18 @@ import { getInitialName, getUrlWithParams } from "@/lib/utils";
 import { toast } from "sonner";
 import { MyAccountMetadataResponseDataType } from "@/types/user.type";
 import ProfileAvatarContainer from "@/components/features/profile/header/avatar/profile-avatar-container";
+import { useQueryClient } from "@tanstack/react-query";
 
 type HeaderActionPropsType = {
   user?: MyAccountMetadataResponseDataType | null;
 }
 
 export default function HeaderAction({ user }: HeaderActionPropsType) {
+  const queryClient = useQueryClient();
+
   const handleLogout = async () => {
     await logoutAction();
+    queryClient.clear();
     toast.success("Đăng xuất thành công.", {
       position: "bottom-right",
       richColors: true,
