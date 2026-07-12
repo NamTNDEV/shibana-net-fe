@@ -5,6 +5,20 @@ type RouteParams = {
     params: Promise<{ postId: string }>;
 };
 
+export async function GET(request: Request, { params }: RouteParams) {
+    const { postId } = await params;
+    try {
+        const res = await postService.getPostDetailById(postId);
+        if (!res) {
+            return NextResponse.json({ success: false, message: "Post not found" }, { status: 404 });
+        }
+        return NextResponse.json(res);
+    } catch (error) {
+        console.error("❌ Failed to fetch post detail:", error);
+        return NextResponse.json({ success: false, message: "Lỗi hệ thống, vui lòng thử lại sau." }, { status: 500 });
+    }
+}
+
 export async function PUT(request: Request, { params }: RouteParams) {
     const { postId } = await params;
     try {

@@ -14,10 +14,9 @@ export type ReactionButtonProps = {
     requesterReactionType: ReactionType | null;
     targetId: string;
     targetType: ReactionTargetType;
-    queryKey: any[];
 }
 
-export function ReactionButton({ displayMode, reactionCounts, requesterReactionType, targetId, targetType, queryKey }: ReactionButtonProps) {
+export function ReactionButton({ displayMode, reactionCounts, requesterReactionType, targetId, targetType }: ReactionButtonProps) {
     const [showSelector, setShowSelector] = useState(false);
     const [animateTrigger, setAnimateTrigger] = useState(0);
 
@@ -27,7 +26,6 @@ export function ReactionButton({ displayMode, reactionCounts, requesterReactionT
     const { mutate: toggleReaction } = useToggleReactionMutation({
         targetId,
         targetType,
-        queryKey
     });
 
     const handleMouseEnter = () => {

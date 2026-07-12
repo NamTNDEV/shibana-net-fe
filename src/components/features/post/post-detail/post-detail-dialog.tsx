@@ -9,13 +9,18 @@ import { PostResponseDataType } from "@/types/post.type";
 import CommentSection from "../comments/comment-section";
 import CommentInput from "../comments/comment-input";
 import CommentInputSkeleton from "../comments/skeleton/comment-input-skeleton";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { NEXT_SERVER_ROUTES } from "@/constants/api-route";
+import { usePostDetailQuery } from "@/hooks/tanstacks/queries/use-post-query";
 
 type PostDetailDialogProps = {
-    post: PostResponseDataType | null;
+    post: PostResponseDataType;
 }
 
 export default function PostDetailDialog({ post }: PostDetailDialogProps) {
     const router = useRouter();
+    const queryClient = useQueryClient();
+    const { data: postData } = usePostDetailQuery(post.id, post);
 
     const handleOpenChange = (isOpen: boolean) => {
         if (!isOpen) {
@@ -39,7 +44,6 @@ export default function PostDetailDialog({ post }: PostDetailDialogProps) {
     return (
         <Dialog defaultOpen={true} onOpenChange={handleOpenChange}>
             <DialogContent className="p-0 gap-0 max-w-175! w-full min-h-[94vh] max-h-[94vh] flex flex-col mb-4 bg-white rounded-lg shadow-lg md:-ml-2" showCloseButton={false}>
-
                 {/* --- HEADER --- */}
                 <DialogHeader className="h-15 relative flex items-center justify-center rounded-t-lg px-4 shrink-0 border-b border-gray-300 shadow-sm">
                     <DialogTitle className="px-4 text-xl font-bold">Bài viết {post ? `của ${post.author.firstName}` : ""} </DialogTitle>
@@ -54,17 +58,16 @@ export default function PostDetailDialog({ post }: PostDetailDialogProps) {
 
                 {/* --- BODY --- */}
                 <div className="flex-1 flex flex-col justify-start overflow-y-auto mb-4">
-                    {post && <PostItem displayMode="MODAL_DETAIL" post={post} />}
-                    {!post && renderPostNotFound()}
-
-                    {post && <CommentSection postId={post.id} />}
+                    {postData && <PostItem displayMode="MODAL_DETAIL" post={postData} />}
+                    {!postData && renderPostNotFound()}
+                    {postData && <CommentSection postId={postData.id} />}
                 </div>
 
                 {/* --- FOOTER --- */}
                 <DialogFooter className="rounded-b-lg p-4 pt-3 border-t border-gray-300">
                     <div className="w-full">
-                        {post && <CommentInput postId={post.id} />}
-                        {!post && (
+                        {postData && <CommentInput postId={postData.id} />}
+                        {!postData && (
                             <CommentInputSkeleton />
                         )}
                     </div>

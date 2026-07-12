@@ -2,7 +2,7 @@ import { NEXT_SERVER_ROUTES } from "@/constants/api-route";
 import { HttpError } from "@/lib/http-errors";
 import { PostResponseDataType } from "@/types/post.type";
 import { CursorPaginationResponseDataType, PaginationResponseDataType } from "@/types/response.type";
-import { useInfiniteQuery } from "@tanstack/react-query"
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query"
 
 const PAGE_SIZE = 10;
 
@@ -76,5 +76,19 @@ export const usePostNewsfeedCursorBasedQuery = (isAllowFetch: boolean = true, fe
         staleTime: 1000 * 60 * 2,
         gcTime: 1000 * 60 * 5,
         refetchOnWindowFocus: true
+    })
+}
+
+export const usePostDetailQuery = (postId: string, initialData?: PostResponseDataType) => {
+    return useQuery({
+        queryKey: ["posts", "detail", postId],
+        initialData: initialData,
+        staleTime: Infinity,
+        queryFn: async () => {
+            const res = await fetch(
+                NEXT_SERVER_ROUTES.POSTS.POST_DETAIL.replace(":postId", postId)
+            );
+            return await res.json();
+        }
     })
 }

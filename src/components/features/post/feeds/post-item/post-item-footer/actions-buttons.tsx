@@ -12,7 +12,6 @@ export function PostActionButtons({ postId, commentCount, reactionCounts, reques
                 displayMode={displayMode}
                 reactionCounts={reactionCounts}
                 requesterReactionType={requesterReactionType}
-                queryKey={["posts", "newsfeed", "cursor-based"]}
             />
             <CommentButton postId={postId} commentCount={commentCount} displayMode={displayMode} />
         </div>

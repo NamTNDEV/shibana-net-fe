@@ -10,6 +10,7 @@ async function PostDetailParallelPage({
 }: PostDetailParallelPageProps) {
     const { id } = await params;
     const response = await postService.getPostDetailById(id);
+    if (!response) return;
     return (
         <>
             <PostDetailDialog post={response} />

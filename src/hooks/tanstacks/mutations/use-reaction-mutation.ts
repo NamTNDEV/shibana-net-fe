@@ -7,10 +7,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 export type UseToggleReactionProps = {
     targetId: string;
     targetType: ReactionTargetType;
-    queryKey: any[];
 }
 
-export const useToggleReactionMutation = ({ targetId, targetType, queryKey }: UseToggleReactionProps) => {
+export const useToggleReactionMutation = ({ targetId, targetType }: UseToggleReactionProps) => {
     const queryClient = useQueryClient();
 
     return useMutation({
@@ -30,33 +29,55 @@ export const useToggleReactionMutation = ({ targetId, targetType, queryKey }: Us
             });
         },
         onMutate: async (reactionType: ReactionType) => {
-            await queryClient.cancelQueries({ queryKey });
-            const previousData = queryClient.getQueryData(queryKey);
+            // 1. Khai báo định danh của 2 ngăn kéo
+            const newsfeedKey = ["posts", "newsfeed", "cursor-based"];
+            const detailKey = ["posts", "detail", targetId];
 
-            queryClient.setQueryData(queryKey, (oldData: any) => {
+            // 2. Dừng mọi tác vụ fetch đang chạy đè lên 2 key này
+            await queryClient.cancelQueries({ queryKey: newsfeedKey });
+            await queryClient.cancelQueries({ queryKey: detailKey });
+
+            // 3. Snapshot (chụp lại) dữ liệu cũ để phòng hờ rollback
+            const previousNewsfeed = queryClient.getQueryData(newsfeedKey);
+            const previousDetail = queryClient.getQueryData(detailKey);
+
+            // 💡 BÍ KÍP 2.1: CẬP NHẬT CACHE NEWSFEED (Dạng mảng phân trang)
+            queryClient.setQueryData(newsfeedKey, (oldData: any) => {
                 if (!oldData) return oldData;
                 const newData = JSON.parse(JSON.stringify(oldData));
 
-                switch (targetType) {
-                    case REACTION_TARGET_TYPES.POST:
-                        if (newData.pages && newData.pages.length > 0) {
-                            for (const page of newData.pages) {
-                                const post: PostResponseDataType = page.payload.find((p: any) => p.id === targetId);
-                                if (post) {
-                                    handleOptimisticUpdateReaction(post, reactionType);
-                                    break;
-                                }
-                            }
+                if (targetType === REACTION_TARGET_TYPES.POST && newData.pages) {
+                    for (const page of newData.pages) {
+                        const post = page.payload.find((p: any) => p.id === targetId);
+                        if (post) {
+                            handleOptimisticUpdateReaction(post, reactionType);
+                            break; // Cập nhật xong là thoát vòng lặp
                         }
+                    }
                 }
                 return newData;
             });
 
-            return { previousData };
+            // 💡 BÍ KÍP 2.2: CẬP NHẬT CACHE DETAIL (Dạng Object đơn lẻ)
+            if (targetType === REACTION_TARGET_TYPES.POST) {
+                queryClient.setQueryData(detailKey, (oldDetail: any) => {
+                    if (!oldDetail) return oldDetail;
+                    const newDetail = JSON.parse(JSON.stringify(oldDetail));
+                    handleOptimisticUpdateReaction(newDetail, reactionType);
+                    return newDetail;
+                });
+            }
+
+            // Trả về context chứa cả 2 bản snapshot
+            return { previousNewsfeed, previousDetail, newsfeedKey, detailKey };
         },
         onError: (error, _, context) => {
             console.error(`❌ Error toggling reaction: `, error);
-            queryClient.setQueryData(queryKey, context?.previousData);
+            // Rollback lại cả 2 ngăn kéo nếu Server báo lỗi
+            if (context) {
+                queryClient.setQueryData(context.newsfeedKey, context.previousNewsfeed);
+                queryClient.setQueryData(context.detailKey, context.previousDetail);
+            }
         },
     });
 }
