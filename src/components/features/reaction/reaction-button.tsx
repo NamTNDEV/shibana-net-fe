@@ -67,12 +67,14 @@ export function ReactionButton({ displayMode, reactionCounts, requesterReactionT
             onMouseLeave={handleMouseLeave}
         >
             {showSelector && (
-                <ReactionSelector onSelectAction={handleReactionSelect} />
+                <ReactionSelector onSelectAction={handleReactionSelect} targetType={targetType} />
             )}
 
             <div
                 className={cn(
-                    "flex items-center gap-2 h-full px-3 hover:bg-muted cursor-pointer transition-colors",
+                    "flex items-center gap-2 h-full px-3 cursor-pointer transition-colors",
+                    targetType === "POST" && "hover:bg-muted",
+                    targetType === "COMMENT" && "py-2 pb-1",
                     displayMode === "NEWSFEED" && "rounded-bl-lg",
                     requesterReactionType && "text-primary"
                 )}
@@ -83,15 +85,22 @@ export function ReactionButton({ displayMode, reactionCounts, requesterReactionT
                     className={cn(animateTrigger > 0 && requesterReactionType && "animate-reaction-pop")}
                 >
                     <ReactionIcon
-                        className="size-5"
+                        className={cn(
+                            targetType === "POST" && "size-5",
+                            targetType === "COMMENT" && "size-4"
+                        )}
                         type={requesterReactionType || "LIKE"}
                         variant={requesterReactionType ? "button-solid" : "button-outline"}
                     />
                 </div>
 
-                <span className="font-medium text-sm text-muted-foreground">
-                    {reactionCounts}
-                </span>
+                {
+                    targetType === "POST" && (
+                        <span className="font-medium text-sm text-muted-foreground">
+                            {reactionCounts}
+                        </span>
+                    )
+                }
             </div>
         </div>
     )

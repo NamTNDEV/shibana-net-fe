@@ -1,7 +1,5 @@
 import { NEXT_SERVER_ROUTES } from "@/constants/api-route";
 import { REACTION_TARGET_TYPES, ReactionTargetType, ReactionType } from "@/constants/reaction-type";
-import { PostResponseDataType } from "@/types/post.type";
-import { ReactionRequestBodyType } from "@/types/reaction.type";
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 export type UseToggleReactionProps = {
@@ -9,86 +7,83 @@ export type UseToggleReactionProps = {
     targetType: ReactionTargetType;
 }
 
+// 💡 Tạo một Interface chung vì Post và Comment đều xài chung các field này
+export interface ReactionEntity {
+    id: string;
+    requesterReactionType: ReactionType | null;
+    reactionCounts: number;
+    topReactions: Record<ReactionType, number> | null;
+}
+
 export const useToggleReactionMutation = ({ targetId, targetType }: UseToggleReactionProps) => {
     const queryClient = useQueryClient();
 
     return useMutation({
         mutationFn: async (reactionType: ReactionType) => {
-            const requestBody: ReactionRequestBodyType = {
-                targetId,
-                reactionType,
-                targetType
-            };
+            const requestBody = { targetId, reactionType, targetType };
 
             await fetch(NEXT_SERVER_ROUTES.REACTIONS.TOGGLE_REACTION, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(requestBody),
             });
         },
         onMutate: async (reactionType: ReactionType) => {
-            // 1. Khai báo định danh của 2 ngăn kéo
-            const newsfeedKey = ["posts", "newsfeed", "cursor-based"];
-            const detailKey = ["posts", "detail", targetId];
+            // 1. Xác định gốc Query Key dựa vào Type
+            const baseQueryKey = targetType === REACTION_TARGET_TYPES.POST ? ["posts"] : ["comments"];
 
-            // 2. Dừng mọi tác vụ fetch đang chạy đè lên 2 key này
-            await queryClient.cancelQueries({ queryKey: newsfeedKey });
-            await queryClient.cancelQueries({ queryKey: detailKey });
+            // 2. Dừng mọi tác vụ fetch đang chạy đè lên nhánh key này
+            await queryClient.cancelQueries({ queryKey: baseQueryKey });
 
-            // 3. Snapshot (chụp lại) dữ liệu cũ để phòng hờ rollback
-            const previousNewsfeed = queryClient.getQueryData(newsfeedKey);
-            const previousDetail = queryClient.getQueryData(detailKey);
+            // 3. Chụp lại toàn bộ snapshot của nhánh key này để phòng hờ rollback
+            const previousData = queryClient.getQueriesData({ queryKey: baseQueryKey });
 
-            // 💡 BÍ KÍP 2.1: CẬP NHẬT CACHE NEWSFEED (Dạng mảng phân trang)
-            queryClient.setQueryData(newsfeedKey, (oldData: any) => {
+            // 4. 🚀 QUÉT VÀ CẬP NHẬT MỌI NGĂN KÉO LIÊN QUAN (Newsfeed, Detail, Profile, Reply...)
+            queryClient.setQueriesData({ queryKey: baseQueryKey }, (oldData: any) => {
                 if (!oldData) return oldData;
-                const newData = JSON.parse(JSON.stringify(oldData));
+                const newData = JSON.parse(JSON.stringify(oldData)); // Deep copy
 
-                if (targetType === REACTION_TARGET_TYPES.POST && newData.pages) {
+                // Trạng thái 1: Nếu data là danh sách phân trang (CursorResponse / InfiniteQuery)
+                if (newData.pages) {
                     for (const page of newData.pages) {
-                        const post = page.payload.find((p: any) => p.id === targetId);
-                        if (post) {
-                            handleOptimisticUpdateReaction(post, reactionType);
-                            break; // Cập nhật xong là thoát vòng lặp
+                        const item = page.payload?.find((p: any) => p.id === targetId);
+                        if (item) {
+                            handleOptimisticUpdateReaction(item, reactionType);
+                            return newData; // Cập nhật xong mảng này là return luôn
                         }
                     }
                 }
+                // Trạng thái 2: Nếu data là Object đơn lẻ (Detail)
+                else if (newData.id === targetId) {
+                    handleOptimisticUpdateReaction(newData, reactionType);
+                }
+
                 return newData;
             });
 
-            // 💡 BÍ KÍP 2.2: CẬP NHẬT CACHE DETAIL (Dạng Object đơn lẻ)
-            if (targetType === REACTION_TARGET_TYPES.POST) {
-                queryClient.setQueryData(detailKey, (oldDetail: any) => {
-                    if (!oldDetail) return oldDetail;
-                    const newDetail = JSON.parse(JSON.stringify(oldDetail));
-                    handleOptimisticUpdateReaction(newDetail, reactionType);
-                    return newDetail;
-                });
-            }
-
-            // Trả về context chứa cả 2 bản snapshot
-            return { previousNewsfeed, previousDetail, newsfeedKey, detailKey };
+            return { previousData, baseQueryKey };
         },
         onError: (error, _, context) => {
             console.error(`❌ Error toggling reaction: `, error);
-            // Rollback lại cả 2 ngăn kéo nếu Server báo lỗi
-            if (context) {
-                queryClient.setQueryData(context.newsfeedKey, context.previousNewsfeed);
-                queryClient.setQueryData(context.detailKey, context.previousDetail);
+            // 5. Rollback lại toàn bộ snapshot nếu Server báo lỗi
+            if (context?.previousData) {
+                context.previousData.forEach(([queryKey, data]) => {
+                    queryClient.setQueryData(queryKey, data);
+                });
             }
         },
     });
 }
 
-const handleOptimisticUpdateReaction = (item: PostResponseDataType, newReactionType: ReactionType) => {
+// 💡 Đổi type sang ReactionEntity để nhận cả Post lẫn Comment
+const handleOptimisticUpdateReaction = (item: ReactionEntity, newReactionType: ReactionType) => {
     const oldReactionType = item.requesterReactionType;
     const isRemoving = oldReactionType === newReactionType;
     const isUpdating = !isRemoving && oldReactionType !== null;
 
     // --- Update top reactions ---
     if (!item.topReactions) item.topReactions = {} as Record<ReactionType, number>;
+
     if (isRemoving) {
         if (item.topReactions[oldReactionType] && item.topReactions[oldReactionType] > 0) {
             item.topReactions[oldReactionType] -= 1;
@@ -105,18 +100,16 @@ const handleOptimisticUpdateReaction = (item: PostResponseDataType, newReactionT
                 delete item.topReactions[oldReactionType];
             }
         }
-        if (!item.topReactions[newReactionType]) {
-            item.topReactions[newReactionType] = 0;
-        }
+        if (!item.topReactions[newReactionType]) item.topReactions[newReactionType] = 0;
         item.topReactions[newReactionType] += 1;
     }
 
     if (!isRemoving && !isUpdating) {
-        if (!item.topReactions[newReactionType]) {
-            item.topReactions[newReactionType] = 0;
-        }
+        if (!item.topReactions[newReactionType]) item.topReactions[newReactionType] = 0;
         item.topReactions[newReactionType] += 1;
     }
+
+    // Sort lại Top Reactions
     item.topReactions = Object.fromEntries(
         Object.entries(item.topReactions)
             .sort(([, countA], [, countB]) => countB - countA)
@@ -124,7 +117,7 @@ const handleOptimisticUpdateReaction = (item: PostResponseDataType, newReactionT
 
     // --- Update requester reaction type ---
     item.requesterReactionType = isRemoving ? null : newReactionType;
+
     // --- Update reaction counts ---
     item.reactionCounts = Math.max(0, item.reactionCounts + (isRemoving ? -1 : isUpdating ? 0 : 1));
-
 };

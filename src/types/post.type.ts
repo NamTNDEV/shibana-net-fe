@@ -48,15 +48,18 @@ export type EditPostRequestBodyType = {
  */
 // Response
 export type CommentResponseDataType = {
-    id: string;
-    parentId: string | null;
-    postId: string;
-    level: number;
+    author: AuthorResponseDataType;
     content: string;
     createdAt: string;
-    replyCount: number;
+    id: string;
     isEdited: boolean;
-    author: AuthorResponseDataType;
+    level: number;
+    parentId: string | null;
+    postId: string;
+    reactionCounts: number;
+    replyCount: number;
+    requesterReactionType: ReactionType | null;
+    topReactions: Record<ReactionType, number> | null;
 }
 
 // Request

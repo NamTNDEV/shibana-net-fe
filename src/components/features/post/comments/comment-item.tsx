@@ -12,6 +12,7 @@ import { LoaderCircle } from "lucide-react";
 import CommentInput from "./comment-input";
 import { usePostStatsStore } from "@/stores/post-stats.store";
 import { formatSocialTimeCustom } from "@/lib/time";
+import { ReactionButton } from "../../reaction/reaction-button";
 
 type CommentItemProps = {
     comment: CommentResponseDataType;
@@ -243,7 +244,13 @@ function CommentItem({ comment, isLastSibling, onChildDeleted, onChildEdited }: 
                             {!isEditingComment ?
                                 (<div className="flex items-center gap-4 ml-1 text-[12px] text-gray-500 font-semibold">
                                     <span>{formatSocialTimeCustom(comment.createdAt)}</span>
-                                    <span>Thích</span>
+                                    <ReactionButton
+                                        displayMode="MODAL_DETAIL"
+                                        reactionCounts={comment.reactionCounts}
+                                        requesterReactionType={comment.requesterReactionType}
+                                        targetId={comment.id}
+                                        targetType="COMMENT"
+                                    />
                                     <span
                                         className="cursor-pointer hover:underline"
                                         onClick={() => {

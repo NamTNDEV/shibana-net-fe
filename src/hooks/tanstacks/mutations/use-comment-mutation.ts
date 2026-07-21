@@ -47,7 +47,10 @@ export const useCreateRootCommentMutation = (onCreateSuccess: () => void) => {
                     avatarPositionX: authUser!.avatarPositionX || 0,
                     avatarPositionY: authUser!.avatarPositionY || 0,
                     avatarScale: authUser!.avatarScale || 1,
-                }
+                },
+                reactionCounts: 0,
+                requesterReactionType: null,
+                topReactions: null,
             }
 
             queryClient.setQueryData(["comments", "list", "cursor-based", postId], (oldData: any) => {
