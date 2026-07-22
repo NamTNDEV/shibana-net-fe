@@ -13,6 +13,7 @@ import CommentInput from "./comment-input";
 import { usePostStatsStore } from "@/stores/post-stats.store";
 import { formatSocialTimeCustom } from "@/lib/time";
 import { ReactionButton } from "../../reaction/reaction-button";
+import { ReactionStats } from "../../reaction/reaction-stats";
 
 type CommentItemProps = {
     comment: CommentResponseDataType;
@@ -242,7 +243,7 @@ function CommentItem({ comment, isLastSibling, onChildDeleted, onChildEdited }: 
                                 />
                             </div>
                             {!isEditingComment ?
-                                (<div className="flex items-center gap-4 ml-1 text-[12px] text-gray-500 font-semibold">
+                                (<div className="flex items-center gap-3 ml-1 text-[12px] text-gray-500 font-semibold">
                                     <span>{formatSocialTimeCustom(comment.createdAt)}</span>
                                     <ReactionButton
                                         displayMode="MODAL_DETAIL"
@@ -266,6 +267,7 @@ function CommentItem({ comment, isLastSibling, onChildDeleted, onChildEdited }: 
                                             Đã chỉnh sửa
                                         </span>
                                     )}
+                                    <ReactionStats topReactions={comment.topReactions} targetType="COMMENT" />
                                 </div>) :
                                 (<div className="flex items-center gap-4 ml-1 text-[12px] text-gray-500 font-semibold">
                                     <span>Đang cập nhật...</span>

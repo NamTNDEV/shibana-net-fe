@@ -74,7 +74,7 @@ export function ReactionButton({ displayMode, reactionCounts, requesterReactionT
                 className={cn(
                     "flex items-center gap-2 h-full px-3 cursor-pointer transition-colors",
                     targetType === "POST" && "hover:bg-muted",
-                    targetType === "COMMENT" && "py-2 pb-1",
+                    targetType === "COMMENT" && "py-1",
                     displayMode === "NEWSFEED" && "rounded-bl-lg",
                     requesterReactionType && "text-primary"
                 )}
